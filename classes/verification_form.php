@@ -35,6 +35,7 @@ class verification_form extends \moodleform {
         $mform->setType('role_field', PARAM_RAW);
         $mform->addElement('text', 'subject_field',
             get_string('form_subject', 'local_external_users'));
+        $mform->setType('subject_field', PARAM_RAW);
         $mform->addElement('editor', 'content_field',
             get_string('form_body', 'local_external_users'));
         $mform->setType('content', PARAM_RAW);

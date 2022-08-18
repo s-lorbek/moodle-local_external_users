@@ -37,3 +37,7 @@ $string['verify'] = 'Verify';
 $string['revoke'] = 'Revoke';
 $string['files'] = 'Files';
 $string['download'] = 'Download';
+
+$string['form_submit'] = "Submit";
+$string['form_subject'] = "Subject";
+$string['form_body'] = "Body";

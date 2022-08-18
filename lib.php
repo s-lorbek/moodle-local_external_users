@@ -49,13 +49,13 @@ function local_external_users_extend_navigation(global_navigation $nav) {
     $context = \context_system::instance();
     if (has_capability('local/external_users:manage', $context)) {
         require_capability('local/external_users:manage', $context);
-        $query = "SELECT count(ud.id) FROM mdl_user_info_data u INNER JOIN mdl_user_info_field f ON (u.fieldid = f.id) ".
-        "INNER JOIN mdl_user ud ON(u.userid = ud.id) ".
+        $query = "SELECT count(ud.id) FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
+        "INNER JOIN {user} ud ON(u.userid = ud.id) ".
         "WHERE f.shortname = :verifiedfield ".
             "AND data LIKE :flag ".
             "AND ud.id IN (SELECT ui.userid ".
-                "FROM mdl_user_info_data ui ".
-                "INNER JOIN mdl_user_info_field muif ON(ui.fieldid  = muif.id) ".
+                "FROM {user_info_data} ui ".
+                "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
                 "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
         $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user', 'flag' => '0');
         $count = $DB->get_fieldset_sql($query, $params)[0];

@@ -44,33 +44,6 @@ function local_external_users_before_http_headers() {
     }
 }
 
-function local_external_users_extend_navigation(global_navigation $nav) {
-    global $USER, $PAGE, $DB;
-    $context = \context_system::instance();
-    if (has_capability('local/external_users:manage', $context)) {
-        require_capability('local/external_users:manage', $context);
-        $query = "SELECT count(ud.id) FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
-        "INNER JOIN {user} ud ON(u.userid = ud.id) ".
-        "WHERE f.shortname = :verifiedfield ".
-            "AND data LIKE :flag ".
-            "AND ud.id IN (SELECT ui.userid ".
-                "FROM {user_info_data} ui ".
-                "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
-                "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
-        $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user', 'flag' => '0');
-        $count = $DB->get_fieldset_sql($query, $params)[0];
-
-        $navnode = $nav->find('mycourses', global_navigation::TYPE_ROOTNODE);
-
-        $verificationmanager = navigation_node::create("Externe Nutzer Verifikation ($count)",
-            new moodle_url('/local/external_users/views/manage.php'), global_navigation::TYPE_COURSE,
-        null, 'Manager', new pix_icon('i/key', ''));
-
-        $verificationmanager->showinflatnavigation = true;
-        $navnode->add_node($verificationmanager);
-    }
-}
-
 function local_external_users_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $DB;
 

@@ -44,10 +44,10 @@ function send($users, $subject, $content) {
         $success = email_to_user($user, $noreply, $subject,
             html_to_text($content), $content, '', '', true);
         if (!$success) {
-            $event = \local_badge_sync\event\mail_failed::create(array(
+            $event = \local_external_users\event\mail_failed::create(array(
                 'relateduserid' => $user->id,
                 'context' => $PAGE->context,
-                'objectid' => $event->objectid,
+                'objectid' => 0,
                 'other' => array(
                     'user' => $user->username,
                 )

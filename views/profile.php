@@ -52,18 +52,21 @@ $user = $DB->get_record_sql("SELECT id, username, firstname, middlename, lastnam
 "FROM {user} WHERE id = :userid", array('userid' => $userid));
 
 // User picture!
-$userpic = new \user_picture($user);
-$userpic->size = 128;
-echo $OUTPUT->render($userpic);
+if(property_exists($user, "picture")) {
+    $userpic = new \user_picture($user);
+    $userpic->size = 128;
+    echo $OUTPUT->render($userpic);
+}
 
-$userinfo = \html_writer::start_tag("div", array("class" => "card-body"));
-$userinfo .= \html_writer::tag("h3", $user->firstname . " " . $user->middlename . " " . $user->lastname, array('class' => 'lead'));
-$userinfo .= \html_writer::start_tag("ul");
-$userinfo .= \html_writer::tag("li", get_string('username', 'local_external_users') . ": " . $user->username, array('class' => 'contentnode'));
-$userinfo .= \html_writer::tag("li", get_string('mail', 'local_external_users') . ": " .  $user->email, array('class' => 'contentnode'));
-$userinfo .= \html_writer::tag("li", get_string('phone', 'local_external_users') . ": " .  $user->phone1, array('class' => 'contentnode'));
-$userinfo .= \html_writer::end_tag("ul");
-$userinfo .= \html_writer::end_tag("div");
+$profile_data = [
+    'firstname' => $user->firstname ,
+    'middlename' => $user->middlename,
+    'lastname' => $user->lastname,
+    'username' => get_string('username', 'local_external_users') . ": " . $user->username,
+    'mail' => get_string('mail', 'local_external_users') . ": " . $user->email,
+    'phone' => get_string('phone', 'local_external_users') . ": " . $user->phone1,
+];
+$userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profile_data));
 echo $userinfo;
 
 $filetable = new \html_table();
@@ -81,11 +84,27 @@ echo \html_writer::table($filetable);
 
 $action = is_user_verified($userid);
 $label = $action ? get_string('revoke', 'local_external_users') : get_string('verify', 'local_external_users');
-$control = \html_writer::start_tag("form", array("action" => "approve.php"));
-$control .= \html_writer::tag("input" , "", array("type" => "text", "name" => "id", "hidden" => "", "value" => $userid));
-$control .= \html_writer::tag("input" , "", array("type" => "text", "name" => "type", "hidden" => "", "value" => !$action));
-$control .= \html_writer::tag("button", $label);
-$control .= \html_writer::end_tag("form");
-echo $control;
+
+$options = \html_writer::start_tag("div", array());
+$options .= \html_writer::tag("input" , "", array("id" => "option1", "type" => "radio", "name" => "reject", "value" => 0, "checked" => ""));
+$options .= \html_writer::tag("label" , "Send E-Mail to user", array("for" => "option1"));
+$options .= \html_writer::end_tag("div");
+
+$options .= \html_writer::start_tag("div", array());
+$options .= \html_writer::tag("input" , "", array("id" => "option2", "type" => "radio", "name" => "reject", "value" => 1));
+$options .= \html_writer::tag("label" , "Send E-Mail to user and delete user", array("for" => "option2"));
+$options .= \html_writer::end_tag("div");
+
+
+$profile_control = [
+    'legend' => "Select a rejection reason",
+    'options' => $options,
+    'action' => !$action,
+    'btn_label1' => $label,
+    'userid' => $userid,
+    'btn1_style' => !$action ? "primary" : "warning",
+];
+$controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profile_control));
+echo $controls;
 
 echo $OUTPUT->footer();

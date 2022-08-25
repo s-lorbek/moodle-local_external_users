@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_external_users';
 $plugin->release = '1.1.0';
-$plugin->version = 2022030118;
+$plugin->version = 2022030119;
 $plugin->requires = 2020110900;
 $plugin->maturity = MATURITY_ALPHA;

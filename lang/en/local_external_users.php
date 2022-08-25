@@ -41,3 +41,10 @@ $string['download'] = 'Download';
 $string['form_submit'] = "Submit";
 $string['form_subject'] = "Subject";
 $string['form_body'] = "Body";
+
+$string['phone'] = "Telephone";
+$string['mail'] = "E-Mail";
+
+//MAIL Notification
+$string['rejection_subject'] = "Personal information is missing or invalid";
+

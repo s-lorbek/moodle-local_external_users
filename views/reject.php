@@ -24,6 +24,8 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use Symfony\Component\DependencyInjection\Exception\ParameterCircularReferenceException;
+
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
 require_once($CFG->libdir.'/formslib.php');
@@ -42,11 +44,11 @@ $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
 require_capability('local/external_users:manage', $context);
 
+$reject_option = required_param('reject', PARAM_INT);
 $userid = required_param('id', PARAM_INT);
-$tariff = optional_param('tariff', "external", PARAM_TEXT);
-$type = required_param('type', PARAM_INT);
+$comment = optional_param('comment',"", PARAM_TEXT);
 
-$value = ($type == "1") ? verify_user($userid, $tariff) : revoke_user($userid);
+reject_user($userid, $reject_option, $comment);
 
 $url = new \moodle_url('/local/external_users/views/manage.php');
 redirect($url, "Redirecting", 10);

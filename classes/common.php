@@ -23,6 +23,9 @@
 
 namespace local_external_users;
 
+require_once('mail.php');
+require_once($CFG->dirroot . '/user/profile/lib.php');
+
 function get_external_user_query() {
     return "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
     "INNER JOIN {user} ud ON(u.userid = ud.id) ".
@@ -58,28 +61,58 @@ function valid_pdf($file) {
 
 function is_user_verified($userid) {
     global $DB;
-    $query = "SELECT u.data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id)
-    WHERE f.shortname = :field AND u.userid = :userid";
-    $params = array('field' => 'external_user_verified', 'userid' => $userid);
-    return intval($DB->get_field_sql($query, $params));
+    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
+    return intval($user->profile_field_external_user_verified);
 }
 
-function verify_user($userid) {
+function verify_user($userid, $tariff) {
     global $DB;
-    $value = 1;
-    $query = "SELECT u.id FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id)
-    WHERE f.shortname = :field AND u.data like '0' AND u.userid = :userid";
-    $params = array('field' => 'external_user_verified', 'userid' => $userid);
-    $fieldid = $DB->get_field_sql($query, $params);
-    $DB->set_field("user_info_data", "data", $value, array("id" => $fieldid));
+    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
+    $user->profile_field_external_user_verified = 1;
+    $user->profile_field_eduPersonScopedAffiliation = $tariff;
+    profile_save_data($user);
 }
 
 function revoke_user($userid) {
     global $DB;
-    $value = 0;
-    $query = "SELECT u.id FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id)
-    WHERE f.shortname = :field AND u.data like '1' AND u.userid = :userid";
-    $params = array('field' => 'external_user_verified', 'userid' => $userid);
-    $fieldid = $DB->get_field_sql($query, $params);
-    $DB->set_field("user_info_data", "data", $value, array("id" => $fieldid));
+    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    $user->profile_field_external_user_verified = 0;
+    $user->profile_field_eduPersonScopedAffiliation = "";
+    profile_save_data($user);
+}
+
+function reject_user($userid, $action, $comment) {
+    global $DB;
+    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    $user->profile_field_external_user = 1;
+    $user->profile_field_external_user_verified = 0;
+    profile_save_data($user);
+    send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
+    if($action == 1) {
+        user_delete_user($user);
+    }
+}
+
+
+function is_external_user($userid) {
+    global $DB;
+    if(!$DB->record_exists("user", array("id" => $userid))) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    return $user->profile_field_external_user;
 }

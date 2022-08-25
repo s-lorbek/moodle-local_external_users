@@ -59,7 +59,7 @@ $pendingtable->data = array();
 
 foreach ($externalusers as $user) {
     $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
-    $pendingtable->data[] = array(format_string($user->username), format_string($user->firstname),
+    $pendingtable->data[] = array(\html_writer::link($actionurl, format_string($user->username)), format_string($user->firstname),
     format_string($user->lastname), \html_writer::link($actionurl, "Link"));
 }
 echo \html_writer::table($pendingtable);
@@ -75,7 +75,7 @@ $approvedtable->data = array();
 
 foreach ($verifiedusers as $user) {
     $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
-    $approvedtable->data[] = array(format_string($user->username), format_string($user->firstname),
+    $approvedtable->data[] = array(\html_writer::link($actionurl, format_string($user->username)), format_string($user->firstname),
     format_string($user->lastname), \html_writer::link($actionurl, "Link"));
 }
 echo \html_writer::table($approvedtable);

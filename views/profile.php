@@ -56,7 +56,7 @@ if($user->picture != "0") {
     $userpic->size = 128;
     echo $OUTPUT->render($userpic);
 }
-var_dump($user);
+
 $profile_data = [
     'firstname' => $user->firstname ,
     'middlename' => $user->middlename,

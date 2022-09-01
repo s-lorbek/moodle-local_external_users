@@ -44,6 +44,17 @@ $PAGE->set_pagelayout('standard');
 $mform = new verification_form();
 echo $OUTPUT->header();
 
+
+global $DB;
+$user = $DB->get_record("user", array("id" => $USER->id));
+profile_load_data($user);
+
+if(strlen($user->profile_field_external_user_comment["text"])) {
+    echo $OUTPUT->notification(
+        $user->profile_field_external_user_comment["text"],
+        'errormessage');
+}
+
 if ($mform->is_cancelled()) {
     redirect('/', 'Back to landing page', 10);
 } else if ($data = $mform->get_data()) {

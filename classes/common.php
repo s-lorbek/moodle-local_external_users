@@ -100,6 +100,7 @@ function reject_user($userid, $action, $comment) {
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user = 1;
     $user->profile_field_external_user_verified = 0;
+    $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
     send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
     if($action == 1) {

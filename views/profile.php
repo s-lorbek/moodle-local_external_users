@@ -48,16 +48,15 @@ echo $OUTPUT->header();
 
 global $DB;
 $userfiles = $DB->get_records('local_external_users_files', array('userid' => $userid));
-$user = $DB->get_record_sql("SELECT id, username, firstname, middlename, lastname, phone1, email ". 
-"FROM {user} WHERE id = :userid", array('userid' => $userid));
-
+$user = $DB->get_record("user", array('id' => $userid));
+profile_load_data($user);
 // User picture!
-if(property_exists($user, "picture")) {
+if($user->picture != "0") {
     $userpic = new \user_picture($user);
     $userpic->size = 128;
     echo $OUTPUT->render($userpic);
 }
-
+var_dump($user);
 $profile_data = [
     'firstname' => $user->firstname ,
     'middlename' => $user->middlename,
@@ -65,6 +64,8 @@ $profile_data = [
     'username' => get_string('username', 'local_external_users') . ": " . $user->username,
     'mail' => get_string('mail', 'local_external_users') . ": " . $user->email,
     'phone' => get_string('phone', 'local_external_users') . ": " . $user->phone1,
+    'eduScope' => "EduScope : "  . $user->profile_field_eduPersonScopedAffiliation,
+    'firstaccess' => "First access : "  . date("d.m.Y", $user->firstaccess),
 ];
 $userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profile_data));
 echo $userinfo;

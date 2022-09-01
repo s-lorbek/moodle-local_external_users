@@ -25,7 +25,7 @@ class mail_failed extends \core\event\base {
     }
 
     public function get_description() {
-        return "Bulk mailer failed to send E-Mail to user " . $this->other['user'];
+        return "Failed to send E-Mail to user " . $this->other['user'];
     }
 
     public static function get_name() {
@@ -41,7 +41,7 @@ class mail_failed extends \core\event\base {
         $eventdata->cmid       = $this->objectid;
         $eventdata->courseid   = $this->courseid;
         $eventdata->userid     = $this->userid;
-        return $eventdacta;
+        return $eventdata;
     }
 
     protected function get_legacy_logdata() {

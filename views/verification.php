@@ -43,9 +43,8 @@ $PAGE->set_pagelayout('standard');
 
 $mform = new verification_form();
 echo $OUTPUT->header();
-
-
 global $DB;
+
 $user = $DB->get_record("user", array("id" => $USER->id));
 profile_load_data($user);
 
@@ -88,6 +87,9 @@ if ($mform->is_cancelled()) {
             }
         }
         $DB->insert_record('local_external_users_files', $file);
+
+        $user->profile_field_external_user_pending = true;
+        profile_save_data($user);
         echo $OUTPUT->notification(
             "Success",
             'notifymessage');
@@ -97,9 +99,14 @@ if ($mform->is_cancelled()) {
             'notifymessage');
     }
 }
-$mform->add_action_buttons($cancel = true,
+$mform->add_action_buttons($cancel = false,
     $submitlabel = get_string('form_submit', 'local_external_users'));
 
-
-$mform->display();
+if(!$user->profile_field_external_user_pending) {
+    echo get_string('onboarding_description', 'local_external_users');
+    echo "<hr><br>";
+    $mform->display();
+} else {
+    echo "Your application is pending!";
+}
 echo $OUTPUT->footer();

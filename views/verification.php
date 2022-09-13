@@ -55,7 +55,7 @@ if(strlen($user->profile_field_external_user_comment["text"])) {
 }
 
 if ($mform->is_cancelled()) {
-    redirect('/', 'Back to landing page', 10);
+    redirect('/', get_string('redirect', 'local_external_users'), 10);
 } else if ($data = $mform->get_data()) {
     global $DB;
 
@@ -91,11 +91,11 @@ if ($mform->is_cancelled()) {
         $user->profile_field_external_user_pending = true;
         profile_save_data($user);
         echo $OUTPUT->notification(
-            "Success",
+            get_string('success', 'local_external_users'),
             'notifymessage');
     } else {
         echo $OUTPUT->notification(
-            "PDF File not valid",
+            get_string('pdf_error', 'local_external_users'),
             'notifymessage');
     }
 }
@@ -107,6 +107,6 @@ if(!$user->profile_field_external_user_pending) {
     echo "<hr><br>";
     $mform->display();
 } else {
-    echo "Your application is pending!";
+    echo get_string('pending_msg', 'local_external_users');
 }
 echo $OUTPUT->footer();

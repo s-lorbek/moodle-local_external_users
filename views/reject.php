@@ -51,4 +51,4 @@ $comment = optional_param('comment',"", PARAM_TEXT);
 reject_user($userid, $reject_option, $comment);
 
 $url = new \moodle_url('/local/external_users/views/manage.php');
-redirect($url, "Redirecting", 10);
+redirect($url, get_string('redirect', 'local_external_users'), 10);

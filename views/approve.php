@@ -49,4 +49,4 @@ $type = required_param('type', PARAM_INT);
 $value = ($type == "1") ? verify_user($userid, $tariff) : revoke_user($userid);
 
 $url = new \moodle_url('/local/external_users/views/manage.php');
-redirect($url, "Redirecting", 10);
+redirect($url, get_string('redirect', 'local_external_users'), 10);

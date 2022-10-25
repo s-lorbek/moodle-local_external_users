@@ -44,11 +44,11 @@ $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
 require_capability('local/external_users:manage', $context);
 
-$reject_option = required_param('reject', PARAM_INT);
+$rejectoption = required_param('reject', PARAM_INT);
 $userid = required_param('id', PARAM_INT);
-$comment = optional_param('comment',"", PARAM_TEXT);
+$comment = optional_param('comment', "", PARAM_TEXT);
 
-reject_user($userid, $reject_option, $comment);
+reject_user($userid, $rejectoption, $comment);
 
 $url = new \moodle_url('/local/external_users/views/manage.php');
 redirect($url, get_string('redirect', 'local_external_users'), 10);

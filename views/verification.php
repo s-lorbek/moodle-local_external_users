@@ -48,7 +48,7 @@ global $DB;
 $user = $DB->get_record("user", array("id" => $USER->id));
 profile_load_data($user);
 
-if(strlen($user->profile_field_external_user_comment["text"])) {
+if (strlen($user->profile_field_external_user_comment["text"])) {
     echo $OUTPUT->notification(
         $user->profile_field_external_user_comment["text"],
         'errormessage');
@@ -81,8 +81,7 @@ if ($mform->is_cancelled()) {
 
         $leftovers = get_user_files('userfile');
         if (count($leftovers)) {
-            foreach($leftovers as $entry)
-            {
+            foreach ($leftovers as $entry) {
                 $DB->delete_records('local_external_users_files', array('userid' => $USER->id, 'id' => $entry->id));
             }
         }
@@ -102,7 +101,7 @@ if ($mform->is_cancelled()) {
 $mform->add_action_buttons($cancel = false,
     $submitlabel = get_string('form_submit', 'local_external_users'));
 
-if(!$user->profile_field_external_user_pending) {
+if (!$user->profile_field_external_user_pending) {
     echo get_string('onboarding_description', 'local_external_users');
     echo "<hr><br>";
     $mform->display();

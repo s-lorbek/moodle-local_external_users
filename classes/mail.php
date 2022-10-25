@@ -53,8 +53,7 @@ function send($users, $subject, $content) {
                 )
             ));
             $event->trigger();
-        }
-        else {
+        } else {
             $sucessfullcount++;
         }
     }

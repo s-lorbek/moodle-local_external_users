@@ -23,6 +23,8 @@
 
 namespace local_external_users;
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once('mail.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
@@ -61,7 +63,7 @@ function valid_pdf($file) {
 
 function is_user_verified($userid) {
     global $DB;
-    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
@@ -71,7 +73,7 @@ function is_user_verified($userid) {
 
 function verify_user($userid, $tariff) {
     global $DB;
-    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
@@ -83,7 +85,7 @@ function verify_user($userid, $tariff) {
 
 function revoke_user($userid) {
     global $DB;
-    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
@@ -94,7 +96,7 @@ function revoke_user($userid) {
 
 function reject_user($userid, $action, $comment) {
     global $DB;
-    if(!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
@@ -103,7 +105,7 @@ function reject_user($userid, $action, $comment) {
     $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
     send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
-    if($action == 1) {
+    if ($action == 1) {
         user_delete_user($user);
     }
 }
@@ -111,7 +113,7 @@ function reject_user($userid, $action, $comment) {
 
 function is_external_user($userid) {
     global $DB;
-    if(!$DB->record_exists("user", array("id" => $userid))) {
+    if (!$DB->record_exists("user", array("id" => $userid))) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));

@@ -51,13 +51,13 @@ $userfiles = $DB->get_records('local_external_users_files', array('userid' => $u
 $user = $DB->get_record("user", array('id' => $userid));
 profile_load_data($user);
 // User picture!
-if($user->picture != "0") {
+if ($user->picture != "0") {
     $userpic = new \user_picture($user);
     $userpic->size = 128;
     echo $OUTPUT->render($userpic);
 }
 
-$profile_data = [
+$profiledata = [
     'firstname' => $user->firstname ,
     'middlename' => $user->middlename,
     'lastname' => $user->lastname,
@@ -67,7 +67,7 @@ $profile_data = [
     'eduScope' => "EduScope : "  . $user->profile_field_eduPersonScopedAffiliation,
     'firstaccess' => "First access : "  . date("d.m.Y", $user->firstaccess),
 ];
-$userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profile_data));
+$userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profiledata));
 echo $userinfo;
 
 $filetable = new \html_table();
@@ -87,7 +87,8 @@ $action = is_user_verified($userid);
 $label = $action ? get_string('revoke', 'local_external_users') : get_string('verify', 'local_external_users');
 
 $options = \html_writer::start_tag("div", array());
-$options .= \html_writer::tag("input" , "", array("id" => "option1", "type" => "radio", "name" => "reject", "value" => 0, "checked" => ""));
+$options .= \html_writer::tag("input" , "",
+    array("id" => "option1", "type" => "radio", "name" => "reject", "value" => 0, "checked" => ""));
 $options .= \html_writer::tag("label" , "Send E-Mail to user", array("for" => "option1"));
 $options .= \html_writer::end_tag("div");
 
@@ -97,7 +98,7 @@ $options .= \html_writer::tag("label" , "Send E-Mail to user and delete user", a
 $options .= \html_writer::end_tag("div");
 
 
-$profile_control = [
+$profilecontrol = [
     'legend' => "Select a rejection reason",
     'options' => $options,
     'action' => !$action,
@@ -105,7 +106,7 @@ $profile_control = [
     'userid' => $userid,
     'btn1_style' => !$action ? "primary" : "warning",
 ];
-$controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profile_control));
+$controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profilecontrol));
 echo $controls;
 
 echo $OUTPUT->footer();

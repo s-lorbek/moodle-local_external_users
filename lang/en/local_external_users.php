@@ -33,7 +33,9 @@ $string['username'] = 'Username';
 $string['firstname'] = 'Firstname';
 $string['lastname'] = 'Lastname';
 $string['manage'] = 'Manage';
-$string['verify'] = 'Verify';
+$string['approve'] = 'Approve';
+$string['approvelimited'] = 'Approve for 1 semester';
+
 $string['revoke'] = 'Revoke';
 $string['files'] = 'Files';
 $string['download'] = 'Download';
@@ -53,4 +55,7 @@ $string['redirect'] = "Redirecting";
 $string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 // MAIL Notification.
 $string['rejection_subject'] = "Personal information is missing or invalid";
+
+$string['external_users:manage'] = "Manage external user settings";
+$string['external_users:verification'] = "Verify external user";
 

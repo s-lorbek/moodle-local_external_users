@@ -45,8 +45,20 @@ require_capability('local/external_users:manage', $context);
 $userid = required_param('id', PARAM_INT);
 $tariff = optional_param('tariff', "external", PARAM_TEXT);
 $type = required_param('type', PARAM_INT);
+$duration = optional_param('submitButton', "regular", PARAM_TEXT);
 
-$value = ($type == "1") ? verify_user($userid, $tariff) : revoke_user($userid);
+if ($type == "1") {
+    switch($duration) {
+        case "regular":
+            verify_user($userid, $tariff);
+            break;
+        case "limited":
+            limited_verify_user($userid, $tariff);
+            break;
+    }
+} else {
+    revoke_user($userid);
+}
 
 $url = new \moodle_url('/local/external_users/views/manage.php');
 redirect($url, get_string('redirect', 'local_external_users'), 10);

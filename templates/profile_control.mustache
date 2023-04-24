@@ -13,7 +13,13 @@
                 <option value="external">external</option>
             </select>
         {{/action}}
-        <button class="btn btn-{{btn1_style}}">{{btn_label1}}</button>
+        {{#approve}}
+            <button name="submitButton" value="regular" class="btn btn-{{btn1_style}} ml-2">{{approve}}</button>
+            <button name="submitButton" value="limited" class="btn btn-{{btn1_style}} ml-2">{{approve-limited}}</button>
+        {{/approve}}
+        {{#revoke}}
+            <button class="btn btn-{{btn1_style}}">{{revoke}}</button>
+        {{/revoke}}
     </form>
 </div>
 <hr>

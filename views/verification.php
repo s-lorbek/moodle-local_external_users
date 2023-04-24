@@ -40,6 +40,7 @@ $PAGE->set_url($pageurl);
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
+require_capability('local/external_users:verification', $context);
 
 $mform = new verification_form();
 echo $OUTPUT->header();

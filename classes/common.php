@@ -23,9 +23,12 @@
 
 namespace local_external_users;
 
+use DateTime;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('mail.php');
+require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
 function get_external_user_query() {
@@ -79,9 +82,39 @@ function verify_user($userid, $tariff) {
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
     $user->profile_field_external_user_verified = 1;
+    $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = $tariff;
     profile_save_data($user);
 }
+
+function getEndOfSemester() {
+    $today = new DateTime();
+    $enddate = $today;
+    $currentmonth = $today->format('n');
+    $summerterm = array(3, 4, 5, 6, 7, 8, 9);
+
+    if (in_array($currentmonth, $summerterm)) {
+        return $enddate->format("t.09.Y");
+    } else {
+        $enddate = $enddate->format("t.02.Y");
+        $enddate = new DateTime("+12 months $enddate");
+        return $enddate->format("t.m.Y");
+    }
+}
+
+function limited_verify_user($userid, $tariff) {
+    global $DB;
+    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+        return -1;
+    }
+    $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
+    $user->profile_field_external_user_verified = getEndOfSemester();
+    $user->profile_field_external_user_pending = false;
+    $user->profile_field_eduPersonScopedAffiliation = 'semester';
+    profile_save_data($user);
+}
+
 
 function revoke_user($userid) {
     global $DB;
@@ -90,7 +123,9 @@ function revoke_user($userid) {
     }
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user_verified = 0;
+    $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = "";
+    send_message($userid, null, "");
     profile_save_data($user);
 }
 
@@ -102,9 +137,11 @@ function reject_user($userid, $action, $comment) {
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user = 1;
     $user->profile_field_external_user_verified = 0;
+    $user->profile_field_external_user_pending = false;
     $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
-    send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
+    //send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
+    send_message($userid, null, $comment);
     if ($action == 1) {
         user_delete_user($user);
     }

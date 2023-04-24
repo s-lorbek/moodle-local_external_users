@@ -83,9 +83,6 @@ foreach ($userfiles as $file) {
 
 echo \html_writer::table($filetable);
 
-$action = is_user_verified($userid);
-$label = $action ? get_string('revoke', 'local_external_users') : get_string('verify', 'local_external_users');
-
 $options = \html_writer::start_tag("div", array());
 $options .= \html_writer::tag("input" , "",
     array("id" => "option1", "type" => "radio", "name" => "reject", "value" => 0, "checked" => ""));
@@ -97,15 +94,24 @@ $options .= \html_writer::tag("input" , "", array("id" => "option2", "type" => "
 $options .= \html_writer::tag("label" , "Send E-Mail to user and delete user", array("for" => "option2"));
 $options .= \html_writer::end_tag("div");
 
+$action = is_user_verified($userid);
 
 $profilecontrol = [
     'legend' => "Select a rejection reason",
     'options' => $options,
     'action' => !$action,
-    'btn_label1' => $label,
     'userid' => $userid,
     'btn1_style' => !$action ? "primary" : "warning",
 ];
+
+if (is_user_verified($userid)) {
+    $profilecontrol['revoke'] = get_string('revoke', 'local_external_users');
+} else {
+    $profilecontrol['approve'] = get_string('approve', 'local_external_users');
+    $profilecontrol['approve-limited'] = get_string('approvelimited', 'local_external_users');;
+
+}
+
 $controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profilecontrol));
 echo $controls;
 

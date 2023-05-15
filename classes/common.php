@@ -31,17 +31,6 @@ require_once('mail.php');
 require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-function get_external_user_query() {
-    return "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
-    "INNER JOIN {user} ud ON(u.userid = ud.id) ".
-    "WHERE f.shortname = :verifiedfield ".
-        "AND data LIKE :flag ".
-        "AND ud.id IN (SELECT ui.userid ".
-        "FROM {user_info_data} ui ".
-        "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
-        "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
-}
-
 function get_user_files($filearea) {
     global $DB, $USER;
     return $DB->get_records_sql('SELECT id FROM {local_external_users_files} ' .
@@ -50,14 +39,30 @@ function get_user_files($filearea) {
 
 function get_users_for_verification() {
     global $DB;
-    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user', 'flag' => '0');
-    return $DB->get_records_sql(get_external_user_query(), $params);
+    $sql = "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
+    "INNER JOIN {user} ud ON(u.userid = ud.id) ".
+    "WHERE f.shortname = :verifiedfield ".
+    "AND data LIKE '0' ".
+    "AND ud.id IN (SELECT ui.userid ".
+    "FROM {user_info_data} ui ".
+    "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
+    "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
+    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user');
+    return $DB->get_records_sql($sql, $params);
 }
 
 function get_users_already_verified() {
     global $DB;
-    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user', 'flag' => '1');
-    return $DB->get_records_sql(get_external_user_query(), $params);
+    $sql = "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
+        "INNER JOIN {user} ud ON(u.userid = ud.id) ".
+        "WHERE f.shortname = :verifiedfield ".
+        "AND data NOT LIKE '0' ".
+        "AND ud.id IN (SELECT ui.userid ".
+        "FROM {user_info_data} ui ".
+        "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
+        "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
+    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user');
+    return $DB->get_records_sql($sql, $params);
 }
 
 function valid_pdf($file) {

@@ -39,30 +39,28 @@ function get_user_files($filearea) {
 
 function get_users_for_verification() {
     global $DB;
-    $sql = "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
-    "INNER JOIN {user} ud ON(u.userid = ud.id) ".
-    "WHERE f.shortname = :verifiedfield ".
-    "AND data LIKE '0' ".
-    "AND ud.id IN (SELECT ui.userid ".
-    "FROM {user_info_data} ui ".
-    "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
-    "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
-    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user');
-    return $DB->get_records_sql($sql, $params);
+    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $resultset = array();
+    foreach($dataset as $user) {
+        profile_load_data($user);
+        if($user->profile_field_external_user_verified == '0') {
+            $resultset[] = $user;
+        }
+    }
+    return $resultset;
 }
 
 function get_users_already_verified() {
     global $DB;
-    $sql = "SELECT ud.* FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
-        "INNER JOIN {user} ud ON(u.userid = ud.id) ".
-        "WHERE f.shortname = :verifiedfield ".
-        "AND data NOT LIKE '0' ".
-        "AND ud.id IN (SELECT ui.userid ".
-        "FROM {user_info_data} ui ".
-        "INNER JOIN {user_info_field} muif ON(ui.fieldid  = muif.id) ".
-        "WHERE muif.shortname LIKE :externalfield AND data LIKE '1')";
-    $params = array('verifiedfield' => 'external_user_verified', 'externalfield' => 'external_user');
-    return $DB->get_records_sql($sql, $params);
+    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $resultset = array();
+    foreach($dataset as $user) {
+        profile_load_data($user);
+        if($user->profile_field_external_user_verified != '0') {
+            $resultset[] = $user;
+        }
+    }
+    return $resultset;
 }
 
 function valid_pdf($file) {

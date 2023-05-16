@@ -65,6 +65,7 @@ $profiledata = [
     'mail' => get_string('mail', 'local_external_users') . ": " . $user->email,
     'phone' => get_string('phone', 'local_external_users') . ": " . $user->phone1,
     'eduScope' => "EduScope : "  . $user->profile_field_eduPersonScopedAffiliation,
+    'approveduntil' => "Approved until: " . $user->profile_field_external_user_verified,
     'firstaccess' => "First access : "  . date("d.m.Y", $user->firstaccess),
 ];
 $userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profiledata));

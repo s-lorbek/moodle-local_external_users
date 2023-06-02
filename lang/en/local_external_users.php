@@ -29,12 +29,13 @@ $string['pluginname'] = 'External Users';
 $string['verify_redirect'] = 'You must first be verified!';
 $string['pending_header'] = 'Pending verification';
 $string['already_verified_header'] = 'Already verified';
+$string['rejected_header'] = "Rejected";
 $string['username'] = 'Username';
 $string['firstname'] = 'Firstname';
 $string['lastname'] = 'Lastname';
 $string['manage'] = 'Manage';
 $string['approve'] = 'Approve';
-$string['approvelimited'] = 'Approve for 1 semester';
+$string['approvelimited'] = 'Approve for a single semester (until ';
 
 $string['revoke'] = 'Revoke';
 $string['files'] = 'Files';
@@ -58,4 +59,7 @@ $string['rejection_subject'] = "Personal information is missing or invalid";
 
 $string['external_users:manage'] = "Manage external user settings";
 $string['external_users:verification'] = "Verify external user";
+
+// HTML
+$string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 

@@ -69,14 +69,34 @@ echo \html_writer::tag("h3", get_string('already_verified_header', 'local_extern
 $verifiedusers = get_users_already_verified();
 
 $approvedtable = new \html_table();
-$approvedtable->attributes['class'] = 'table table-striped';
-$approvedtable->head = $tableheaders;
-$approvedtable->data = array();
+$approvedtable->head = array("user", "first", "last", "Manage", "Profile");
 
 foreach ($verifiedusers as $user) {
     $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
-    $approvedtable->data[] = array(\html_writer::link($actionurl, format_string($user->username)), format_string($user->firstname),
-    format_string($user->lastname), \html_writer::link($actionurl, "Link"));
+    $approvedtable->data[] = array(
+        \html_writer::link($actionurl, format_string($user->username)),
+        format_string($user->firstname),
+        format_string($user->lastname),
+        \html_writer::link($actionurl, "Link"),
+        \html_writer::link(new \moodle_url("/user/profile.php", array("id" => $user->id)), get_string("usericon", "local_external_users")));
 }
 echo \html_writer::table($approvedtable);
+
+echo \html_writer::tag("h3", get_string('rejected_header', 'local_external_users'));
+$rejectedusers = get_users_rejected();
+$rejectedtable = new \html_table();
+$rejectedtable->head = array("user", "first", "last", "Manage", "Profile");
+foreach ($rejectedusers as $user) {
+    $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
+    $rejectedtable->data[] = array(
+        \html_writer::link($actionurl, format_string($user->username)),
+        format_string($user->firstname),
+        format_string($user->lastname),
+        \html_writer::link($actionurl, "Link"),
+        \html_writer::link(new \moodle_url("/user/profile.php", array("id" => $user->id)), get_string("usericon", "local_external_users")));
+}
+echo \html_writer::table($rejectedtable);
+
+
+
 echo $OUTPUT->footer();

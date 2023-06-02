@@ -56,7 +56,20 @@ function get_users_already_verified() {
     $resultset = array();
     foreach($dataset as $user) {
         profile_load_data($user);
-        if($user->profile_field_external_user_verified != '0') {
+        if($user->profile_field_external_user_verified != '0' && $user->profile_field_external_user_verified != '-1') {
+            $resultset[] = $user;
+        }
+    }
+    return $resultset;
+}
+
+function get_users_rejected() {
+    global $DB;
+    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $resultset = array();
+    foreach($dataset as $user) {
+        profile_load_data($user);
+        if($user->profile_field_external_user_verified == '-1') {
             $resultset[] = $user;
         }
     }
@@ -114,7 +127,7 @@ function limited_verify_user($userid, $tariff) {
     profile_load_data($user);
     $user->profile_field_external_user_verified = getEndOfSemester();
     $user->profile_field_external_user_pending = false;
-    $user->profile_field_eduPersonScopedAffiliation = 'semester';
+    $user->profile_field_eduPersonScopedAffiliation = 'external';
     profile_save_data($user);
 }
 
@@ -126,7 +139,7 @@ function revoke_user($userid) {
     }
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user_verified = 0;
-    $user->profile_field_external_user_pending = false;
+    $user->profile_field_external_user_pending = true;
     $user->profile_field_eduPersonScopedAffiliation = "";
     send_message($userid, null, "");
     profile_save_data($user);
@@ -139,7 +152,7 @@ function reject_user($userid, $action, $comment) {
     }
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user = 1;
-    $user->profile_field_external_user_verified = 0;
+    $user->profile_field_external_user_verified = -1;
     $user->profile_field_external_user_pending = false;
     $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
@@ -159,3 +172,35 @@ function is_external_user($userid) {
     $user = $DB->get_record("user", array("id" => $userid));
     return $user->profile_field_external_user;
 }
+
+function storeFileToDB($mform, $user, $fileElement, $isPDF){
+    global $DB;
+    $name = $mform->get_new_filename($fileElement);
+    $filecontent = $mform->get_file_content($fileElement);
+
+    if($isPDF && !valid_pdf($filecontent)){
+        return false;
+    }
+    $rec = $mform->save_stored_file($fileElement,
+        \context_system::instance()->id,
+        'local_external_users',
+        'userfile',
+        $user->id,
+        '/',
+        $name,
+        true);
+
+    $file = array('contextid' => \context_system::instance()->id,
+        'component' => 'local_external_users',
+        'filearea' => 'userfile',
+        'filepath' => '/',
+        'userid' => $user->id,
+        'filename' => $name);
+
+    $DB->insert_record('local_external_users_files', $file);
+    return true;
+}
+
+
+
+

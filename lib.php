@@ -38,7 +38,7 @@ function local_external_users_before_http_headers() {
         $externalverified = boolval($DB->get_fieldset_sql($query, $params)[0]);
     }
 
-    if ($external && !$externalverified && strpos($PAGE->url, "verification.php") == false) {
+    if ($external && !$externalverified && !strpos($PAGE->url, "verification.php")) {
         $url = new \moodle_url('/local/external_users/views/verification.php');
         redirect($url, get_string('verify_redirect', 'local_external_users'), 10);
     }

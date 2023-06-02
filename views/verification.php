@@ -40,7 +40,7 @@ $PAGE->set_url($pageurl);
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
-require_capability('local/external_users:verification', $context);
+//require_capability('local/external_users:verification', $context);
 
 $mform = new verification_form();
 echo $OUTPUT->header();
@@ -60,34 +60,17 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
     global $DB;
 
-    $name = $mform->get_new_filename('userfile');
-    $filecontent = $mform->get_file_content('userfile');
-
-    if (valid_pdf($filecontent)) {
-        $rec = $mform->save_stored_file('userfile',
-            \context_system::instance()->id,
-            'local_external_users',
-            'userfile',
-            $USER->id,
-            '/',
-            $name,
-            true);
-
-        $file = array('contextid' => \context_system::instance()->id,
-            'component' => 'local_external_users',
-            'filearea' => 'userfile',
-            'filepath' => '/',
-            'userid' => $USER->id,
-            'filename' => $name);
-
-        $leftovers = get_user_files('userfile');
-        if (count($leftovers)) {
-            foreach ($leftovers as $entry) {
-                $DB->delete_records('local_external_users_files', array('userid' => $USER->id, 'id' => $entry->id));
-            }
+    //Clean previous files
+    $leftovers = get_user_files('userfile');
+    if (count($leftovers)) {
+        foreach ($leftovers as $entry) {
+            $DB->delete_records('local_external_users_files', array('userid' => $user->id));
         }
-        $DB->insert_record('local_external_users_files', $file);
+    }
 
+    if(storeFileToDB($mform, $USER, 'userfile', true) &&
+        storeFileToDB($mform, $USER, 'userfileimage', false))
+    {
         $user->profile_field_external_user_pending = true;
         profile_save_data($user);
         echo $OUTPUT->notification(

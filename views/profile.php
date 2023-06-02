@@ -57,6 +57,8 @@ if ($user->picture != "0") {
     echo $OUTPUT->render($userpic);
 }
 
+$approveduntil = ($user->profile_field_external_user_verified != '0') ? $user->profile_field_external_user_verified : "-";
+
 $profiledata = [
     'firstname' => $user->firstname ,
     'middlename' => $user->middlename,
@@ -65,7 +67,7 @@ $profiledata = [
     'mail' => get_string('mail', 'local_external_users') . ": " . $user->email,
     'phone' => get_string('phone', 'local_external_users') . ": " . $user->phone1,
     'eduScope' => "EduScope : "  . $user->profile_field_eduPersonScopedAffiliation,
-    'approveduntil' => "Approved until: " . $user->profile_field_external_user_verified,
+    'approveduntil' => "Approved until: " . $approveduntil,
     'firstaccess' => "First access : "  . date("d.m.Y", $user->firstaccess),
 ];
 $userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profiledata));
@@ -79,7 +81,7 @@ $filetable->data = array();
 foreach ($userfiles as $file) {
     $actionurl = \moodle_url::make_pluginfile_url($file->contextid, $file->component, $file->filearea,
     $file->userid, $file->filepath, $file->filename, false);
-    $filetable->data[] = array(format_string($file->filearea), \html_writer::link($actionurl, $file->filename));
+    $filetable->data[] = array(format_string($file->filepath), \html_writer::link($actionurl, $file->filename));
 };
 
 echo \html_writer::table($filetable);
@@ -109,8 +111,7 @@ if (is_user_verified($userid)) {
     $profilecontrol['revoke'] = get_string('revoke', 'local_external_users');
 } else {
     $profilecontrol['approve'] = get_string('approve', 'local_external_users');
-    $profilecontrol['approve-limited'] = get_string('approvelimited', 'local_external_users');;
-
+    $profilecontrol['approve-limited'] = get_string('approvelimited', 'local_external_users') . getEndOfSemester() .")";
 }
 
 $controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profilecontrol));

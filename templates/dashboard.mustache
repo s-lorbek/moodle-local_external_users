@@ -1,0 +1,41 @@
+{{!
+    @template local_external_users/dashboard
+}}
+<div class="wrapper">
+    <div class="pending card py-2">
+        <button class="collapsible btn btn-primary w-100">{{pending}} ({{pendingcount}})</button>
+        <div class="external content card-body" style="max-height: unset">
+            {{{pendingtable}}}
+        </div>
+    </div>
+    <div class="approved card py-2">
+        <button class="collapsible btn btn-primary w-100">{{approved}} ({{approvedcount}})</button>
+        <div class="external content card-body">
+            {{{approvedtable}}}
+        </div>
+    </div>
+    <div class="rejected card py-2">
+        <button class="collapsible btn btn-primary w-100">{{rejected}} ({{rejectedcount}})</button>
+        <div class="external content card-body">
+            {{{rejectedtable}}}
+        </div>
+    </div>
+</div>
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight){
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
+

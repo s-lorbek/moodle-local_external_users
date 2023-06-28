@@ -31,6 +31,8 @@ class verification_form extends \moodleform {
     public function definition() {
         global $CFG;
         $mform = $this->_form;
+        $mform->addElement('filepicker', 'userfileimage', "Profile image upload", null,
+            array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
         $mform->addElement('select', 'role_field', get_string('role'), array());
         $mform->setType('role_field', PARAM_RAW);
         $mform->addElement('text', 'subject_field',
@@ -41,8 +43,6 @@ class verification_form extends \moodleform {
         $mform->setType('content', PARAM_RAW);
         $mform->addElement('filepicker', 'userfile', get_string('file'), null,
                    array('maxbytes' => 5000000, 'accepted_types' => 'pdf'));
-        $mform->addElement('filepicker', 'userfileimage', "Image upload", null,
-            array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
     }
     public function validation($data, $files) {
         return array();

@@ -10,24 +10,24 @@
     <h3 class="lead">{{firstname}} {{middlename}} {{lastname}}</h3>
     <ul>
         <li class="contentnode">
-            {{username}}
+            {{verified}}
         </li>
         <li class="contentnode">
-            {{mail}}
-        </li>
-        <li class="contentnode">
-            {{phone}}
-        </li>
-        <li class="contentnode">
-            {{eduScope}}
-        </li>
-        <li class="contentnode">
-            {{approveduntil}}
-        </li>
-        <li class="contentnode">
-            {{firstaccess}}
+            {{verifiedtill}}
         </li>
     </ul>
+    {{#userpiclink}}
+        <div class="content">
+            <h3>ID Card</h3>
+            <p>
+                <img src="{{{userpiclink}}}" class="text-center w-50">
+            </p>
+        </div>
+    {{/userpiclink}}
+    <div class="content">
+        <h3>{{uploadedfiles_header}}</h3>
+        <p>{{{filetable}}}</p>
+    </div>
 </div>
 
 

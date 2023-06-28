@@ -50,12 +50,16 @@ global $DB;
 $userfiles = $DB->get_records('local_external_users_files', array('userid' => $userid));
 $user = $DB->get_record("user", array('id' => $userid));
 profile_load_data($user);
+
+
 // User picture!
+/*
 if ($user->picture != "0") {
     $userpic = new \user_picture($user);
     $userpic->size = 128;
     echo $OUTPUT->render($userpic);
 }
+*/
 
 $approveduntil = ($user->profile_field_external_user_verified != '0') ? $user->profile_field_external_user_verified : "-";
 
@@ -63,55 +67,70 @@ $profiledata = [
     'firstname' => $user->firstname ,
     'middlename' => $user->middlename,
     'lastname' => $user->lastname,
-    'username' => get_string('username', 'local_external_users') . ": " . $user->username,
     'mail' => get_string('mail', 'local_external_users') . ": " . $user->email,
-    'phone' => get_string('phone', 'local_external_users') . ": " . $user->phone1,
+    'verified' => get_string('approved', 'local_external_users') . ": " .
+        ($user->profile_field_external_user_verified ? get_string('yes', 'local_external_users') : get_string('no', 'local_external_users')),
+    'verifiedtill' => get_string('approveduntil', 'local_external_users') . ": " . $approveduntil,
     'eduScope' => "EduScope : "  . $user->profile_field_eduPersonScopedAffiliation,
-    'approveduntil' => "Approved until: " . $approveduntil,
-    'firstaccess' => "First access : "  . date("d.m.Y", $user->firstaccess),
+    'uploadedfiles_header' => get_string('uploadedfiles', 'local_external_users')
 ];
-$userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profiledata));
-echo $userinfo;
 
 $filetable = new \html_table();
 $filetable->attributes['class'] = 'table table-striped';
 $filetable->head = array(get_string('files', 'local_external_users'), get_string('download', 'local_external_users'));
 $filetable->data = array();
 
+
+
+$userpic = $DB->get_record_sql("SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea LIKE 'userfileimage'" , array("userid" => $userid));
+if(isset($userpic)) {
+    $actionurl = \moodle_url::make_pluginfile_url($userpic->contextid, $userpic->component, $userpic->filearea,
+        $userpic->userid, $userpic->filepath, $userpic->filename, false);
+    $profiledata['userpiclink'] = $actionurl;
+}
+
 foreach ($userfiles as $file) {
     $actionurl = \moodle_url::make_pluginfile_url($file->contextid, $file->component, $file->filearea,
-    $file->userid, $file->filepath, $file->filename, false);
+        $file->userid, $file->filepath, $file->filename, false);
     $filetable->data[] = array(format_string($file->filepath), \html_writer::link($actionurl, $file->filename));
 };
+$profiledata['filetable'] = \html_writer::table($filetable);
 
-echo \html_writer::table($filetable);
+$userinfo = text_to_html($OUTPUT->render_from_template("local_external_users/profile", $profiledata));
+echo $userinfo;
 
 $options = \html_writer::start_tag("div", array());
 $options .= \html_writer::tag("input" , "",
     array("id" => "option1", "type" => "radio", "name" => "reject", "value" => 0, "checked" => ""));
-$options .= \html_writer::tag("label" , "Send E-Mail to user", array("for" => "option1"));
+$options .= \html_writer::tag("label",
+    \get_string('rejection_control_mailonly', 'local_external_users'),
+    array("for" => "option1", "class" => "px-1"));
 $options .= \html_writer::end_tag("div");
 
 $options .= \html_writer::start_tag("div", array());
 $options .= \html_writer::tag("input" , "", array("id" => "option2", "type" => "radio", "name" => "reject", "value" => 1));
-$options .= \html_writer::tag("label" , "Send E-Mail to user and delete user", array("for" => "option2"));
+$options .= \html_writer::tag("label" , \get_string('rejection_control_maildelete', 'local_external_users'),
+    array("for" => "option2", "class" => "px-1"));
 $options .= \html_writer::end_tag("div");
 
 $action = is_user_verified($userid);
 
 $profilecontrol = [
-    'legend' => "Select a rejection reason",
+    'legend' => \get_string('rejection_control_header', 'local_external_users'),
     'options' => $options,
     'action' => !$action,
     'userid' => $userid,
     'btn1_style' => !$action ? "primary" : "warning",
+    'rejection_control_additional_comment' => \get_string('rejection_control_additional_comment', 'local_external_users'),
+    'rejection_header' => \get_string('reject', 'local_external_users'),
 ];
 
 if (is_user_verified($userid)) {
     $profilecontrol['revoke'] = get_string('revoke', 'local_external_users');
 } else {
-    $profilecontrol['approve'] = get_string('approve', 'local_external_users');
-    $profilecontrol['approve-limited'] = get_string('approvelimited', 'local_external_users') . getEndOfSemester() .")";
+    $profilecontrol['approve'] = \get_string('approve', 'local_external_users');
+    $profilecontrol['approve-limited'] = \get_string('approvelimited', 'local_external_users') . getEndOfSemester() .")";
+    $profilecontrol['approve-limited2'] = \get_string('approvelimited2', 'local_external_users') . getEndOfNextSemester() .")";
 }
 
 $controls = text_to_html($OUTPUT->render_from_template("local_external_users/profile_control", $profilecontrol));

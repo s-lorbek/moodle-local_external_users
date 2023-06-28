@@ -16,6 +16,7 @@
         {{#approve}}
             <button name="submitButton" value="regular" class="btn btn-{{btn1_style}} ml-2">{{approve}}</button>
             <button name="submitButton" value="limited" class="btn btn-{{btn1_style}} ml-2">{{approve-limited}}</button>
+            <button name="submitButton" value="limited2" class="btn btn-{{btn1_style}} ml-2">{{approve-limited2}}</button>
         {{/approve}}
         {{#revoke}}
             <button class="btn btn-{{btn1_style}}">{{revoke}}</button>
@@ -29,11 +30,11 @@
         <fieldset>
             <legend>{{legend}}</legend>
             {{{options}}}
-            <label for="comment">Comment:</label><br>
+            <label for="comment">{{rejection_control_additional_comment}}</label><br>
             <textarea id="comment" name="comment" rows="4" cols="50">
         </textarea>
         </fieldset>
-        <button class="btn btn-danger">Reject</button>
+        <button class="btn btn-danger">{{rejection_header}}</button>
     </form>
     <hr>
 </div>

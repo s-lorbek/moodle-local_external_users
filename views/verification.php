@@ -58,20 +58,20 @@ if (strlen($user->profile_field_external_user_comment["text"])) {
 if ($mform->is_cancelled()) {
     redirect('/', get_string('redirect', 'local_external_users'), 10);
 } else if ($data = $mform->get_data()) {
-    global $DB;
+    global $DB, $USER;
 
     //Clean previous files
-    $leftovers = get_user_files('userfile');
+    $leftovers = get_user_files($USER->id);
     if (count($leftovers)) {
-        foreach ($leftovers as $entry) {
-            $DB->delete_records('local_external_users_files', array('userid' => $user->id));
-        }
+        $DB->delete_records('local_external_users_files', array('userid' => $user->id));
     }
 
     if(storeFileToDB($mform, $USER, 'userfile', true) &&
         storeFileToDB($mform, $USER, 'userfileimage', false))
     {
         $user->profile_field_external_user_pending = true;
+        $user->profile_field_external_user_verified = 0;
+
         profile_save_data($user);
         echo $OUTPUT->notification(
             get_string('success', 'local_external_users'),

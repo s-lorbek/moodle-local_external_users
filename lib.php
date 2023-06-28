@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+require_once($CFG->dirroot . '/user/profile/lib.php');
 
 /**
  *
@@ -26,6 +27,9 @@ function local_external_users_before_http_headers() {
     $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
     "WHERE u.userid = :userid AND f.shortname = :field";
 
+    $user = $DB->get_record("user", array("id" => $USER->id));
+    //profile_load_data($user);
+
     $params = array('userid' => $USER->id, 'field' => 'external_user');
     $external = 0;
     if ($DB->record_exists_sql($query, $params)) {
@@ -35,10 +39,13 @@ function local_external_users_before_http_headers() {
     $externalverified = false;
     $params = array('userid' => $USER->id, 'field' => 'external_user_verified');
     if ($DB->record_exists_sql($query, $params)) {
-        $externalverified = boolval($DB->get_fieldset_sql($query, $params)[0]);
+        $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
     }
 
-    if ($external && !$externalverified && !strpos($PAGE->url, "verification.php")) {
+
+    if ($external
+        && ($externalverified != 1)
+        && !strpos($PAGE->url, "verification.php")) {
         $url = new \moodle_url('/local/external_users/views/verification.php');
         redirect($url, get_string('verify_redirect', 'local_external_users'), 10);
     }

@@ -31,10 +31,9 @@ require_once('mail.php');
 require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-function get_user_files($filearea) {
-    global $DB, $USER;
-    return $DB->get_records_sql('SELECT id FROM {local_external_users_files} ' .
-    'WHERE userid = :userid AND ' . $DB->sql_compare_text('filearea') . " LIKE '$filearea'", array('userid' => $USER->id));
+function get_user_files($userid) {
+    global $DB;
+    return $DB->get_records("local_external_users_files", array('userid' => $userid));
 }
 
 function get_users_for_verification() {
@@ -118,6 +117,14 @@ function getEndOfSemester() {
     }
 }
 
+function getEndOfNextSemester() {
+    $today = new DateTime();
+    $enddate = $today;
+    $enddate = $enddate->format("t.02.Y");
+    $enddate = new DateTime("+12 months $enddate");
+    return $enddate->format("t.m.Y");
+}
+
 function limited_verify_user($userid, $tariff) {
     global $DB;
     if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
@@ -138,10 +145,12 @@ function revoke_user($userid) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
+    $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user_verified = 0;
-    $user->profile_field_external_user_pending = true;
+    $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = "";
-    send_message($userid, null, "");
+    //send_message_to_user($userid, null, "");
     profile_save_data($user);
 }
 
@@ -151,13 +160,14 @@ function reject_user($userid, $action, $comment) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
     $user->profile_field_external_user = 1;
     $user->profile_field_external_user_verified = -1;
     $user->profile_field_external_user_pending = false;
     $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
     //send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
-    send_message($userid, null, $comment);
+    send_message_to_user($userid, null, $comment);
     if ($action == 1) {
         user_delete_user($user);
     }
@@ -170,6 +180,7 @@ function is_external_user($userid) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
+    profile_load_data($user);
     return $user->profile_field_external_user;
 }
 
@@ -184,7 +195,7 @@ function storeFileToDB($mform, $user, $fileElement, $isPDF){
     $rec = $mform->save_stored_file($fileElement,
         \context_system::instance()->id,
         'local_external_users',
-        'userfile',
+        $fileElement,
         $user->id,
         '/',
         $name,
@@ -192,7 +203,7 @@ function storeFileToDB($mform, $user, $fileElement, $isPDF){
 
     $file = array('contextid' => \context_system::instance()->id,
         'component' => 'local_external_users',
-        'filearea' => 'userfile',
+        'filearea' => $fileElement,
         'filepath' => '/',
         'userid' => $user->id,
         'filename' => $name);

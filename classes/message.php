@@ -27,26 +27,28 @@ require_once(dirname(__FILE__) . '/../../../config.php');
 // Load Moodle's message API
 require_once($CFG->dirroot.'/message/lib.php');
 
-function send_message($recipientid, $senderid, $comment) {
-    global $DB, $USER;
+function send_message_to_user($recipientid, $senderid, $comment) {
+    global $DB, $USER, $CFG;
 
     $recipient = $DB->get_record('user', array("id" => $recipientid));
     $sender = $USER;
-    // Define the message details
-    $message = new \core\message\message();
-    $message->component = 'moodle';
-    $message->name = 'instantmessage';
-    $message->userfrom = $sender;
-    $message->userto = $recipient;
-    $message->subject = 'Rejection';
-    $message->fullmessage = "You've been rejected";
-    $message->fullmessageformat = FORMAT_PLAIN;
-    $message->contexturl = '';
-    $message->contexturlname = '';
-    //$message->set_processor('message_chat');
 
-    //$messageid = message_send($message);
-    $messageid = message_post_message($sender, $recipient, "Rejected", 0);
+    $noreply = new \stdClass();
+    $noreply->firstname = $CFG->supportname;
+    $noreply->lastname = '';
+    $noreply->username = 'usiadmin';
+    $noreply->email = $CFG->noreplyaddress;
+    $noreply->maildisplay = 2;
+    $noreply->alternatename = "";
+    $noreply->firstnamephonetic = "";
+    $noreply->lastnamephonetic = "";
+    $noreply->middlename = "";
 
+    $subject = \get_config("local_external_users", "mailrejectionsubject");
+    $content = \get_config("local_external_users", "mailrejectionmessage") .
+        "<br><br>" . \get_string('rejection_control_additional_comment', 'local_external_users') .
+        ": " . $comment;
+    $messageid = email_to_user($recipient, $noreply, $subject,
+        html_to_text($content), $content, '', '', false);
     return $messageid;
 }

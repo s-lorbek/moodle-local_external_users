@@ -26,57 +26,55 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'External Users';
-$string['verify_redirect'] = 'You must first be verified!';
-$string['pending_header'] = 'Pending verification';
-$string['already_verified_header'] = 'Already verified';
-$string['rejected_header'] = "Rejected";
-$string['rejection_control_header'] = "Select a rejection reason";
-$string['rejection_control_mailonly'] = "Notify user by E-Mail only";
-$string['rejection_control_maildelete'] = "Notify user by E-Mail and delete user";
-$string['rejection_control_additional_comment'] = "Additional comment";
-$string['reject'] = "Reject";
+$string['verify_redirect'] = 'Sie müssen zuerst zugelassen werden!';
+$string['pending_header'] = 'In Bearbeitung';
+$string['already_verified_header'] = 'Bereits zugelassen';
+$string['rejected_header'] = "Abgelehnt";
+$string['rejection_control_header'] = "Begründung der Ablehnung";
+$string['rejection_control_mailonly'] = "Benachrichtigung des Benutzers per E-Mail";
+$string['rejection_control_maildelete'] = "Benachrichtigung des Benutzers per E-Mail und Löschung des Benutzers";
+$string['rejection_control_additional_comment'] = "Ergänzender Kommentar";
+$string['reject'] = "Ablehnen";
 
+$string['username'] = 'Benutzername';
+$string['firstname'] = 'Vorname';
+$string['lastname'] = 'Nachname';
+$string['manage'] = 'Verwaltung';
+$string['approve'] = 'Zulassen';
+$string['approvelimited'] = 'Zulassung für ein Semester (bis ';
+$string['approvelimited2'] = 'Zulassung für ein Semester +1 (bis ';
 
-$string['username'] = 'Username';
-$string['firstname'] = 'Firstname';
-$string['lastname'] = 'Lastname';
-$string['manage'] = 'Manage';
-$string['approve'] = 'Approve';
-$string['approvelimited'] = 'Approve for a single semester (until ';
-$string['approvelimited2'] = 'Approve for a single semester +1 (until ';
+$string['approved'] = 'Zugelassen';
+$string['pending'] = 'In Bearbeitung';
+$string['rejected'] = "Abgelehnt";
 
-$string['approved'] = 'Approved';
-$string['pending'] = 'Pending';
-$string['rejected'] = "Rejected";
-
-$string['revoke'] = 'Revoke';
-$string['files'] = 'Files';
+$string['revoke'] = 'Widerruf';
+$string['files'] = 'Dateien';
 $string['download'] = 'Download';
 
-$string['form_submit'] = "Submit";
-$string['form_subject'] = "Subject";
-$string['form_body'] = "Body";
+$string['form_submit'] = "Absenden";
+$string['form_subject'] = "Betreff";
+$string['form_body'] = "Beschreibung";
 
-$string['phone'] = "Telephone";
+$string['phone'] = "Telefon";
 $string['mail'] = "E-Mail";
 
-$string['pending_msg'] = "Your application is pending!";
-$string['success'] = "Success!";
-$string['pdf_error'] = "PDF File not valid!";
-$string['redirect'] = "Redirecting";
+$string['pending_msg'] = "Ihr Antrag ist in Bearbeitung!";
+$string['success'] = "Erfolg!";
+$string['pdf_error'] = "PDF-Dokument ist nicht gültig!";
+$string['redirect'] = "Weiterleitung";
 
 $string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 // MAIL Notification.
 $string['rejection_subject'] = "Personal information is missing or invalid";
 
-$string['external_users:manage'] = "Manage external user settings";
-$string['external_users:verification'] = "Verify external user";
+$string['external_users:manage'] = "Verwalte Externe Nutzer Einstellungen";
+$string['external_users:verification'] = "Zulassung von Externen Nutzern";
 
 // HTML
 $string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 
-$string['yes'] = "Yes";
-$string['no'] = "No";
-$string['approveduntil'] = "Verified until";
-$string['uploadedfiles'] = "Uploaded files";
-
+$string['yes'] = "Ja";
+$string['no'] = "Nein";
+$string['approveduntil'] = "Zugelassen bis";
+$string['uploadedfiles'] = "Hochgeladene Dateien";

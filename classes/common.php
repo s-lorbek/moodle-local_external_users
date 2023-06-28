@@ -148,7 +148,7 @@ function revoke_user($userid) {
     profile_load_data($user);
     $user = $DB->get_record("user", array("id" => $userid));
     $user->profile_field_external_user_verified = 0;
-    $user->profile_field_external_user_pending = false;
+    $user->profile_field_external_user_pending = true;
     $user->profile_field_eduPersonScopedAffiliation = "";
     //send_message_to_user($userid, null, "");
     profile_save_data($user);

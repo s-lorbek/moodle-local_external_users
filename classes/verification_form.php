@@ -23,15 +23,20 @@
 
 namespace local_external_users;
 
+use moodleform;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once('common.php');
 
-class verification_form extends \moodleform {
-    public function definition() {
+class verification_form extends moodleform
+{
+    public function definition()
+    {
         global $CFG;
         $mform = $this->_form;
-        $mform->addElement('filepicker', 'userfileimage', "Profile image upload", null,
+        $mform->addElement('filepicker', 'userfileimage',
+            "Profile image upload", null,
             array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
         $mform->addElement('select', 'role_field', get_string('role'), array());
         $mform->setType('role_field', PARAM_RAW);
@@ -42,11 +47,13 @@ class verification_form extends \moodleform {
             get_string('form_body', 'local_external_users'));
         $mform->setType('content', PARAM_RAW);
         $mform->addElement('filepicker', 'userfile', get_string('file'), null,
-                   array('maxbytes' => 5000000, 'accepted_types' => 'pdf'));
+            array('maxbytes' => 5000000, 'accepted_types' => 'pdf'));
         $mform->addElement('filepicker', 'userfileimage', "Image upload", null,
             array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
     }
-    public function validation($data, $files) {
+
+    public function validation($data, $files)
+    {
         return array();
     }
 }

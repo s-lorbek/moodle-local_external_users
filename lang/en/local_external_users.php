@@ -77,6 +77,14 @@ $string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 
 $string['yes'] = "Yes";
 $string['no'] = "No";
+$string['limited'] = "Limited";
+
 $string['approveduntil'] = "Verified until";
 $string['uploadedfiles'] = "Uploaded files";
+$string['birthdate'] = "Date of Birth";
 
+$string['event_approved'] = 'External user approved';
+$string['event_limitedapproved'] = 'External user limited approved';
+$string['event_rejected'] = 'External user rejected';
+$string['event_revoked'] = 'External user revoked';
+$string['event_submit'] = 'External user submitted';

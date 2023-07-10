@@ -24,17 +24,20 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use context_system;
+use moodle_url;
+
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->libdir.'/datalib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = \context_system::instance();
+$context = context_system::instance();
 $PAGE->set_context($context);
 
-$pageurl = new \moodle_url('/local/external_users/views/approve.php');
+$pageurl = new moodle_url('/local/external_users/views/approve.php');
 $PAGE->set_url($pageurl);
 
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
@@ -48,17 +51,20 @@ $type = required_param('type', PARAM_INT);
 $duration = optional_param('submitButton', "regular", PARAM_TEXT);
 
 if ($type == "1") {
-    switch($duration) {
+    switch ($duration) {
         case "regular":
             verify_user($userid, $tariff);
             break;
         case "limited":
             limited_verify_user($userid, $tariff);
             break;
+        case "limited2":
+            limited_verify_user($userid, "limited2");
+            break;
     }
 } else {
     revoke_user($userid);
 }
 
-$url = new \moodle_url('/local/external_users/views/manage.php');
+$url = new moodle_url('/local/external_users/views/manage.php');
 redirect($url, get_string('redirect', 'local_external_users'), 10);

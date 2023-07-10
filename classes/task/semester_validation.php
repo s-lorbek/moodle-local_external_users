@@ -24,18 +24,22 @@
 
 namespace local_external_users\task;
 
+use core\task\scheduled_task;
 use DateTime;
 use Exception;
+use local_external_users\event\user_revoked;
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-class semester_validation extends \core\task\scheduled_task {
+class semester_validation extends scheduled_task
+{
 
     /**
      * get_name function
      * @return string
      */
-    public function get_name() {
+    public function get_name()
+    {
         return "Semester Validation Task";
     }
 
@@ -43,24 +47,41 @@ class semester_validation extends \core\task\scheduled_task {
      * execute function
      * @return void
      */
-    public function execute() {
-        global $DB;
-        $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
-        foreach($dataset as $user) {
+    public function execute()
+    {
+        global $DB, $PAGE;
+
+        $dataset = $DB->get_records("user",
+            array("auth" => "external", "deleted" => 0));
+        /*
+        foreach ($dataset as $user) {
             profile_load_data($user);
-            if($user->profile_field_external_user_verified != '0') {
+            if ($user->profile_field_external_user_verified != '0' and $user->profile_field_external_user_verified != '-1') {
                 try {
-                    $date = \DateTime::createFromFormat('d.m.Y', $user->profile_field_external_user_verified);
+                    $date = DateTime::createFromFormat('d.m.Y',
+                        $user->profile_field_external_user_verified);
                     if ($date < new DateTime()) {
+
+                        $event = user_revoked::create(array(
+                            'relateduserid' => $user->id,
+                            'context' => $PAGE->context,
+                            'objectid' => $user->id,
+                            'other' => array(
+                                'oldstatus' => $user->profile_field_external_user_verified,
+                                'userid' => $user->id,
+                            )
+                        ));
+                        $event->trigger();
+
                         $user->profile_field_external_user_verified = '0';
-                        $user->profile_field_eduPersonScopedAffiliation = 'external';
                         profile_save_data($user);
                     }
-                } catch (\Exception $e) {
-                    echo 'Caught exception: ',  $e->getMessage(), "\n";
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage(), "\n";
                 }
             }
         }
+        */
     }
 }
 

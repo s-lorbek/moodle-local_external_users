@@ -24,17 +24,23 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use context_system;
+use html_table;
+use html_writer;
+use moodle_url;
+use function get_string;
+
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->libdir.'/datalib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = \context_system::instance();
+$context = context_system::instance();
 $PAGE->set_context($context);
 
-$pageurl = new \moodle_url('/local/external_users/views/manage.php');
+$pageurl = new moodle_url('/local/external_users/views/manage.php');
 $PAGE->set_url($pageurl);
 
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
@@ -46,64 +52,74 @@ echo $OUTPUT->header();
 
 $dashboarddata = array();
 $tableheaders = array(get_string('username', 'local_external_users'),
-get_string('firstname', 'local_external_users'),
-get_string('lastname', 'local_external_users'),
-get_string('manage', 'local_external_users'),
-"Moodle Link");
+    get_string('firstname', 'local_external_users'),
+    get_string('lastname', 'local_external_users'),
+    get_string('manage', 'local_external_users'),
+    "Moodle Link");
 
 $externalusers = get_users_for_verification();
-$pendingtable = new \html_table();
+$pendingtable = new html_table();
 $pendingtable->head = $tableheaders;
 $pendingtable->data = array();
 foreach ($externalusers as $user) {
-    $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
+    $actionurl = new moodle_url("/local/external_users/views/profile.php",
+        array('id' => $user->id));
     $pendingtable->data[] = array(
-        \html_writer::link($actionurl,
-        format_string($user->username)),
+        html_writer::link($actionurl,
+            format_string($user->username)),
         format_string($user->firstname),
         format_string($user->lastname),
-        \html_writer::link($actionurl, "Link"),
-        \html_writer::link(new \moodle_url("/user/profile.php", array("id" => $user->id)), get_string("usericon", "local_external_users")));
+        html_writer::link($actionurl, "Link"),
+        html_writer::link(new moodle_url("/user/profile.php",
+            array("id" => $user->id)),
+            get_string("usericon", "local_external_users")));
 }
-$dashboarddata["pendingtable"] = \html_writer::table($pendingtable);
+$dashboarddata["pendingtable"] = html_writer::table($pendingtable);
 
 $verifiedusers = get_users_already_verified();
-$approvedtable = new \html_table();
+$approvedtable = new html_table();
 $approvedtable->head = $tableheaders;
 foreach ($verifiedusers as $user) {
-    $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
+    $actionurl = new moodle_url("/local/external_users/views/profile.php",
+        array('id' => $user->id));
     $approvedtable->data[] = array(
-        \html_writer::link($actionurl, format_string($user->username)),
+        html_writer::link($actionurl, format_string($user->username)),
         format_string($user->firstname),
         format_string($user->lastname),
-        \html_writer::link($actionurl, "Link"),
-        \html_writer::link(new \moodle_url("/user/profile.php", array("id" => $user->id)), get_string("usericon", "local_external_users")));
+        html_writer::link($actionurl, "Link"),
+        html_writer::link(new moodle_url("/user/profile.php",
+            array("id" => $user->id)),
+            get_string("usericon", "local_external_users")));
 }
-$dashboarddata["approvedtable"] = \html_writer::table($approvedtable);
+$dashboarddata["approvedtable"] = html_writer::table($approvedtable);
 
 $rejectedusers = get_users_rejected();
-$rejectedtable = new \html_table();
+$rejectedtable = new html_table();
 $rejectedtable->head = $tableheaders;
 foreach ($rejectedusers as $user) {
-    $actionurl = new \moodle_url("/local/external_users/views/profile.php", array('id' => $user->id));
+    $actionurl = new moodle_url("/local/external_users/views/profile.php",
+        array('id' => $user->id));
     $rejectedtable->data[] = array(
-        \html_writer::link($actionurl, format_string($user->username)),
+        html_writer::link($actionurl, format_string($user->username)),
         format_string($user->firstname),
         format_string($user->lastname),
-        \html_writer::link($actionurl, "Link"),
-        \html_writer::link(new \moodle_url("/user/profile.php", array("id" => $user->id)), get_string("usericon", "local_external_users")));
+        html_writer::link($actionurl, "Link"),
+        html_writer::link(new moodle_url("/user/profile.php",
+            array("id" => $user->id)),
+            get_string("usericon", "local_external_users")));
 }
-$dashboarddata["rejectedtable"] = \html_writer::table($rejectedtable);
+$dashboarddata["rejectedtable"] = html_writer::table($rejectedtable);
 
-$dashboarddata["pending"] = \get_string('pending', 'local_external_users');;
+$dashboarddata["pending"] = get_string('pending', 'local_external_users');
 $dashboarddata["pendingcount"] = strval(count($externalusers));
 
-$dashboarddata["approved"] = \get_string('approved', 'local_external_users');
+$dashboarddata["approved"] = get_string('approved', 'local_external_users');
 $dashboarddata["approvedcount"] = strval(count($verifiedusers));
 
-$dashboarddata["rejected"] = \get_string('rejected', 'local_external_users');
+$dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
 $dashboarddata["rejectedcount"] = strval(count($rejectedusers));
 
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard", $dashboarddata);
+echo $OUTPUT->render_from_template("local_external_users/dashboard",
+    $dashboarddata);
 echo $OUTPUT->footer();

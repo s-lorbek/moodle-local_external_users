@@ -24,19 +24,21 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use context_system;
+use moodle_url;
 use Symfony\Component\DependencyInjection\Exception\ParameterCircularReferenceException;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->libdir.'/datalib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = \context_system::instance();
+$context = context_system::instance();
 $PAGE->set_context($context);
 
-$pageurl = new \moodle_url('/local/external_users/views/approve.php');
+$pageurl = new moodle_url('/local/external_users/views/approve.php');
 $PAGE->set_url($pageurl);
 
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
@@ -50,5 +52,5 @@ $comment = optional_param('comment', "", PARAM_TEXT);
 
 reject_user($userid, $rejectoption, $comment);
 
-$url = new \moodle_url('/local/external_users/views/manage.php');
+$url = new moodle_url('/local/external_users/views/manage.php');
 redirect($url, get_string('redirect', 'local_external_users'), 10);

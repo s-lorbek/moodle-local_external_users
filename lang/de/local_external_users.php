@@ -76,5 +76,14 @@ $string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 
 $string['yes'] = "Ja";
 $string['no'] = "Nein";
+$string['limited'] = "Befristet";
+
 $string['approveduntil'] = "Zugelassen bis";
 $string['uploadedfiles'] = "Hochgeladene Dateien";
+$string['birthdate'] = "Geburtsdatum";
+
+$string['event_approved'] = 'Externer Nutzer zugelassen';
+$string['event_limitedapproved'] = 'Externer Nutzer befristet zugelassen';
+$string['event_rejected'] = 'Externer Nutzer abgewiesen';
+$string['event_revoked'] = 'Externer Nutzer widerrufen';
+$string['event_submit'] = 'Externer Nutzer eingereicht';

@@ -27,18 +27,24 @@ defined('MOODLE_INTERNAL') || die();
 
 $ADMIN->add('modsettings', new admin_externalpage('external_users',
     get_string('pluginname', 'local_external_users') . " Dashboard",
-    new moodle_url('/local/external_users/views/manage.php'), 'local/external_users:manage'));
+    new moodle_url('/local/external_users/views/manage.php'),
+    'local/external_users:manage'));
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('External Users', '');
-    $ADMIN->add('localplugins', new admin_category('local_external_users', get_string('pluginname', 'local_external_users')));
+    $ADMIN->add('localplugins', new admin_category('local_external_users',
+        get_string('pluginname', 'local_external_users')));
     $ADMIN->add('local_external_users', $settings);
 
     if ($ADMIN->fulltree) {
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/mailrejectionsubject", "Mail Rejection Subject", "", ""));
+            new admin_setting_confightmleditor("local_external_users/onboardingdescription",
+                "Onboarding Description", "", ""));
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/mailrejectionmessage", "Mail Rejection Body", "", ""));
+            new admin_setting_confightmleditor("local_external_users/mailrejectionsubject",
+                "Mail Rejection Subject", "", ""));
+        $settings->add(
+            new admin_setting_confightmleditor("local_external_users/mailrejectionmessage",
+                "Mail Rejection Body", "", ""));
     }
-
 }

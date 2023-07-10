@@ -24,17 +24,21 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use context_system;
+use local_external_users\event\user_submit;
+use moodle_url;
+
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->libdir.'/datalib.php');
+require_once($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = \context_system::instance();
+$context = context_system::instance();
 $PAGE->set_context($context);
 
-$pageurl = new \moodle_url('/local/external_users/views/verification.php');
+$pageurl = new moodle_url('/local/external_users/views/verification.php');
 $PAGE->set_url($pageurl);
 
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
@@ -63,16 +67,27 @@ if ($mform->is_cancelled()) {
     //Clean previous files
     $leftovers = get_user_files($USER->id);
     if (count($leftovers)) {
-        $DB->delete_records('local_external_users_files', array('userid' => $user->id));
+        $DB->delete_records('local_external_users_files',
+            array('userid' => $user->id));
     }
 
-    if(storeFileToDB($mform, $USER, 'userfile', true) &&
-        storeFileToDB($mform, $USER, 'userfileimage', false))
-    {
+    if (storeFileToDB($mform, $USER, 'userfile', true) &&
+        storeFileToDB($mform, $USER, 'userfileimage', false)) {
         $user->profile_field_external_user_pending = true;
         $user->profile_field_external_user_verified = 0;
 
         profile_save_data($user);
+
+        $event = user_submit::create(array(
+            'relateduserid' => $user->id,
+            'context' => $PAGE->context,
+            'objectid' => $user->id,
+            'other' => array(
+                'userid' => $user->id,
+            )
+        ));
+        $event->trigger();
+
         echo $OUTPUT->notification(
             get_string('success', 'local_external_users'),
             'notifymessage');
@@ -86,7 +101,7 @@ $mform->add_action_buttons($cancel = false,
     $submitlabel = get_string('form_submit', 'local_external_users'));
 
 if (!$user->profile_field_external_user_pending) {
-    echo get_string('onboarding_description', 'local_external_users');
+    echo get_config('local_external_users', 'onboardingdescription');
     echo "<hr><br>";
     $mform->display();
 } else {

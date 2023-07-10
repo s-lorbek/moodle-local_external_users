@@ -23,9 +23,13 @@
 
 namespace local_external_users;
 
-function send($users, $subject, $content) {
+use local_external_users\event\mail_failed;
+use stdClass;
+
+function send($users, $subject, $content)
+{
     global $CFG, $PAGE;
-    $noreply = new \stdClass();
+    $noreply = new stdClass();
     $noreply->firstname = $CFG->supportname;
     $noreply->lastname = '';
     $noreply->username = 'usiadmin';
@@ -44,7 +48,7 @@ function send($users, $subject, $content) {
         $success = email_to_user($user, $noreply, $subject,
             html_to_text($content), $content, '', '', true);
         if (!$success) {
-            $event = \local_external_users\event\mail_failed::create(array(
+            $event = mail_failed::create(array(
                 'relateduserid' => $user->id,
                 'context' => $PAGE->context,
                 'objectid' => 0,

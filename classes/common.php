@@ -23,7 +23,13 @@
 
 namespace local_external_users;
 
+use context_system;
 use DateTime;
+use local_external_users\event\user_approved;
+use local_external_users\event\user_limitedapproved;
+use local_external_users\event\user_rejected;
+use local_external_users\event\user_revoked;
+use function user_delete_user;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,57 +37,68 @@ require_once('mail.php');
 require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-function get_user_files($userid) {
+function get_user_files($userid)
+{
     global $DB;
-    return $DB->get_records("local_external_users_files", array('userid' => $userid));
+    return $DB->get_records("local_external_users_files",
+        array('userid' => $userid));
 }
 
-function get_users_for_verification() {
+function get_users_for_verification()
+{
     global $DB;
-    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $dataset = $DB->get_records("user",
+        array("auth" => "external", "deleted" => 0));
     $resultset = array();
-    foreach($dataset as $user) {
+    foreach ($dataset as $user) {
         profile_load_data($user);
-        if($user->profile_field_external_user_verified == '0') {
+        if ($user->profile_field_external_user_verified == '0') {
             $resultset[] = $user;
         }
     }
     return $resultset;
 }
 
-function get_users_already_verified() {
+function get_users_already_verified()
+{
     global $DB;
-    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $dataset = $DB->get_records("user",
+        array("auth" => "external", "deleted" => 0));
     $resultset = array();
-    foreach($dataset as $user) {
+    foreach ($dataset as $user) {
         profile_load_data($user);
-        if($user->profile_field_external_user_verified != '0' && $user->profile_field_external_user_verified != '-1') {
+        if ($user->profile_field_external_user_verified != '0' && $user->profile_field_external_user_verified != '-1') {
             $resultset[] = $user;
         }
     }
     return $resultset;
 }
 
-function get_users_rejected() {
+function get_users_rejected()
+{
     global $DB;
-    $dataset = $DB->get_records("user", array("auth" => "external", "deleted" => 0));
+    $dataset = $DB->get_records("user",
+        array("auth" => "external", "deleted" => 0));
     $resultset = array();
-    foreach($dataset as $user) {
+    foreach ($dataset as $user) {
         profile_load_data($user);
-        if($user->profile_field_external_user_verified == '-1') {
+        if ($user->profile_field_external_user_verified == '-1') {
             $resultset[] = $user;
         }
     }
     return $resultset;
 }
 
-function valid_pdf($file) {
+function valid_pdf($file)
+{
     return preg_match("/^%PDF-/", $file);
 }
 
-function is_user_verified($userid) {
+function is_user_verified($userid)
+{
     global $DB;
-    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+    if (!$DB->record_exists("user",
+            array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
@@ -89,20 +106,37 @@ function is_user_verified($userid) {
     return intval($user->profile_field_external_user_verified);
 }
 
-function verify_user($userid, $tariff) {
-    global $DB;
-    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+function verify_user($userid, $tariff)
+{
+    global $DB, $COURSE, $USER, $PAGE;
+    if (!$DB->record_exists("user",
+            array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
+
+    $event = user_approved::create(array(
+        'relateduserid' => $userid,
+        'context' => $PAGE->context,
+        'objectid' => $USER->id,
+        'other' => array(
+            'oldstatus' => $user->profile_field_external_user_verified,
+            'userid' => $userid,
+        )
+    ));
+    $event->trigger();
+
     $user->profile_field_external_user_verified = 1;
     $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = $tariff;
     profile_save_data($user);
+
+
 }
 
-function getEndOfSemester() {
+function getEndOfSemester()
+{
     $today = new DateTime();
     $enddate = $today;
     $currentmonth = $today->format('n');
@@ -117,7 +151,8 @@ function getEndOfSemester() {
     }
 }
 
-function getEndOfNextSemester() {
+function getEndOfNextSemester()
+{
     $today = new DateTime();
     $enddate = $today;
     $enddate = $enddate->format("t.02.Y");
@@ -125,28 +160,63 @@ function getEndOfNextSemester() {
     return $enddate->format("t.m.Y");
 }
 
-function limited_verify_user($userid, $tariff) {
-    global $DB;
-    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+function limited_verify_user($userid, $tariff)
+{
+    global $DB, $PAGE, $USER;
+    if (!$DB->record_exists("user",
+            array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
-    $user->profile_field_external_user_verified = getEndOfSemester();
+
+    $limited = "";
+    if ($tariff == "limited2")
+        $limited = getEndOfNextSemester();
+    else
+        $limited = getEndOfSemester();
+
+    $event = user_limitedapproved::create(array(
+        'relateduserid' => $userid,
+        'context' => $PAGE->context,
+        'objectid' => $USER->id,
+        'other' => array(
+            'oldstatus' => $user->profile_field_external_user_verified,
+            'newstatus' => $limited,
+            'userid' => $userid,
+        )
+    ));
+    $event->trigger();
+
+    $user->profile_field_external_user_verified = $limited;
+
     $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = 'external';
     profile_save_data($user);
 }
 
 
-function revoke_user($userid) {
-    global $DB;
-    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+function revoke_user($userid)
+{
+    global $DB, $COURSE, $USER, $PAGE;
+    if (!$DB->record_exists("user",
+            array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
-    $user = $DB->get_record("user", array("id" => $userid));
+
+    $event = user_revoked::create(array(
+        'relateduserid' => $userid,
+        'context' => $PAGE->context,
+        'objectid' => $USER->id,
+        'other' => array(
+            'oldstatus' => $user->profile_field_external_user_verified,
+            'userid' => $userid,
+        )
+    ));
+    $event->trigger();
+
     $user->profile_field_external_user_verified = 0;
     $user->profile_field_external_user_pending = true;
     $user->profile_field_eduPersonScopedAffiliation = "";
@@ -154,13 +224,27 @@ function revoke_user($userid) {
     profile_save_data($user);
 }
 
-function reject_user($userid, $action, $comment) {
-    global $DB;
-    if (!$DB->record_exists("user", array("id" => $userid)) && !is_external_user($userid)) {
+function reject_user($userid, $action, $comment)
+{
+    global $DB, $COURSE, $USER, $PAGE;
+    if (!$DB->record_exists("user",
+            array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
     }
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
+
+    $event = user_rejected::create(array(
+        'relateduserid' => $userid,
+        'context' => $PAGE->context,
+        'objectid' => $USER->id,
+        'other' => array(
+            'oldstatus' => $user->profile_field_external_user_verified,
+            'userid' => $userid,
+        )
+    ));
+    $event->trigger();
+
     $user->profile_field_external_user = 1;
     $user->profile_field_external_user_verified = -1;
     $user->profile_field_external_user_pending = false;
@@ -174,7 +258,8 @@ function reject_user($userid, $action, $comment) {
 }
 
 
-function is_external_user($userid) {
+function is_external_user($userid)
+{
     global $DB;
     if (!$DB->record_exists("user", array("id" => $userid))) {
         return -1;
@@ -184,16 +269,17 @@ function is_external_user($userid) {
     return $user->profile_field_external_user;
 }
 
-function storeFileToDB($mform, $user, $fileElement, $isPDF){
+function storeFileToDB($mform, $user, $fileElement, $isPDF)
+{
     global $DB;
     $name = $mform->get_new_filename($fileElement);
     $filecontent = $mform->get_file_content($fileElement);
 
-    if($isPDF && !valid_pdf($filecontent)){
+    if ($isPDF && !valid_pdf($filecontent)) {
         return false;
     }
     $rec = $mform->save_stored_file($fileElement,
-        \context_system::instance()->id,
+        context_system::instance()->id,
         'local_external_users',
         $fileElement,
         $user->id,
@@ -201,7 +287,7 @@ function storeFileToDB($mform, $user, $fileElement, $isPDF){
         $name,
         true);
 
-    $file = array('contextid' => \context_system::instance()->id,
+    $file = array('contextid' => context_system::instance()->id,
         'component' => 'local_external_users',
         'filearea' => $fileElement,
         'filepath' => '/',

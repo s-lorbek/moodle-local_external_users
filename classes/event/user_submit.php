@@ -19,10 +19,15 @@ namespace local_external_users\event;
 use core\event\base;
 use moodle_url;
 use stdClass;
+use function get_string;
 
-class mail_failed extends base
+class user_submit extends base
 {
 
+    /**
+     * init function
+     * @return void
+     */
     protected function init()
     {
         $this->data['crud'] = 'u';
@@ -30,21 +35,38 @@ class mail_failed extends base
         $this->data['objecttable'] = 'data_records';
     }
 
+    /**
+     * get_description function
+     * @return string
+     */
     public function get_description()
     {
-        return "Failed to send E-Mail to user " . $this->other['user'];
+        return "External user with id " . $this->other['userid'] . " submitted the verification form.";
     }
 
+    /**
+     * get_name function
+     * @return string
+     */
     public static function get_name()
     {
-        return 'Failed E-Mail delivery';
+        return get_string("event_submit", "local_external_users");
     }
 
+    /**
+     * get_url function
+     * @return string
+     */
     public function get_url()
     {
-        return new moodle_url('/local/external_users/views/manage.php');
+        return new moodle_url('/local/external_users/views/profile.php',
+            array('id' => $this->other['userid']));
     }
 
+    /**
+     * get_legacy_eventdata function
+     * @return object
+     */
     protected function get_legacy_eventdata()
     {
         $eventdata = new stdClass();
@@ -54,8 +76,24 @@ class mail_failed extends base
         return $eventdata;
     }
 
+    /**
+     * get_legacy_logdata function
+     * @return array
+     */
     protected function get_legacy_logdata()
     {
-        return array();
+        $url = new moodle_url('/local/external_users/views/profile.php',
+            array('id' => $this->other['userid']));
+        $urlparams = array('id' => $this->courseid);
+        $info = "External Users";
+        $eventname = get_string("event_submit", "local_external_users");
+        $userid = $this->userid;
+        $cmid = $this->objectid;
+        $courseid = $this->courseid;
+        $action = "submitted";
+        $description = "External user with id " . $this->other['userid'] . " submitted the verification form.";
+
+        return array($courseid, 'course', $action, $url->out(false,
+            $urlparams), $info, $cmid, $userid, $description);
     }
 }

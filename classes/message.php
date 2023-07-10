@@ -25,15 +25,16 @@
 require_once(dirname(__FILE__) . '/../../../config.php');
 
 // Load Moodle's message API
-require_once($CFG->dirroot.'/message/lib.php');
+require_once($CFG->dirroot . '/message/lib.php');
 
-function send_message_to_user($recipientid, $senderid, $comment) {
+function send_message_to_user($recipientid, $senderid, $comment)
+{
     global $DB, $USER, $CFG;
 
     $recipient = $DB->get_record('user', array("id" => $recipientid));
     $sender = $USER;
 
-    $noreply = new \stdClass();
+    $noreply = new stdClass();
     $noreply->firstname = $CFG->supportname;
     $noreply->lastname = '';
     $noreply->username = 'usiadmin';
@@ -44,9 +45,10 @@ function send_message_to_user($recipientid, $senderid, $comment) {
     $noreply->lastnamephonetic = "";
     $noreply->middlename = "";
 
-    $subject = \get_config("local_external_users", "mailrejectionsubject");
-    $content = \get_config("local_external_users", "mailrejectionmessage") .
-        "<br><br>" . \get_string('rejection_control_additional_comment', 'local_external_users') .
+    $subject = get_config("local_external_users", "mailrejectionsubject");
+    $content = get_config("local_external_users", "mailrejectionmessage") .
+        "<br><br>" . get_string('rejection_control_additional_comment',
+            'local_external_users') .
         ": " . $comment;
     $messageid = email_to_user($recipient, $noreply, $subject,
         html_to_text($content), $content, '', '', false);

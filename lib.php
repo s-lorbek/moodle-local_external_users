@@ -22,10 +22,11 @@ require_once($CFG->dirroot . '/user/profile/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function local_external_users_before_http_headers() {
+function local_external_users_before_http_headers()
+{
     global $PAGE, $USER, $DB;
-    $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) ".
-    "WHERE u.userid = :userid AND f.shortname = :field";
+    $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
+        "WHERE u.userid = :userid AND f.shortname = :field";
 
     $user = $DB->get_record("user", array("id" => $USER->id));
     //profile_load_data($user);
@@ -46,12 +47,15 @@ function local_external_users_before_http_headers() {
     if ($external
         && ($externalverified != 1)
         && !strpos($PAGE->url, "verification.php")) {
-        $url = new \moodle_url('/local/external_users/views/verification.php');
-        redirect($url, get_string('verify_redirect', 'local_external_users'), 10);
+        $url = new moodle_url('/local/external_users/views/verification.php');
+        redirect($url, get_string('verify_redirect', 'local_external_users'),
+            10);
     }
 }
 
-function local_external_users_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function local_external_users_pluginfile($course, $cm, $context, $filearea,
+    $args, $forcedownload, array $options = array())
+{
     global $DB;
 
     // @codingStandardsIgnoreStart
@@ -83,16 +87,18 @@ function local_external_users_pluginfile($course, $cm, $context, $filearea, $arg
     if (empty($args)) {
         $filepath = '/';
     } else {
-        $filepath = '/'.implode('/', $args).'/';
+        $filepath = '/' . implode('/', $args) . '/';
     }
 
-    $file = $fs->get_file($context->id, 'local_external_users', $filearea, $itemid, $filepath, $filename);
+    $file = $fs->get_file($context->id, 'local_external_users', $filearea,
+        $itemid, $filepath, $filename);
     if (!$file) {
         return false;
     }
 
     // finally send the file
-    send_stored_file($file, 0, 0, true, $options); // download MUST be forced - security!
+    send_stored_file($file, 0, 0, true,
+        $options); // download MUST be forced - security!
     // @codingStandardsIgnoreEnd
 }
 

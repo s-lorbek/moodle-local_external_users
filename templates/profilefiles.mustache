@@ -1,0 +1,20 @@
+{{!
+    @template local_external_users/profilefiles
+}}
+
+<section class="node_category card d-inline-block w-100 mb-3">
+    <div class="card-body"><h3 class="lead">{{sectiontitle}}</h3>
+        <ul>
+            {{#data}}
+                <li>{{{.}}}</li>
+            {{/data}}
+        </ul>
+        {{#comment}}
+            <hr>
+            <p><i class="fa fa-info-circle" aria-hidden="true"></i> {{comment}}</p>
+        {{/comment}}
+    </div>
+</section>
+
+
+

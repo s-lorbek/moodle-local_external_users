@@ -1,12 +1,13 @@
 {{!
     @template local_external_users/profile
 }}
-<div class="float-right">
-    <form action="manage.php">
-        <button class="btn btn-primary">Back to Overview</button>
-    </form>
-</div>
-<div class="card-body">
+
+<div class="card-body mx-auto" style="max-width: 1200px">
+    <div class="float-right">
+        <form action="manage.php">
+            <button class="btn btn-primary">Back to Overview</button>
+        </form>
+    </div>
     <h3 class="lead">{{firstname}} {{middlename}} {{lastname}}</h3>
     <ul>
         <li class="contentnode">
@@ -29,8 +30,7 @@
                 <a href="#" data-toggle="modal" data-target="#imageModal">
                     <img src="{{{userpiclink}}}" alt="User image" class="img-thumbnail" style="max-height: 200px">
                 </a>
-            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog"
-                 aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -39,7 +39,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body text-center">
                             <img src="{{{userpiclink}}}" alt="User image" class="img-fluid">
                         </div>
                     </div>
@@ -53,7 +53,6 @@
         <p>{{{filetable}}}</p>
     </div>
 </div>
-
 
 
 

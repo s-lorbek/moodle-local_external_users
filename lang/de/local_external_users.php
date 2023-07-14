@@ -87,3 +87,5 @@ $string['event_limitedapproved'] = 'Externer Nutzer befristet zugelassen';
 $string['event_rejected'] = 'Externer Nutzer abgewiesen';
 $string['event_revoked'] = 'Externer Nutzer widerrufen';
 $string['event_submit'] = 'Externer Nutzer eingereicht';
+
+$string['pending_onboarding'] = 'Nutzer befindet sich noch im Onboarding!';

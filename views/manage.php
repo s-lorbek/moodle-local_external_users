@@ -66,7 +66,7 @@ foreach ($externalusers as $user) {
         array('id' => $user->id));
     $pendingtable->data[] = array(
         html_writer::link($actionurl,
-            format_string($user->username)),
+            $user->username),
         format_string($user->firstname),
         format_string($user->lastname),
         html_writer::link($actionurl, "Link"),
@@ -118,7 +118,6 @@ $dashboarddata["approvedcount"] = strval(count($verifiedusers));
 
 $dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
 $dashboarddata["rejectedcount"] = strval(count($rejectedusers));
-
 
 echo $OUTPUT->render_from_template("local_external_users/dashboard",
     $dashboarddata);

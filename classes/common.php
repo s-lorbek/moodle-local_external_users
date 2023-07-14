@@ -36,6 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once('mail.php');
 require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
+require_once($CFG->dirroot . '/user/lib.php');
+
 
 function get_user_files($userid)
 {
@@ -53,6 +55,9 @@ function get_users_for_verification()
     foreach ($dataset as $user) {
         profile_load_data($user);
         if ($user->profile_field_external_user_verified == '0') {
+            if($user->profile_field_external_user_pending == '0') {
+                $user->username .= ' <i class="fa fa-hourglass" aria-hidden="true"></i>';
+            }
             $resultset[] = $user;
         }
     }
@@ -68,6 +73,9 @@ function get_users_already_verified()
     foreach ($dataset as $user) {
         profile_load_data($user);
         if ($user->profile_field_external_user_verified != '0' && $user->profile_field_external_user_verified != '-1') {
+            if($user->profile_field_external_user_verified != '1') {
+                $user->username .= " (L)";
+            }
             $resultset[] = $user;
         }
     }
@@ -218,7 +226,7 @@ function revoke_user($userid)
     $event->trigger();
 
     $user->profile_field_external_user_verified = 0;
-    $user->profile_field_external_user_pending = true;
+    $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = "";
     //send_message_to_user($userid, null, "");
     profile_save_data($user);
@@ -251,9 +259,14 @@ function reject_user($userid, $action, $comment)
     $user->profile_field_external_user_comment = $comment;
     profile_save_data($user);
     //send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
-    send_message_to_user($userid, null, $comment);
+    send_message_to_user($userid,
+        get_config("local_external_users", "mailrejectionsubject"),
+        get_config("local_external_users", "mailrejectionmessage"),
+        get_string('rejection_control_additional_comment',
+            'local_external_users') .
+        ": " . $comment);
     if ($action == 1) {
-        user_delete_user($user);
+        \user_delete_user($user);
     }
 }
 
@@ -296,6 +309,22 @@ function storeFileToDB($mform, $user, $fileElement, $isPDF)
 
     $DB->insert_record('local_external_users_files', $file);
     return true;
+}
+
+function get_user_file_table($userid) {
+    global $OUTPUT;
+    $userfiles = get_user_files($userid);
+    $data = array();
+
+    foreach ($userfiles as $file) {
+        $actionurl = \moodle_url::make_pluginfile_url($file->contextid,
+            $file->component, $file->filearea,
+            $file->userid, $file->filepath, $file->filename, false);
+        $data[] = \html_writer::link($actionurl, $file->filename);
+    }
+
+    $content = array('data' => $data);
+    return $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
 }
 
 

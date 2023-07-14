@@ -88,3 +88,6 @@ $string['event_limitedapproved'] = 'External user limited approved';
 $string['event_rejected'] = 'External user rejected';
 $string['event_revoked'] = 'External user revoked';
 $string['event_submit'] = 'External user submitted';
+
+$string['pending_onboarding'] = 'User has not completed onboarding yet!';
+

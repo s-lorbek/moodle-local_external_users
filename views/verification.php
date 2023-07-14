@@ -91,6 +91,11 @@ if ($mform->is_cancelled()) {
         echo $OUTPUT->notification(
             get_string('success', 'local_external_users'),
             'notifymessage');
+        send_message_to_user($USER->id,
+            get_config("local_external_users", "signupmailsubject"),
+            get_config("local_external_users", "signupmailmessage"),
+            "");
+
     } else {
         echo $OUTPUT->notification(
             get_string('pdf_error', 'local_external_users'),

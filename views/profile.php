@@ -111,26 +111,32 @@ $profiledata = [
 
 $filetable = new html_table();
 $filetable->attributes['class'] = 'table table-striped';
-$filetable->head = array(get_string('files',
-    'local_external_users'), get_string('download', 'local_external_users'));
+$filetable->head = array(get_string('download', 'local_external_users'));
 $filetable->data = array();
 
 
-$userpic = $DB->get_record_sql("SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea LIKE 'userfileimage'",
-    array("userid" => $userid));
-if (isset($userpic)) {
-    $actionurl = moodle_url::make_pluginfile_url($userpic->contextid,
-        $userpic->component, $userpic->filearea,
-        $userpic->userid, $userpic->filepath, $userpic->filename, false);
-    $profiledata['userpiclink'] = $actionurl;
+if(!$DB->record_exists("local_external_users_files",
+    array("userid" => $userid))) {
+    echo $OUTPUT->notification(get_string('pending_onboarding', 'local_external_users'), 'notifymessage');
+    $profiledata['userpiclink'] = "";
 }
+else {
+    $userpic = $DB->get_record_sql("SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea LIKE 'userfileimage'",
+        array("userid" => $userid));
+    if (isset($userpic)) {
+        $actionurl = moodle_url::make_pluginfile_url($userpic->contextid,
+            $userpic->component, $userpic->filearea,
+            $userpic->userid, $userpic->filepath, $userpic->filename, false);
+        $profiledata['userpiclink'] = $actionurl;
+    }
+}
+
 
 foreach ($userfiles as $file) {
     $actionurl = moodle_url::make_pluginfile_url($file->contextid,
         $file->component, $file->filearea,
         $file->userid, $file->filepath, $file->filename, false);
-    $filetable->data[] = array(format_string($file->filepath), html_writer::link($actionurl,
-        $file->filename));
+    $filetable->data[] = array(html_writer::link($actionurl, $file->filename));
 }
 $profiledata['filetable'] = html_writer::table($filetable);
 

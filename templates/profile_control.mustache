@@ -1,7 +1,7 @@
 {{!
     @template local_external_users/profile_control
 }}
-<div class="card-body">
+<div class="card-body mx-auto" style="max-width: 1200px">
     <form action="approve.php">
         <input type="text" name="id" value="{{userid}}" hidden>
         <input type="text" name="type" value="{{action}}" hidden>
@@ -22,16 +22,14 @@
             <button class="btn btn-{{btn1_style}}">{{revoke}}</button>
         {{/revoke}}
     </form>
-</div>
-<hr>
-<div class="card-body">
+    <hr>
     <form method="post" action="reject.php">
         <input type="text" name="id" value="{{userid}}" hidden>
         <fieldset>
             <legend>{{legend}}</legend>
             {{{options}}}
             <label for="comment">{{rejection_control_additional_comment}}</label><br>
-            <textarea id="comment" name="comment" rows="4" cols="50">
+            <textarea class="w-100" id="comment" name="comment" rows="4" cols="50">
         </textarea>
         </fieldset>
         <button class="btn btn-danger">{{rejection_header}}</button>

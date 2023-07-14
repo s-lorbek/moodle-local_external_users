@@ -40,8 +40,17 @@ if ($hassiteconfig) {
         $settings->add(
             new admin_setting_confightmleditor("local_external_users/onboardingdescription",
                 "Onboarding Description", "", ""));
+
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/mailrejectionsubject",
+            new admin_setting_configtext("local_external_users/signupmailsubject",
+                "Signup Mail Subject", "", ""));
+
+        $settings->add(
+            new admin_setting_confightmleditor("local_external_users/signupmailmessage",
+                "Signup Mail Body", "", ""));
+
+        $settings->add(
+            new admin_setting_configtext("local_external_users/mailrejectionsubject",
                 "Mail Rejection Subject", "", ""));
         $settings->add(
             new admin_setting_confightmleditor("local_external_users/mailrejectionmessage",

@@ -38,6 +38,8 @@ class verification_form extends moodleform
         $mform->addElement('filepicker', 'userfileimage',
             "Profile image upload", null,
             array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
+        $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
+
         $mform->addElement('select', 'role_field', get_string('role'), array());
         $mform->setType('role_field', PARAM_RAW);
         $mform->addElement('text', 'subject_field',
@@ -47,9 +49,8 @@ class verification_form extends moodleform
             get_string('form_body', 'local_external_users'));
         $mform->setType('content', PARAM_RAW);
         $mform->addElement('filepicker', 'userfile', get_string('file'), null,
-            array('maxbytes' => 5000000, 'accepted_types' => 'pdf'));
-        $mform->addElement('filepicker', 'userfileimage', "Image upload", null,
-            array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
+            array('maxbytes' => 5000000, 'accepted_types' => array('application/pdf')));
+        $mform->addRule('userfile', 'Please upload a valid document', 'required');
     }
 
     public function validation($data, $files)

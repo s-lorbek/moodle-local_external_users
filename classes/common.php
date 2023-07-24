@@ -116,7 +116,7 @@ function is_user_verified($userid)
 
 function verify_user($userid, $tariff)
 {
-    global $DB, $COURSE, $USER, $PAGE;
+    global $DB, $USER, $PAGE;
     if (!$DB->record_exists("user",
             array("id" => $userid)) && !is_external_user($userid)) {
         return -1;
@@ -138,9 +138,10 @@ function verify_user($userid, $tariff)
     $user->profile_field_external_user_verified = 1;
     $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = $tariff;
+    $user->profile_field_external_user_comment =
+        get_config("local_external_users", "discounturl");
+
     profile_save_data($user);
-
-
 }
 
 function getEndOfSemester()
@@ -200,13 +201,15 @@ function limited_verify_user($userid, $tariff)
 
     $user->profile_field_external_user_pending = false;
     $user->profile_field_eduPersonScopedAffiliation = 'external';
+    $user->profile_field_external_user_comment =
+        get_config("local_external_users", "discounturl");
     profile_save_data($user);
 }
 
 
 function revoke_user($userid)
 {
-    global $DB, $COURSE, $USER, $PAGE;
+    global $DB, $USER, $PAGE;
     if (!$DB->record_exists("user",
             array("id" => $userid)) && !is_external_user($userid)) {
         return -1;

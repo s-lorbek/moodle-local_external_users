@@ -169,7 +169,7 @@ function getEndOfNextSemester()
     return $enddate->format("t.m.Y");
 }
 
-function limited_verify_user($userid, $tariff)
+function limited_verify_user($userid, $tariff, $type)
 {
     global $DB, $PAGE, $USER;
     if (!$DB->record_exists("user",
@@ -180,7 +180,7 @@ function limited_verify_user($userid, $tariff)
     profile_load_data($user);
 
     $limited = "";
-    if ($tariff == "limited2")
+    if ($type == "limited2")
         $limited = getEndOfNextSemester();
     else
         $limited = getEndOfSemester();
@@ -191,7 +191,7 @@ function limited_verify_user($userid, $tariff)
         'objectid' => $USER->id,
         'other' => array(
             'oldstatus' => $user->profile_field_external_user_verified,
-            'newstatus' => $limited,
+            'newstatus' => $limited . " - " . $tariff,
             'userid' => $userid,
         )
     ));
@@ -200,7 +200,7 @@ function limited_verify_user($userid, $tariff)
     $user->profile_field_external_user_verified = $limited;
 
     $user->profile_field_external_user_pending = false;
-    $user->profile_field_eduPersonScopedAffiliation = 'external';
+    $user->profile_field_eduPersonScopedAffiliation = $tariff;
     $user->profile_field_external_user_comment =
         get_config("local_external_users", "discounturl");
     profile_save_data($user);
@@ -229,7 +229,7 @@ function revoke_user($userid)
     $event->trigger();
 
     $user->profile_field_external_user_verified = 0;
-    $user->profile_field_external_user_pending = false;
+    $user->profile_field_external_user_pending = true;
     $user->profile_field_eduPersonScopedAffiliation = "";
     //send_message_to_user($userid, null, "");
     profile_save_data($user);

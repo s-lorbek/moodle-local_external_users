@@ -56,10 +56,10 @@ if ($type == "1") {
             verify_user($userid, $tariff);
             break;
         case "limited":
-            limited_verify_user($userid, $tariff);
+            limited_verify_user($userid, $tariff, "limited");
             break;
         case "limited2":
-            limited_verify_user($userid, "limited2");
+            limited_verify_user($userid, $tariff, "limited2");
             break;
     }
 } else {

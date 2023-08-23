@@ -89,5 +89,8 @@ $string['event_rejected'] = 'External user rejected';
 $string['event_revoked'] = 'External user revoked';
 $string['event_submit'] = 'External user submitted';
 
+$string['form_image'] = 'Photo/scan of your ID document';
+$string['form_document'] = 'Study confirmation or certificate of completion';
+
 $string['pending_onboarding'] = 'User has not completed onboarding yet!';
 

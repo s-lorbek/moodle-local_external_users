@@ -88,4 +88,7 @@ $string['event_rejected'] = 'Externer Nutzer abgewiesen';
 $string['event_revoked'] = 'Externer Nutzer widerrufen';
 $string['event_submit'] = 'Externer Nutzer eingereicht';
 
+$string['form_image'] = 'Foto/Scan Ihres Ausweisdokuments';
+$string['form_document'] = 'Studienbestätigung oder Abschlusszeugnis';
+
 $string['pending_onboarding'] = 'Nutzer befindet sich noch im Onboarding!';

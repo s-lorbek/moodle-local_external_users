@@ -38,5 +38,14 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*'
+    ),
+    array(
+        'classname' => 'local_external_users\task\comment_validation',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '0',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
     )
 );

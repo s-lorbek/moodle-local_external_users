@@ -40,12 +40,21 @@ function local_external_users_before_http_headers()
         $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
     }
 
-    if ($external
-        && ($externalverified != 1)
-        && !strpos($PAGE->url, "verification.php")) {
-        $url = new moodle_url('/local/external_users/views/verification.php');
-        redirect($url, get_string('verify_redirect', 'local_external_users'),
-            10);
+    $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
+    $url = new moodle_url('/local/external_users/views/verification.php');
+
+    if($external && !strpos($PAGE->url, "verification.php")){
+        if ($limited !== false) {
+            $currentDate = new DateTime();
+            if ($limited < $currentDate) {
+                redirect($url, get_string('verify_redirect', 'local_external_users'),
+                    10);
+            }
+        }
+        else if ($externalverified != 1) {
+            redirect($url, get_string('verify_redirect', 'local_external_users'),
+                10);
+        }
     }
 
     if (strpos($PAGE->url, "/user/profile.php")) {

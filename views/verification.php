@@ -53,9 +53,9 @@ global $DB;
 $user = $DB->get_record("user", array("id" => $USER->id));
 profile_load_data($user);
 
-if (strlen($user->profile_field_external_user_comment["text"])) {
+if (strlen($user->profile_field_external_user_comment)) {
     echo $OUTPUT->notification(
-        $user->profile_field_external_user_comment["text"],
+        $user->profile_field_external_user_comment,
         'errormessage');
 }
 

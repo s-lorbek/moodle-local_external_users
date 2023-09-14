@@ -3,47 +3,21 @@
 }}
 <div class="wrapper">
     <div class="pending card py-2">
-        <button class="collapsible btn btn-primary w-100">{{pending}} ({{pendingcount}})</button>
-        <div class="external content card-body" style="max-height: unset">
-            {{{pendingtable}}}
-        </div>
+        <form action="manage_pending.php">
+            <button class="btn btn-primary w-100" type="submit">{{pending}}</button>
+        </form>
     </div>
-    <div class="approved card py-2">
-        <button class="collapsible btn btn-primary w-100">{{approved}} ({{approvedcount}})</button>
-        <div class="external content card-body">
-            {{{approvedtable}}}
-        </div>
+    <div class="pending card py-2">
+        <form action="manage_verified.php">
+            <button class="btn btn-primary w-100" type="submit">{{approved}}</button>
+        </form>
     </div>
-    <div class="rejected card py-2">
-        <button class="collapsible btn btn-primary w-100">{{rejected}} ({{rejectedcount}})</button>
-        <div class="external content card-body">
-            {{{rejectedtable}}}
-        </div>
-    </div>
-
-    <div class="legend py-2">
-        <ul style="list-style: none">
-            <li><i class="fa fa-hourglass"> ... Onboarding</i></li>
-            <li><i class="fa"> (L) ... Limited</i></li>
-
-        </ul>
+    <div class="pending card py-2">
+        <form action="manage_rejected.php">
+            <button class="btn btn-primary w-100" type="submit">{{rejected}}</button>
+        </form>
     </div>
 </div>
-<script>
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
 
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.maxHeight){
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-            }
-        });
-    }
-</script>
 
 

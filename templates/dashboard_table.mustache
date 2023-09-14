@@ -1,0 +1,23 @@
+{{!
+    @template local_external_users/dashboard
+}}
+<a class="btn btn-primary w-10 p-2" href="manage.php">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+</a>
+<div class="wrapper">
+    <div class="pending card py-2">
+        <div class="btn btn-primary w-100">{{title}} ({{count}})</div>
+        <div class="external content card-body" style="max-height: unset">
+            {{{table}}}
+        </div>
+    </div>
+
+    <div class="legend py-2">
+        <ul style="list-style: none">
+            <li><i class="fa fa-hourglass"> ... Onboarding</i></li>
+            <li><i class="fa"> (L) ... Limited</i></li>
+        </ul>
+    </div>
+</div>
+
+

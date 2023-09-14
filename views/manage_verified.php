@@ -40,7 +40,7 @@ require_once('../classes/common.php');
 $context = context_system::instance();
 $PAGE->set_context($context);
 
-$pageurl = new moodle_url('/local/external_users/views/manage.php');
+$pageurl = new moodle_url('/local/external_users/views/manage_verified.php');
 $PAGE->set_url($pageurl);
 
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
@@ -50,12 +50,32 @@ require_capability('local/external_users:manage', $context);
 
 echo $OUTPUT->header();
 
-$dashboarddata["pending"] = get_string('pending', 'local_external_users');
+$dashboarddata = array();
+$tableheaders = array(get_string('username', 'local_external_users'),
+    get_string('firstname', 'local_external_users'),
+    get_string('lastname', 'local_external_users'),
+    get_string('manage', 'local_external_users'),
+    "Moodle Link");
 
-$dashboarddata["approved"] = get_string('approved', 'local_external_users');
+$verifiedusers = get_users_already_verified();
+$approvedtable = new html_table();
+$approvedtable->head = $tableheaders;
+foreach ($verifiedusers as $user) {
+    $actionurl = new moodle_url("/local/external_users/views/profile.php",
+        array('id' => $user->id));
+    $approvedtable->data[] = array(
+        html_writer::link($actionurl, format_string($user->username)),
+        format_string($user->firstname),
+        format_string($user->lastname),
+        html_writer::link($actionurl, "Link"),
+        html_writer::link(new moodle_url("/user/profile.php",
+            array("id" => $user->id)),
+            get_string("usericon", "local_external_users")));
+}
+$dashboarddata["table"] = html_writer::table($approvedtable);
+$dashboarddata["title"] = get_string('approved', 'local_external_users');
+$dashboarddata["count"] = strval(count($verifiedusers));
 
-$dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
-
-echo $OUTPUT->render_from_template("local_external_users/dashboard",
+echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
     $dashboarddata);
 echo $OUTPUT->footer();

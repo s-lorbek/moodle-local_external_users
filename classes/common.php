@@ -49,52 +49,52 @@ function get_user_files($userid)
 function get_users_for_verification()
 {
     global $DB;
-    $dataset = $DB->get_records("user",
-        array("auth" => "external", "deleted" => 0));
-    $resultset = array();
-    foreach ($dataset as $user) {
-        profile_load_data($user);
-        if ($user->profile_field_external_user_verified == '0') {
-            if($user->profile_field_external_user_pending == '0') {
-                $user->username .= ' <i class="fa fa-hourglass" aria-hidden="true"></i>';
-            }
-            $resultset[] = $user;
-        }
+    $dataset = $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '0'");
+
+    $datasetpending = $DB->get_records_sql("SELECT u.id
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_pending') and muid.data = '0'");
+
+    foreach ($dataset as $key => $value) {
+        if(array_key_exists($key, $datasetpending))
+            $dataset[$key]->username .= ' <i class="fa fa-hourglass" aria-hidden="true"></i>';
     }
-    return $resultset;
+    return $dataset;
 }
 
 function get_users_already_verified()
 {
     global $DB;
-    $dataset = $DB->get_records("user",
-        array("auth" => "external", "deleted" => 0));
-    $resultset = array();
-    foreach ($dataset as $user) {
-        profile_load_data($user);
-        if ($user->profile_field_external_user_verified != '0' && $user->profile_field_external_user_verified != '-1') {
-            if($user->profile_field_external_user_verified != '1') {
-                $user->username .= " (L)";
-            }
-            $resultset[] = $user;
-        }
+    $dataset = $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data <> '0' and muid.data <> '-1'");
+
+    $datasetlimited = $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data <> '1'");
+
+    foreach ($dataset as $key => $value) {
+        if(array_key_exists($key, $datasetlimited))
+            $dataset[$key]->username .= " (L)";
     }
-    return $resultset;
+
+    return $dataset;
 }
 
 function get_users_rejected()
 {
     global $DB;
-    $dataset = $DB->get_records("user",
-        array("auth" => "external", "deleted" => 0));
-    $resultset = array();
-    foreach ($dataset as $user) {
-        profile_load_data($user);
-        if ($user->profile_field_external_user_verified == '-1') {
-            $resultset[] = $user;
-        }
-    }
-    return $resultset;
+    $dataset = $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '-1'");
+    return $dataset;
 }
 
 function valid_pdf($file)

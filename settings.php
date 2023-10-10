@@ -55,5 +55,11 @@ if ($hassiteconfig) {
         $settings->add(
             new admin_setting_configtext("local_external_users/discounturl",
                 "Discount Info URL", "", ""));
+        $settings->add(
+            new admin_setting_configtext("local_external_users/endofterm",
+                "Semester end date", "Leave empty for automatic calculation based on current day", "30.09.2023"));
+        $settings->add(
+            new admin_setting_configtext("local_external_users/endofnextterm",
+                "Next semester end date", "Leave empty for automatic calculation based on current day", "28.02.2024"));
     }
 }

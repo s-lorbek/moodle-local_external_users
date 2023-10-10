@@ -147,26 +147,37 @@ function verify_user($userid, $tariff)
 function getEndOfSemester()
 {
     $today = new DateTime();
-    $enddate = $today;
-    $currentmonth = $today->format('n');
-    $summerterm = array(3, 4, 5, 6, 7, 8, 9);
+    $currentMonth = (int)$today->format('n');
 
-    if (in_array($currentmonth, $summerterm)) {
-        return $enddate->format("t.09.Y");
+    if (!empty(get_config("local_external_users", "endofterm"))) {
+        return get_config("local_external_users", "endofterm");
+    }
+
+    if ($currentMonth >= 3 && $currentMonth <= 9) {
+        return $today->format("t.09.Y");
     } else {
-        $enddate = $enddate->format("t.02.Y");
-        $enddate = new DateTime("+12 months $enddate");
-        return $enddate->format("t.m.Y");
+        $nextYear = $today->format('Y') + 1;
+        return "28.02.$nextYear";
     }
 }
 
 function getEndOfNextSemester()
 {
     $today = new DateTime();
-    $enddate = $today;
-    $enddate = $enddate->format("t.02.Y");
-    $enddate = new DateTime("+12 months $enddate");
-    return $enddate->format("t.m.Y");
+
+    $currentMonth = (int)$today->format('n');
+    $currentYear = $today->format('Y');
+    $nextYear = $currentYear + 1;
+
+    if (!empty(get_config("local_external_users", "endofnextterm"))) {
+        return get_config("local_external_users", "endofnextterm");
+    }
+
+    if ($currentMonth >= 3 && $currentMonth <= 9) {
+        return "28.02.$nextYear";
+    } else {
+        return "30.09.$nextYear";
+    }
 }
 
 function limited_verify_user($userid, $tariff, $type)

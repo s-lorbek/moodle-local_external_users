@@ -61,5 +61,8 @@ if ($hassiteconfig) {
         $settings->add(
             new admin_setting_configtext("local_external_users/endofnextterm",
                 "Next semester end date", "Leave empty for automatic calculation based on current day", "28.02.2024"));
+        $settings->add(
+            new admin_setting_configtext("local_external_users/submissionreviewemail",
+                "Submission Review Mail", "Once external user submit their data for verification, this mail will receive a notification. ", ""));
     }
 }

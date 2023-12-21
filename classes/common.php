@@ -256,6 +256,20 @@ function reject_user($userid, $action, $comment)
     $user = $DB->get_record("user", array("id" => $userid));
     profile_load_data($user);
 
+    $user->profile_field_external_user = 1;
+    $user->profile_field_external_user_verified = -1;
+    $user->profile_field_external_user_pending = false;
+    $user->profile_field_external_user_comment = $comment;
+
+    profile_save_data($user);
+    //send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
+    $messageid = send_message_to_user($userid,
+        get_config("local_external_users", "mailrejectionsubject"),
+        get_config("local_external_users", "mailrejectionmessage"),
+        get_string('rejection_control_additional_comment',
+            'local_external_users') .
+        ": " . $comment);
+
     $event = user_rejected::create(array(
         'relateduserid' => $userid,
         'context' => $PAGE->context,
@@ -263,22 +277,11 @@ function reject_user($userid, $action, $comment)
         'other' => array(
             'oldstatus' => $user->profile_field_external_user_verified,
             'userid' => $userid,
+            'messageid' => $messageid,
         )
     ));
     $event->trigger();
 
-    $user->profile_field_external_user = 1;
-    $user->profile_field_external_user_verified = -1;
-    $user->profile_field_external_user_pending = false;
-    $user->profile_field_external_user_comment = $comment;
-    profile_save_data($user);
-    //send(array($user), get_string('rejection_subject', 'local_external_users'), $comment);
-    send_message_to_user($userid,
-        get_config("local_external_users", "mailrejectionsubject"),
-        get_config("local_external_users", "mailrejectionmessage"),
-        get_string('rejection_control_additional_comment',
-            'local_external_users') .
-        ": " . $comment);
     if ($action == 1) {
         \user_delete_user($user);
     }
@@ -341,6 +344,20 @@ function get_user_file_table($userid) {
     return $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
 }
 
+function create_dummy_user($fullname, $email) {
+    $user = new \stdClass();
+    $user->email = $email;
+    $user->firstname = $fullname;
+    $user->lastname = '';
+    $user->maildisplay = true;
+    $user->mailformat = 0; // 0 (zero) text-only emails, 1 (one) for HTML/Text emails.
+    $user->id = -99;
+    $user->firstnamephonetic = '';
+    $user->lastnamephonetic = '';
+    $user->middlename = '';
+    $user->alternatename = '';
+    return $user;
+}
 
 
 

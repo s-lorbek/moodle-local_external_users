@@ -29,21 +29,10 @@ require_once($CFG->dirroot . '/message/lib.php');
 
 function send_message_to_user($recipientid, $subject, $content, $comment)
 {
-    global $DB, $USER, $CFG;
+    global $DB;
 
     $recipient = $DB->get_record('user', array("id" => $recipientid));
-    $sender = $USER;
-
-    $noreply = new stdClass();
-    $noreply->firstname = $CFG->supportname;
-    $noreply->lastname = '';
-    $noreply->username = 'usiadmin';
-    $noreply->email = $CFG->noreplyaddress;
-    $noreply->maildisplay = 2;
-    $noreply->alternatename = "";
-    $noreply->firstnamephonetic = "";
-    $noreply->lastnamephonetic = "";
-    $noreply->middlename = "";
+    $noreply = \core_user::get_noreply_user();
 
     $content .= "<br><br>" . $comment;
     $messageid = email_to_user($recipient, $noreply, $subject,

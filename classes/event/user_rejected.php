@@ -92,7 +92,8 @@ class user_rejected extends base
         $cmid = $this->objectid;
         $courseid = $this->courseid;
         $action = "rejected";
-        $description = "External user with id " . $this->other['userid'] . " has been changed to rejected status.";
+        $description = "External user with id " . $this->other['userid'] . " has been changed to rejected status." .
+            " Message ID = ".  $this->other['messageid'];
 
         return array($courseid, 'course', $action, $url->out(false,
             $urlparams), $info, $cmid, $userid, $description);

@@ -91,11 +91,19 @@ if ($mform->is_cancelled()) {
         echo $OUTPUT->notification(
             get_string('success', 'local_external_users'),
             'notifymessage');
+
         send_message_to_user($USER->id,
             get_config("local_external_users", "signupmailsubject"),
             get_config("local_external_users", "signupmailmessage"),
             "");
 
+        $reviewteam = create_dummy_user("USI Team", get_config("local_external_users", "submissionreviewemail"));
+        $emailFrom = \core_user::get_noreply_user();
+        $message = get_string('reviewbody', 'local_external_users') . $user->username;
+        email_to_user($reviewteam, $emailFrom,
+            get_string('reviewsubject', 'local_external_users') . $user->username,
+            html_to_text($message), $message, null, null);
+        redirect(new \moodle_url("/"));
     } else {
         echo $OUTPUT->notification(
             get_string('pdf_error', 'local_external_users'),

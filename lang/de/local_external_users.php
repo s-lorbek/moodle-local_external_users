@@ -92,3 +92,6 @@ $string['form_image'] = 'Foto/Scan Ihres Ausweisdokuments';
 $string['form_document'] = 'Studienbestätigung oder Abschlusszeugnis';
 
 $string['pending_onboarding'] = 'Nutzer befindet sich noch im Onboarding!';
+
+$string['reviewsubject'] = 'Neuer externer Nutzer Antrag: ';
+$string['reviewbody'] = 'Ein externer Nutzer hat einen Antrag eingereicht und wartet auf eine Freischaltung.<b>Username: ';

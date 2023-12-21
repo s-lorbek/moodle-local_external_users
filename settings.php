@@ -53,6 +53,12 @@ if ($hassiteconfig) {
             new admin_setting_confightmleditor("local_external_users/mailrejectionmessage",
                 "Mail Rejection Body", "", ""));
         $settings->add(
+            new admin_setting_configtext("local_external_users/mailverificationsubject",
+                "Mail Verification Subject", "", ""));
+        $settings->add(
+            new admin_setting_confightmleditor("local_external_users/mailverificationmessage",
+                "Mail Verification Body", "", ""));
+        $settings->add(
             new admin_setting_configtext("local_external_users/discounturl",
                 "Discount Info URL", "", ""));
         $settings->add(

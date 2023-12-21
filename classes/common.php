@@ -142,6 +142,11 @@ function verify_user($userid, $tariff)
         get_config("local_external_users", "discounturl");
 
     profile_save_data($user);
+
+    $messageid = send_message_to_user($userid,
+        get_config("local_external_users", "mailverificationsubject"),
+        get_config("local_external_users", "mailverificationmessage"),
+        "");
 }
 
 function getEndOfSemester()
@@ -215,6 +220,11 @@ function limited_verify_user($userid, $tariff, $type)
     $user->profile_field_external_user_comment =
         get_config("local_external_users", "discounturl");
     profile_save_data($user);
+
+    $messageid = send_message_to_user($userid,
+        get_config("local_external_users", "mailverificationsubject"),
+        get_config("local_external_users", "mailverificationmessage"),
+        "");
 }
 
 

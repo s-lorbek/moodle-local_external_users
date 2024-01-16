@@ -60,9 +60,8 @@ $tableheaders = array(get_string('username', 'local_external_users'),
 $externalusers = get_users_for_verification();
 $pendingtable = new html_table();
 $pendingtable->head = $tableheaders;
-$pendingtable->attributes['class'] = 'generaltable';
 $pendingtable->id = 'sortable-table';
-$pendingtable->data = array();
+
 foreach ($externalusers as $user) {
     $actionurl = new moodle_url("/local/external_users/views/profile.php",
         array('id' => $user->id));
@@ -76,15 +75,11 @@ foreach ($externalusers as $user) {
             array("id" => $user->id)),
             get_string("usericon", "local_external_users")));
 }
+
 $dashboarddata["table"] = html_writer::table($pendingtable);
 $dashboarddata["title"] = get_string('pending', 'local_external_users');
 $dashboarddata["count"] = strval(count($externalusers));
 
-echo '
-    <script type="text/javascript" src="' . $CFG->wwwroot . '/lib/tablelib.js"></script>
-    <script type="text/javascript">
-        make_sortable(new YUI().use("moodle-core-event", "moodle-core-io", "moodle-core-dock"));
-    </script>';
 
 echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
     $dashboarddata);

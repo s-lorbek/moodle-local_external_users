@@ -60,6 +60,8 @@ $tableheaders = array(get_string('username', 'local_external_users'),
 $verifiedusers = get_users_already_verified();
 $approvedtable = new html_table();
 $approvedtable->head = $tableheaders;
+$approvedtable->id = 'sortable-table';
+
 foreach ($verifiedusers as $user) {
     $actionurl = new moodle_url("/local/external_users/views/profile.php",
         array('id' => $user->id));

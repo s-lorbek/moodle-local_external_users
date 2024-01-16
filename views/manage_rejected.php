@@ -60,6 +60,8 @@ $tableheaders = array(get_string('username', 'local_external_users'),
 $rejectedusers = get_users_rejected();
 $rejectedtable = new html_table();
 $rejectedtable->head = $tableheaders;
+$rejectedtable->id = 'sortable-table';
+
 foreach ($rejectedusers as $user) {
     $actionurl = new moodle_url("/local/external_users/views/profile.php",
         array('id' => $user->id));

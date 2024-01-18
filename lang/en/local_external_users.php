@@ -46,8 +46,9 @@ $string['approvelimited'] = 'Approve for a single semester (until ';
 $string['approvelimited2'] = 'Approve for a single semester +1 (until ';
 
 $string['approved'] = 'Approved';
-$string['pending'] = 'Pending';
+$string['pending'] = 'Onboarding (no filed uploaded yet)';
 $string['rejected'] = "Rejected";
+$string['waiting'] = 'Waiting for approval';
 
 $string['revoke'] = 'Revoke';
 $string['files'] = 'Files';

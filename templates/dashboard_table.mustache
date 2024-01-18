@@ -6,9 +6,11 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 </head>
 
+{{^legend}}
 <a class="btn btn-primary w-10 p-2" href="manage.php">
     <i class="fa fa-arrow-left" aria-hidden="true"></i>
 </a>
+{{/legend}}
 
 <div class="wrapper">
     <div class="pending card py-2">
@@ -18,25 +20,27 @@
         </div>
     </div>
 
+    {{#legend}}
     <div class="legend py-2">
         <ul style="list-style: none">
-            <li><i class="fa fa-hourglass"> ... Onboarding</i></li>
+            <li><i class="fa fa-hourglass"> ... Nutzer hat Dateien eingereicht und wartet auf Freischaltung</i></li>
             <li><i class="fa"> (L) ... Limited</i></li>
         </ul>
     </div>
+    {{/legend}}
 </div>
 
 <script src="../scripts/jquery-3.7.1.min.js"></script>
-<script src="../scripts/jquery.dataTables.js"></script>;
+<script src="../scripts/jquery.dataTables.js"></script>
 {{#js}}
     var linkElement = document.createElement("link");
     linkElement.rel = "stylesheet";
     linkElement.href = "../scripts/jquery.dataTables.css";
     document.head.appendChild(linkElement);
 
-    const tableCount = document.getElementById("sortable-table").rows.length;
-    if(tableCount > 2) {
-        let table = new DataTable('#sortable-table', {
+    const tableCount{{table-id}} = document.getElementById("{{table-id}}").rows.length;
+    if(tableCount{{table-id}} > 2) {
+        let table = new DataTable('#{{table-id}}', {
         // options
         });
     }

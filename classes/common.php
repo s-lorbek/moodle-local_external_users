@@ -54,16 +54,22 @@ function get_users_for_verification()
     WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
     (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '0'");
 
-    $datasetpending = $DB->get_records_sql("SELECT u.id
-    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
-    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
-    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_pending') and muid.data = '0'");
-
-    foreach ($dataset as $key => $value) {
-        if(array_key_exists($key, $datasetpending))
-            $dataset[$key]->username .= ' <i class="fa fa-hourglass" aria-hidden="true"></i>';
+    $datasetpending = get_pending_users_for_verification();
+    foreach ($datasetpending as $key => $value) {
+        if(array_key_exists($key, $dataset))
+            unset($dataset[$key]);
     }
     return $dataset;
+}
+
+function get_pending_users_for_verification()
+{
+    global $DB;
+    $datasetpending = $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
+    FROM {user} u JOIN {user_info_data} muid ON (u.id = muid.userid)
+    WHERE u.auth = 'external' AND u.deleted = 0 AND muid.fieldid =
+    (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_pending') and muid.data = '1'");
+    return $datasetpending;
 }
 
 function get_users_already_verified()

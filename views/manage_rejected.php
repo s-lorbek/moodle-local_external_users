@@ -60,7 +60,7 @@ $tableheaders = array(get_string('username', 'local_external_users'),
 $rejectedusers = get_users_rejected();
 $rejectedtable = new html_table();
 $rejectedtable->head = $tableheaders;
-$rejectedtable->id = 'sortable-table';
+$rejectedtable->id = 'sortabletablerejected';
 
 foreach ($rejectedusers as $user) {
     $actionurl = new moodle_url("/local/external_users/views/profile.php",
@@ -77,6 +77,7 @@ foreach ($rejectedusers as $user) {
 $dashboarddata["table"] = html_writer::table($rejectedtable);
 $dashboarddata["title"] = get_string('rejected', 'local_external_users');
 $dashboarddata["count"] = strval(count($rejectedusers));
+$dashboarddata["table-id"] = $rejectedtable->id ;
 
 echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
     $dashboarddata);

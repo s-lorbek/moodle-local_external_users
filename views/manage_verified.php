@@ -60,7 +60,7 @@ $tableheaders = array(get_string('username', 'local_external_users'),
 $verifiedusers = get_users_already_verified();
 $approvedtable = new html_table();
 $approvedtable->head = $tableheaders;
-$approvedtable->id = 'sortable-table';
+$approvedtable->id = 'sortabletableapproved';
 
 foreach ($verifiedusers as $user) {
     $actionurl = new moodle_url("/local/external_users/views/profile.php",
@@ -77,6 +77,7 @@ foreach ($verifiedusers as $user) {
 $dashboarddata["table"] = html_writer::table($approvedtable);
 $dashboarddata["title"] = get_string('approved', 'local_external_users');
 $dashboarddata["count"] = strval(count($verifiedusers));
+$dashboarddata["table-id"] = $approvedtable->id;
 
 echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
     $dashboarddata);

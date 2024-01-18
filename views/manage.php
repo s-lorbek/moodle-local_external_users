@@ -50,7 +50,7 @@ require_capability('local/external_users:manage', $context);
 
 echo $OUTPUT->header();
 
-$dashboarddata["pending"] = get_string('pending', 'local_external_users');
+$dashboarddata["pending"] = get_string('waiting', 'local_external_users');
 
 $dashboarddata["approved"] = get_string('approved', 'local_external_users');
 

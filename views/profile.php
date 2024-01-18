@@ -106,7 +106,7 @@ $profiledata = [
         'local_external_users'),
     'birthdate' => get_string('birthdate',
             'local_external_users') . ": " . date('d.m.Y',
-            $user->profile_field_gebdat)
+            property_exists($user, 'profile_field_gebdat') ? $user->profile_field_gebdat : null),
 ];
 
 $filetable = new html_table();

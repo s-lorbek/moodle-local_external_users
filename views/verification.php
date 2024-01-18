@@ -53,6 +53,11 @@ global $DB;
 $user = $DB->get_record("user", array("id" => $USER->id));
 profile_load_data($user);
 
+if(!$user->profile_field_external_user || ($user->profile_field_external_user_verified != 0 &&
+    $user->profile_field_external_user_verified != -1)) {
+    redirect('/', get_string('redirect', 'local_external_users'), 0);
+}
+
 if (strlen($user->profile_field_external_user_comment)) {
     echo $OUTPUT->notification(
         $user->profile_field_external_user_comment,

@@ -45,8 +45,9 @@ $string['approvelimited'] = 'Zulassung für ein Semester (bis ';
 $string['approvelimited2'] = 'Zulassung für ein Semester +1 (bis ';
 
 $string['approved'] = 'Zugelassen';
-$string['pending'] = 'In Bearbeitung';
+$string['pending'] = 'Im Onboarding (noch keine Dateien hochgeladen)';
 $string['rejected'] = "Abgelehnt";
+$string['waiting'] = 'In Bearbeitung';
 
 $string['revoke'] = 'Widerruf';
 $string['files'] = 'Dateien';

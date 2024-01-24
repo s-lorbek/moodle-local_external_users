@@ -26,6 +26,7 @@ namespace local_external_users;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
+require_once("$CFG->libdir/formslib.php");
 
 require_once('common.php');
 
@@ -37,7 +38,8 @@ class verification_form extends moodleform
         $mform = $this->_form;
         $mform->addElement('filepicker', 'userfileimage',
             get_string('form_image', 'local_external_users'), null,
-            array('maxbytes' => 5000000, 'accepted_types' => array('image/png', 'image/jpeg', 'image/gif')));
+            array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
+                'accepted_types' => array('image/png', 'image/jpeg', 'image/gif', 'image/bmp')));
         $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
 
         /*
@@ -52,7 +54,7 @@ class verification_form extends moodleform
         */
 
         $mform->addElement('filepicker', 'userfile', get_string('form_document', 'local_external_users'), null,
-            array('maxbytes' => 5000000, 'accepted_types' => array('application/pdf')));
+            array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => array('application/pdf')));
         $mform->addRule('userfile', 'Please upload a valid document', 'required');
     }
 

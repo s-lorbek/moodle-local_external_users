@@ -25,6 +25,7 @@ namespace local_external_users;
 
 // @codingStandardsIgnoreStart
 use context_system;
+use DateTime;
 use local_external_users\event\user_submit;
 use moodle_url;
 
@@ -53,9 +54,15 @@ global $DB;
 $user = $DB->get_record("user", array("id" => $USER->id));
 profile_load_data($user);
 
+$currentDate = new DateTime();
+
 if(!$user->profile_field_external_user || ($user->profile_field_external_user_verified != 0 &&
     $user->profile_field_external_user_verified != -1)) {
-    redirect('/', get_string('redirect', 'local_external_users'), 0);
+
+    $limited = DateTime::createFromFormat('d.m.Y', $user->profile_field_external_user_verified);
+    if (!$limited || $limited > $currentDate) {
+        redirect('/', get_string('redirect', 'local_external_users'), 0);
+    }
 }
 
 if (strlen($user->profile_field_external_user_comment)) {

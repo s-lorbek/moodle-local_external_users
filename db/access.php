@@ -23,27 +23,27 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'local/external_users:verification' => array(
+$capabilities = [
+    'local/external_users:verification' => [
         'riskbitmask' => RISK_SPAM | RISK_PERSONAL | RISK_XSS | RISK_CONFIG,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'local/external_users:manage' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'local/external_users:manage' => [
         'riskbitmask' => RISK_SPAM | RISK_PERSONAL | RISK_XSS | RISK_CONFIG,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'student' => CAP_PROHIBIT,
             'teacher' => CAP_PROHIBIT,
             'editingteacher' => CAP_PROHIBIT,
-            'manager' => CAP_ALLOW
-        )
-    ),
-);
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

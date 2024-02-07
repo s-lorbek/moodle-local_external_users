@@ -21,21 +21,28 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Load Moodle's configuration settings
 require_once(dirname(__FILE__) . '/../../../config.php');
-
-// Load Moodle's message API
 require_once($CFG->dirroot . '/message/lib.php');
 
-function send_message_to_user($recipientid, $subject, $content, $comment)
-{
+/**
+ * @throws dml_exception
+ */
+function send_message_to_user($recipientid, $subject, $content, $comment): bool {
     global $DB;
 
-    $recipient = $DB->get_record('user', array("id" => $recipientid));
+    $recipient = $DB->get_record('user', ["id" => $recipientid]);
     $noreply = \core_user::get_noreply_user();
 
     $content .= "<br><br>" . $comment;
-    $messageid = email_to_user($recipient, $noreply, $subject,
-        html_to_text($content), $content, '', '', false);
+    $messageid = email_to_user(
+        $recipient,
+        $noreply,
+        $subject,
+        html_to_text($content),
+        $content,
+        '',
+        '',
+        false
+    );
     return $messageid;
 }

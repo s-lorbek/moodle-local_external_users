@@ -40,6 +40,8 @@ $PAGE->set_context($context);
 $pageurl = new moodle_url('/local/external_users/views/approve.php');
 $PAGE->set_url($pageurl);
 
+$common = new common();
+
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
@@ -53,17 +55,17 @@ $duration = optional_param('submitButton', "regular", PARAM_TEXT);
 if ($type == "1") {
     switch ($duration) {
         case "regular":
-            verify_user($userid, $tariff);
+            $common->verify_user($userid, $tariff);
             break;
         case "limited":
-            limited_verify_user($userid, $tariff, "limited");
+            $common->limited_verify_user($userid, $tariff, "limited");
             break;
         case "limited2":
-            limited_verify_user($userid, $tariff, "limited2");
+            $common->limited_verify_user($userid, $tariff, "limited2");
             break;
     }
 } else {
-    revoke_user($userid);
+    $common->revoke_user($userid);
 }
 
 $url = new moodle_url('/local/external_users/views/manage.php');

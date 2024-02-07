@@ -25,8 +25,6 @@ namespace local_external_users;
 
 // @codingStandardsIgnoreStart
 use context_system;
-use html_table;
-use html_writer;
 use moodle_url;
 use function get_string;
 
@@ -43,6 +41,8 @@ $PAGE->set_context($context);
 $pageurl = new moodle_url('/local/external_users/views/manage.php');
 $PAGE->set_url($pageurl);
 
+$common = new common();
+
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
@@ -56,6 +56,8 @@ $dashboarddata["approved"] = get_string('approved', 'local_external_users');
 
 $dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard",
-    $dashboarddata);
+echo $OUTPUT->render_from_template(
+    "local_external_users/dashboard",
+    $dashboarddata
+);
 echo $OUTPUT->footer();

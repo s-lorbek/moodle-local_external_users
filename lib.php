@@ -17,25 +17,25 @@
 
 /**
  *
- * @package    local_external_users
+ * @throws dml_exception
  * @copyright  2022 Stephan Lorbek
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_external_users
  */
 
-function local_external_users_before_http_headers()
-{
+function local_external_users_before_http_headers() {
     global $PAGE, $USER, $DB;
     $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
         "WHERE u.userid = :userid AND f.shortname = :field";
 
-    $params = array('userid' => $USER->id, 'field' => 'external_user');
+    $params = ['userid' => $USER->id, 'field' => 'external_user'];
     $external = 0;
     if ($DB->record_exists_sql($query, $params)) {
         $external = boolval($DB->get_fieldset_sql($query, $params)[0]);
     }
 
     $externalverified = false;
-    $params = array('userid' => $USER->id, 'field' => 'external_user_verified');
+    $params = ['userid' => $USER->id, 'field' => 'external_user_verified'];
     if ($DB->record_exists_sql($query, $params)) {
         $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
     }
@@ -43,83 +43,95 @@ function local_external_users_before_http_headers()
     $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
     $url = new moodle_url('/local/external_users/views/verification.php');
 
-    if($external && !strpos($PAGE->url, "verification.php")){
+    if ($external && !strpos($PAGE->url, "verification.php")) {
         if ($limited !== false) {
-            $currentDate = new DateTime();
-            if ($limited < $currentDate) {
-                redirect($url, get_string('verify_redirect', 'local_external_users'),
-                    10);
+            $currentdate = new DateTime();
+            if ($limited < $currentdate) {
+                redirect(
+                    $url,
+                    get_string('verify_redirect', 'local_external_users'),
+                    10
+                );
             }
-        }
-        else if ($externalverified != 1) {
-            redirect($url, get_string('verify_redirect', 'local_external_users'),
-                10);
+        } else if ($externalverified != 1) {
+            redirect(
+                $url,
+                get_string('verify_redirect', 'local_external_users'),
+                10
+            );
         }
     }
 
     if (strpos($PAGE->url, "/user/profile.php")) {
         global $OUTPUT;
-        $userid = optional_param('id', "-1",PARAM_INT);
-        $userfiles = $DB->get_records("local_external_users_files", array('userid' => $userid));
+        $userid = optional_param('id', "-1", PARAM_INT);
+        $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);
 
-        $data = array();
+        $data = [];
         foreach ($userfiles as $file) {
-            $actionurl = \moodle_url::make_pluginfile_url($file->contextid,
-                $file->component, $file->filearea,
-                $file->userid, $file->filepath, $file->filename, false);
+            $actionurl = \moodle_url::make_pluginfile_url(
+                $file->contextid,
+                $file->component,
+                $file->filearea,
+                $file->userid,
+                $file->filepath,
+                $file->filename,
+                false
+            );
             $data[] = \html_writer::link($actionurl, $file->filename);
         }
 
         $comment = $DB->get_record_sql(
-            "SELECT uid.data ".
-                "FROM {user_info_data} uid ".
-                "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) ".
+            "SELECT uid.data " .
+                "FROM {user_info_data} uid " .
+                "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) " .
                 "WHERE uid.userid = :userid AND uif.shortname LIKE 'external_user_comment'",
-            array("userid" => $userid));
+            ["userid" => $userid]
+        );
 
         $comment = $comment->data ?? null;
-        $content = array('data' => $data,
-            'sectiontitle' => get_string("pluginname",
-                    "local_external_users") . " " . get_string("files",
-                    "local_external_users"),
-            'comment' => $comment);
+        $content = ['data' => $data,
+            'sectiontitle' => get_string(
+                "pluginname",
+                "local_external_users"
+            ) . " " . get_string(
+                "files",
+                "local_external_users"
+            ),
+            'comment' => $comment];
 
-        $filetable =  $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
+        $filetable = $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
 
-        if($userid != '-1') {
-            $PAGE->requires->js_call_amd('local_external_users/profilefiles',
-                "append", array($filetable));
+        if ($userid != '-1') {
+            $PAGE->requires->js_call_amd(
+                'local_external_users/profilefiles',
+                "append",
+                [$filetable]
+            );
         }
     }
 }
 
-function local_external_users_pluginfile($course, $cm, $context, $filearea,
-    $args, $forcedownload, array $options = array())
-{
+/**
+ * @throws require_login_exception
+ * @throws coding_exception
+ * @throws moodle_exception
+ */
+function local_external_users_pluginfile(
+    $course,
+    $cm,
+    $context,
+    $filearea,
+    $args,
+    $forcedownload,
+    array $options = []
+) {
     global $DB;
 
-    // @codingStandardsIgnoreStart
-    /*
-    if ($context->contextlevel != CONTEXT_SYSTEM) {
-        return false;
-    }
-    */
 
     require_login();
-
-    /*
-    if ($filearea != 'attachment') {
-      //  return false;
-    }
-    */
-
     $itemid = (int)array_shift($args);
 
-    /*
-    if ($itemid != 0) {
-     //   return false;
-    }
-    */
 
     $fs = get_file_storage();
 
@@ -130,15 +142,24 @@ function local_external_users_pluginfile($course, $cm, $context, $filearea,
         $filepath = '/' . implode('/', $args) . '/';
     }
 
-    $file = $fs->get_file($context->id, 'local_external_users', $filearea,
-        $itemid, $filepath, $filename);
+    $file = $fs->get_file(
+        $context->id,
+        'local_external_users',
+        $filearea,
+        $itemid,
+        $filepath,
+        $filename
+    );
     if (!$file) {
         return false;
     }
 
-    // finally send the file
-    send_stored_file($file, 0, 0, false,
-        $options); // download MUST be forced - security!
+    send_stored_file(
+        $file,
+        0,
+        0,
+        false,
+        $options
+    );
     // @codingStandardsIgnoreEnd
 }
-

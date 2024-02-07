@@ -43,6 +43,8 @@ $PAGE->set_context($context);
 $pageurl = new moodle_url('/local/external_users/views/manage_verified.php');
 $PAGE->set_url($pageurl);
 
+$common = new common();
+
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
@@ -50,35 +52,43 @@ require_capability('local/external_users:manage', $context);
 
 echo $OUTPUT->header();
 
-$dashboarddata = array();
-$tableheaders = array(get_string('username', 'local_external_users'),
+$dashboarddata = [];
+$tableheaders = [get_string('username', 'local_external_users'),
     get_string('firstname', 'local_external_users'),
     get_string('lastname', 'local_external_users'),
     get_string('manage', 'local_external_users'),
-    "Moodle Link");
+    "Moodle Link"];
 
-$verifiedusers = get_users_already_verified();
+$verifiedusers = $common->get_users_already_verified();
 $approvedtable = new html_table();
 $approvedtable->head = $tableheaders;
 $approvedtable->id = 'sortabletableapproved';
 
 foreach ($verifiedusers as $user) {
-    $actionurl = new moodle_url("/local/external_users/views/profile.php",
-        array('id' => $user->id));
-    $approvedtable->data[] = array(
+    $actionurl = new moodle_url(
+        "/local/external_users/views/profile.php",
+        ['id' => $user->id]
+    );
+    $approvedtable->data[] = [
         html_writer::link($actionurl, format_string($user->username)),
         format_string($user->firstname),
         format_string($user->lastname),
         html_writer::link($actionurl, "Link"),
-        html_writer::link(new moodle_url("/user/profile.php",
-            array("id" => $user->id)),
-            get_string("usericon", "local_external_users")));
+        html_writer::link(
+            new moodle_url(
+                "/user/profile.php",
+                ["id" => $user->id]
+            ),
+            get_string("usericon", "local_external_users")
+        )];
 }
 $dashboarddata["table"] = html_writer::table($approvedtable);
 $dashboarddata["title"] = get_string('approved', 'local_external_users');
 $dashboarddata["count"] = strval(count($verifiedusers));
 $dashboarddata["table-id"] = $approvedtable->id;
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
-    $dashboarddata);
+echo $OUTPUT->render_from_template(
+    "local_external_users/dashboard_table",
+    $dashboarddata
+);
 echo $OUTPUT->footer();

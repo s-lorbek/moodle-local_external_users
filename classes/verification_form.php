@@ -23,6 +23,7 @@
 
 namespace local_external_users;
 
+use coding_exception;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,36 +31,36 @@ require_once("$CFG->libdir/formslib.php");
 
 require_once('common.php');
 
-class verification_form extends moodleform
-{
-    public function definition()
-    {
+class verification_form extends moodleform {
+    /**
+     * @throws coding_exception
+     */
+    public function definition(): void {
         global $CFG;
         $mform = $this->_form;
-        $mform->addElement('filepicker', 'userfileimage',
-            get_string('form_image', 'local_external_users'), null,
-            array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
-                'accepted_types' => array('image/png', 'image/jpeg', 'image/gif', 'image/bmp')));
+        $mform->addElement(
+            'filepicker',
+            'userfileimage',
+            get_string('form_image', 'local_external_users'),
+            null,
+            ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
+            'accepted_types' => ['image/png',
+            'image/jpeg',
+            'image/gif',
+            'image/bmp']]
+        );
         $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
-
-        /*
-        $mform->addElement('select', 'role_field', get_string('role'), array());
-        $mform->setType('role_field', PARAM_RAW);
-        $mform->addElement('text', 'subject_field',
-            get_string('form_subject', 'local_external_users'));
-        $mform->setType('subject_field', PARAM_RAW);
-        $mform->addElement('editor', 'content_field',
-            get_string('form_body', 'local_external_users'));
-        $mform->setType('content', PARAM_RAW);
-        */
-
-        $mform->addElement('filepicker', 'userfile', get_string('form_document', 'local_external_users'), null,
-            array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => array('application/pdf')));
+        $mform->addElement(
+            'filepicker',
+            'userfile',
+            get_string('form_document', 'local_external_users'),
+            null,
+            ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => ['application/pdf']]
+        );
         $mform->addRule('userfile', 'Please upload a valid document', 'required');
     }
 
-    public function validation($data, $files)
-    {
-        return array();
+    public function validation($data, $files): array {
+        return [];
     }
 }

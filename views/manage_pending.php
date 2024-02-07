@@ -43,6 +43,8 @@ $PAGE->set_context($context);
 $pageurl = new moodle_url('/local/external_users/views/manage_pending.php');
 $PAGE->set_url($pageurl);
 
+$common = new common();
+
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
@@ -50,49 +52,65 @@ require_capability('local/external_users:manage', $context);
 
 echo $OUTPUT->header();
 
-$dashboarddata = array();
-$tableheaders = array(get_string('username', 'local_external_users'),
+$dashboarddata = [];
+$tableheaders = [get_string('username', 'local_external_users'),
     get_string('firstname', 'local_external_users'),
     get_string('lastname', 'local_external_users'),
     get_string('manage', 'local_external_users'),
-    "Moodle Link");
+    "Moodle Link"];
 
-$waitingexternalusers = get_users_for_verification();
+$waitingexternalusers = $common->get_users_for_verification();
 $waitingtable = new html_table();
 $waitingtable->head = $tableheaders;
 $waitingtable->id = 'sortabletablewaiting';
 
 foreach ($waitingexternalusers as $user) {
-    $actionurl = new moodle_url("/local/external_users/views/profile.php",
-        array('id' => $user->id));
-    $waitingtable->data[] = array(
-        html_writer::link($actionurl,
-            $user->username),
+    $actionurl = new moodle_url(
+        "/local/external_users/views/profile.php",
+        ['id' => $user->id]
+    );
+    $waitingtable->data[] = [
+        html_writer::link(
+            $actionurl,
+            $user->username
+        ),
         format_string($user->firstname),
         format_string($user->lastname),
         html_writer::link($actionurl, "Link"),
-        html_writer::link(new moodle_url("/user/profile.php",
-            array("id" => $user->id)),
-            get_string("usericon", "local_external_users")));
+        html_writer::link(
+            new moodle_url(
+                "/user/profile.php",
+                ["id" => $user->id]
+            ),
+            get_string("usericon", "local_external_users")
+        )];
 }
 
-$pendingexternalusers = get_pending_users_for_verification();
+$pendingexternalusers = $common->get_pending_users_for_verification();
 $pendingtable = new html_table();
 $pendingtable->head = $tableheaders;
 $pendingtable->id = 'sortabletablepending';
 
 foreach ($pendingexternalusers as $user) {
-    $actionurl = new moodle_url("/local/external_users/views/profile.php",
-        array('id' => $user->id));
-    $pendingtable->data[] = array(
-        html_writer::link($actionurl,
-            $user->username . ' <i class="fa fa-hourglass" aria-hidden="true"></i>'),
+    $actionurl = new moodle_url(
+        "/local/external_users/views/profile.php",
+        ['id' => $user->id]
+    );
+    $pendingtable->data[] = [
+        html_writer::link(
+            $actionurl,
+            $user->username . ' <i class="fa fa-hourglass" aria-hidden="true"></i>'
+        ),
         format_string($user->firstname),
         format_string($user->lastname),
         html_writer::link($actionurl, "Link"),
-        html_writer::link(new moodle_url("/user/profile.php",
-            array("id" => $user->id)),
-            get_string("usericon", "local_external_users")));
+        html_writer::link(
+            new moodle_url(
+                "/user/profile.php",
+                ["id" => $user->id]
+            ),
+            get_string("usericon", "local_external_users")
+        )];
 }
 
 $waitingdata["table"] = html_writer::table($waitingtable);
@@ -106,10 +124,14 @@ $pendingdata["count"] = strval(count($pendingexternalusers));
 $pendingdata["table-id"] = $pendingtable->id;
 $waitingdata["legend"] = true;
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
-    $pendingdata);
+echo $OUTPUT->render_from_template(
+    "local_external_users/dashboard_table",
+    $pendingdata
+);
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
-    $waitingdata);
+echo $OUTPUT->render_from_template(
+    "local_external_users/dashboard_table",
+    $waitingdata
+);
 
 echo $OUTPUT->footer();

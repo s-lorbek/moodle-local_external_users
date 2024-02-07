@@ -73,7 +73,6 @@ $string['rejection_subject'] = "Personal information is missing or invalid";
 $string['external_users:manage'] = "Manage external user settings";
 $string['external_users:verification'] = "Verify external user";
 
-// HTML
 $string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 
 $string['yes'] = "Yes";
@@ -97,4 +96,3 @@ $string['pending_onboarding'] = 'User has not completed onboarding yet!';
 
 $string['reviewsubject'] = 'External user submitted application form: ';
 $string['reviewbody'] = 'An external user submitted their application and awaits approval.<b>Username: ';
-

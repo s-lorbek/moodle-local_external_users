@@ -18,44 +18,37 @@ namespace local_external_users\event;
 
 use core\event\base;
 use moodle_url;
-use stdClass;
 
-class mail_failed extends base
-{
-
-    protected function init()
-    {
+class mail_failed extends base {
+    /**
+     * init function
+     * @return void
+     */
+    protected function init(): void {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'data_records';
     }
-
-    public function get_description()
-    {
+    /**
+     * get_description function
+     * @return string
+     */
+    public function get_description(): string {
         return "Failed to send E-Mail to user " . $this->other['user'];
     }
-
-    public static function get_name()
-    {
+    /**
+     * get_name function
+     * @return string
+     */
+    public static function get_name(): string {
         return 'Failed E-Mail delivery';
     }
 
-    public function get_url()
-    {
+    /**
+     * get_url function
+     * @return moodle_url
+     */
+    public function get_url(): moodle_url {
         return new moodle_url('/local/external_users/views/manage.php');
-    }
-
-    protected function get_legacy_eventdata()
-    {
-        $eventdata = new stdClass();
-        $eventdata->cmid = $this->objectid;
-        $eventdata->courseid = $this->courseid;
-        $eventdata->userid = $this->userid;
-        return $eventdata;
-    }
-
-    protected function get_legacy_logdata()
-    {
-        return array();
     }
 }

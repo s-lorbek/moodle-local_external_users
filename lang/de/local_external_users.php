@@ -72,7 +72,6 @@ $string['rejection_subject'] = "Personal information is missing or invalid";
 $string['external_users:manage'] = "Verwalte Externe Nutzer Einstellungen";
 $string['external_users:verification'] = "Zulassung von Externen Nutzern";
 
-// HTML
 $string['usericon'] = '<i class="fa fa-user" aria-hidden="true"></i>';
 
 $string['yes'] = "Ja";

@@ -1,0 +1,86 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+function xmldb_local_external_users_install(): void {
+    global $DB;
+
+    $externaluserfield = [
+        'shortname' => 'external_user',
+        'name' => 'Is External User',
+        'description' => '',
+        'datatype' => 'text',
+        'descriptionformat' => FORMAT_HTML,
+        'categoryid' => 1,
+        'sortorder' => 1,
+        'required' => 0,
+        'locked' => 0,
+        'dataformat' => 'plaintext',
+    ];
+
+    $verifiedfield = [
+        'shortname' => 'external_user_verified',
+        'name' => 'Verified',
+        'description' => '',
+        'datatype' => 'text',
+        'descriptionformat' => FORMAT_HTML,
+        'categoryid' => 1,
+        'sortorder' => 1,
+        'required' => 0,
+        'locked' => 0,
+        'dataformat' => 'plaintext',
+    ];
+
+    $commentfield = [
+        'shortname' => 'external_user_comment',
+        'name' => 'Comment',
+        'description' => '',
+        'datatype' => 'text',
+        'descriptionformat' => FORMAT_HTML,
+        'categoryid' => 1,
+        'sortorder' => 1,
+        'required' => 0,
+        'locked' => 0,
+        'dataformat' => 'plaintext',
+    ];
+
+    $pendingfield = [
+        'shortname' => 'external_user_pending',
+        'name' => 'Pending',
+        'description' => '',
+        'datatype' => 'text',
+        'descriptionformat' => FORMAT_HTML,
+        'categoryid' => 1,
+        'defaultdata' => '',
+        'sortorder' => 1,
+        'required' => 0,
+        'locked' => 0,
+        'dataformat' => 'plaintext',
+    ];
+
+    // Check if the field already exists.
+    if (!$field = $DB->get_record('user_info_field', ['shortname' => $externaluserfield['shortname']])) {
+        $DB->insert_record('user_info_field', (object)$externaluserfield);
+    }
+    if (!$field = $DB->get_record('user_info_field', ['shortname' => $verifiedfield['shortname']])) {
+        $DB->insert_record('user_info_field', (object)$verifiedfield);
+    }
+    if (!$field = $DB->get_record('user_info_field', ['shortname' => $commentfield['shortname']])) {
+        $fieldid = $DB->insert_record('user_info_field', (object)$commentfield);
+    }
+    if (!$field = $DB->get_record('user_info_field', ['shortname' => $pendingfield['shortname']])) {
+        $DB->insert_record('user_info_field', (object)$pendingfield);
+    }
+}

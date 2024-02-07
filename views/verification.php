@@ -45,22 +45,24 @@ $PAGE->set_url($pageurl);
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
-//require_capability('local/external_users:verification', $context);
+// require_capability('local/external_users:verification', $context);
 
 $mform = new verification_form();
 echo $OUTPUT->header();
 global $DB;
 
-$user = $DB->get_record("user", array("id" => $USER->id));
+$common = new common();
+$user = $DB->get_record("user", ["id" => $USER->id]);
 profile_load_data($user);
 
-$currentDate = new DateTime();
+$currentdate = new DateTime();
 
-if(!$user->profile_field_external_user || ($user->profile_field_external_user_verified != 0 &&
-    $user->profile_field_external_user_verified != -1)) {
-
+if (
+    !$user->profile_field_external_user || ($user->profile_field_external_user_verified != 0 &&
+    $user->profile_field_external_user_verified != -1)
+) {
     $limited = DateTime::createFromFormat('d.m.Y', $user->profile_field_external_user_verified);
-    if (!$limited || $limited > $currentDate) {
+    if (!$limited || $limited > $currentdate) {
         redirect('/', get_string('redirect', 'local_external_users'), 0);
     }
 }
@@ -68,62 +70,79 @@ if(!$user->profile_field_external_user || ($user->profile_field_external_user_ve
 if (strlen($user->profile_field_external_user_comment)) {
     echo $OUTPUT->notification(
         $user->profile_field_external_user_comment,
-        'errormessage');
+        'errormessage'
+    );
 }
 
 if ($mform->is_cancelled()) {
     redirect('/', get_string('redirect', 'local_external_users'), 10);
-} else if ($data = $mform->get_data()) {
+} else if ($mform->get_data()) {
     global $DB, $USER;
 
-    //Clean previous files
-    $leftovers = get_user_files($USER->id);
+    // Clean previous files.
+    $leftovers = $common->get_user_files($USER->id);
     if (count($leftovers)) {
-        $DB->delete_records('local_external_users_files',
-            array('userid' => $user->id));
+        $DB->delete_records(
+            'local_external_users_files',
+            ['userid' => $user->id]
+        );
     }
 
-    if (storeFileToDB($mform, $USER, 'userfile', true) &&
-        storeFileToDB($mform, $USER, 'userfileimage', false)) {
+    if (
+        $common->storeFileToDB($mform, $USER, 'userfile', true) &&
+        $common->storeFileToDB($mform, $USER, 'userfileimage', false)
+    ) {
         $user->profile_field_external_user_pending = true;
         $user->profile_field_external_user_verified = 0;
 
         profile_save_data($user);
 
-        $event = user_submit::create(array(
+        $event = user_submit::create([
             'relateduserid' => $user->id,
             'context' => $PAGE->context,
             'objectid' => $user->id,
-            'other' => array(
+            'other' => [
                 'userid' => $user->id,
-            )
-        ));
+            ],
+        ]);
         $event->trigger();
 
         echo $OUTPUT->notification(
             get_string('success', 'local_external_users'),
-            'notifymessage');
+            'notifymessage'
+        );
 
-        send_message_to_user($USER->id,
+        send_message_to_user(
+            $USER->id,
             get_config("local_external_users", "signupmailsubject"),
             get_config("local_external_users", "signupmailmessage"),
-            "");
+            ""
+        );
 
-        $reviewteam = create_dummy_user("USI Team", get_config("local_external_users", "submissionreviewemail"));
-        $emailFrom = \core_user::get_noreply_user();
+        $reviewteam = $common->create_dummy_user("USI Team", get_config("local_external_users", "submissionreviewemail"));
+        $emailfrom = \core_user::get_noreply_user();
         $message = get_string('reviewbody', 'local_external_users') . $user->username;
-        email_to_user($reviewteam, $emailFrom,
+        email_to_user(
+            $reviewteam,
+            $emailfrom,
             get_string('reviewsubject', 'local_external_users') . $user->username,
-            html_to_text($message), $message, null, null);
-        redirect(new \moodle_url("/"));
+            html_to_text($message),
+            $message,
+            null,
+            null
+        );
+        redirect(new moodle_url("/"));
     } else {
         echo $OUTPUT->notification(
             get_string('pdf_error', 'local_external_users'),
-            'notifymessage');
+            'notifymessage'
+        );
     }
 }
-$mform->add_action_buttons($cancel = false,
-    $submitlabel = get_string('form_submit', 'local_external_users'));
+$mform->add_action_buttons(
+    $cancel = false,
+    $submitlabel = get_string('form_submit', 'local_external_users')
+);
 
 if (!$user->profile_field_external_user_pending) {
     echo get_config('local_external_users', 'onboardingdescription');

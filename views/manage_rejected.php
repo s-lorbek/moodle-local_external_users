@@ -43,6 +43,8 @@ $PAGE->set_context($context);
 $pageurl = new moodle_url('/local/external_users/views/manage_rejected.php');
 $PAGE->set_url($pageurl);
 
+$common = new common();
+
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
 $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
@@ -50,35 +52,43 @@ require_capability('local/external_users:manage', $context);
 
 echo $OUTPUT->header();
 
-$dashboarddata = array();
-$tableheaders = array(get_string('username', 'local_external_users'),
+$dashboarddata = [];
+$tableheaders = [get_string('username', 'local_external_users'),
     get_string('firstname', 'local_external_users'),
     get_string('lastname', 'local_external_users'),
     get_string('manage', 'local_external_users'),
-    "Moodle Link");
+    "Moodle Link"];
 
-$rejectedusers = get_users_rejected();
+$rejectedusers = $common->get_users_rejected();
 $rejectedtable = new html_table();
 $rejectedtable->head = $tableheaders;
 $rejectedtable->id = 'sortabletablerejected';
 
 foreach ($rejectedusers as $user) {
-    $actionurl = new moodle_url("/local/external_users/views/profile.php",
-        array('id' => $user->id));
-    $rejectedtable->data[] = array(
+    $actionurl = new moodle_url(
+        "/local/external_users/views/profile.php",
+        ['id' => $user->id]
+    );
+    $rejectedtable->data[] = [
         html_writer::link($actionurl, format_string($user->username)),
         format_string($user->firstname),
         format_string($user->lastname),
         html_writer::link($actionurl, "Link"),
-        html_writer::link(new moodle_url("/user/profile.php",
-            array("id" => $user->id)),
-            get_string("usericon", "local_external_users")));
+        html_writer::link(
+            new moodle_url(
+                "/user/profile.php",
+                ["id" => $user->id]
+            ),
+            get_string("usericon", "local_external_users")
+        )];
 }
 $dashboarddata["table"] = html_writer::table($rejectedtable);
 $dashboarddata["title"] = get_string('rejected', 'local_external_users');
 $dashboarddata["count"] = strval(count($rejectedusers));
-$dashboarddata["table-id"] = $rejectedtable->id ;
+$dashboarddata["table-id"] = $rejectedtable->id;
 
-echo $OUTPUT->render_from_template("local_external_users/dashboard_table",
-    $dashboarddata);
+echo $OUTPUT->render_from_template(
+    "local_external_users/dashboard_table",
+    $dashboarddata
+);
 echo $OUTPUT->footer();

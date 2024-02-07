@@ -16,20 +16,18 @@
 
 namespace local_external_users\event;
 
+use coding_exception;
 use core\event\base;
+use moodle_exception;
 use moodle_url;
-use stdClass;
 use function get_string;
 
-class user_revoked extends base
-{
-
+class user_revoked extends base {
     /**
      * init function
      * @return void
      */
-    protected function init()
-    {
+    protected function init(): void {
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'data_records';
@@ -39,8 +37,7 @@ class user_revoked extends base
      * get_description function
      * @return string
      */
-    public function get_description()
-    {
+    public function get_description(): string {
         return "External user with id " . $this->other['userid'] . " has been changed to revoked status. (was "
             . $this->other['oldstatus'] . ")";
     }
@@ -48,53 +45,21 @@ class user_revoked extends base
     /**
      * get_name function
      * @return string
+     * @throws coding_exception
      */
-    public static function get_name()
-    {
+    public static function get_name(): string {
         return get_string("event_revoked", "local_external_users");
     }
 
     /**
      * get_url function
-     * @return string
+     * @return moodle_url|string
+     * @throws moodle_exception
      */
-    public function get_url()
-    {
-        return new moodle_url('/local/external_users/views/profile.php',
-            array('id' => $this->other['userid']));
-    }
-
-    /**
-     * get_legacy_eventdata function
-     * @return object
-     */
-    protected function get_legacy_eventdata()
-    {
-        $eventdata = new stdClass();
-        $eventdata->cmid = $this->objectid;
-        $eventdata->courseid = $this->courseid;
-        $eventdata->userid = $this->userid;
-        return $eventdata;
-    }
-
-    /**
-     * get_legacy_logdata function
-     * @return array
-     */
-    protected function get_legacy_logdata()
-    {
-        $url = new moodle_url('/local/external_users/views/profile.php',
-            array('id' => $this->other['userid']));
-        $urlparams = array('id' => $this->courseid);
-        $info = "External Users";
-        $eventname = get_string("event_revoked", "local_external_users");
-        $userid = $this->userid;
-        $cmid = $this->objectid;
-        $courseid = $this->courseid;
-        $action = "revoked";
-        $description = "External user with id " . $this->other['userid'] . " has been changed to revoked status.";
-
-        return array($courseid, 'course', $action, $url->out(false,
-            $urlparams), $info, $cmid, $userid, $description);
+    public function get_url(): moodle_url|string {
+        return new moodle_url(
+            '/local/external_users/views/profile.php',
+            ['id' => $this->other['userid']]
+        );
     }
 }

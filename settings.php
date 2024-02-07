@@ -25,50 +25,109 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$ADMIN->add('modsettings', new admin_externalpage('external_users',
+$ADMIN->add('modsettings', new admin_externalpage(
+    'external_users',
     get_string('pluginname', 'local_external_users') . " Dashboard",
     new moodle_url('/local/external_users/views/manage.php'),
-    'local/external_users:manage'));
+    'local/external_users:manage'
+));
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('External Users', '');
-    $ADMIN->add('localplugins', new admin_category('local_external_users',
-        get_string('pluginname', 'local_external_users')));
+    $ADMIN->add('localplugins', new admin_category(
+        'local_external_users',
+        get_string('pluginname', 'local_external_users')
+    ));
     $ADMIN->add('local_external_users', $settings);
 
     if ($ADMIN->fulltree) {
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/onboardingdescription",
-                "Onboarding Description", "", ""));
+            new admin_setting_confightmleditor(
+                "local_external_users/onboardingdescription",
+                "Onboarding Description",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/signupmailsubject",
-                "Signup Mail Subject", "", ""));
+            new admin_setting_configtext(
+                "local_external_users/signupmailsubject",
+                "Signup Mail Subject",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/signupmailmessage",
-                "Signup Mail Body", "", ""));
+            new admin_setting_confightmleditor(
+                "local_external_users/signupmailmessage",
+                "Signup Mail Body",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/mailrejectionsubject",
-                "Mail Rejection Subject", "", ""));
+            new admin_setting_configtext(
+                "local_external_users/mailrejectionsubject",
+                "Mail Rejection Subject",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/mailrejectionmessage",
-                "Mail Rejection Body", "", ""));
+            new admin_setting_confightmleditor(
+                "local_external_users/mailrejectionmessage",
+                "Mail Rejection Body",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/mailverificationsubject",
-                "Mail Verification Subject", "", ""));
+            new admin_setting_configtext(
+                "local_external_users/mailverificationsubject",
+                "Mail Verification Subject",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_confightmleditor("local_external_users/mailverificationmessage",
-                "Mail Verification Body", "", ""));
+            new admin_setting_confightmleditor(
+                "local_external_users/mailverificationmessage",
+                "Mail Verification Body",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/discounturl",
-                "Discount Info URL", "", ""));
+            new admin_setting_configtext(
+                "local_external_users/discounturl",
+                "Discount Info URL",
+                "",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/endofterm",
-                "Semester end date", "Leave empty for automatic calculation based on current day", "30.09.2023"));
+            new admin_setting_configtext(
+                "local_external_users/endofterm",
+                "Semester end date",
+                "Leave empty for automatic calculation based on current day",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/endofnextterm",
-                "Next semester end date", "Leave empty for automatic calculation based on current day", "28.02.2024"));
+            new admin_setting_configtext(
+                "local_external_users/endofnextterm",
+                "Next semester end date",
+                "Leave empty for automatic calculation based on current day",
+                ""
+            )
+        );
         $settings->add(
-            new admin_setting_configtext("local_external_users/submissionreviewemail",
-                "Submission Review Mail", "Once external user submit their data for verification, this mail will receive a notification. ", ""));
+            new admin_setting_configtext(
+                "local_external_users/submissionreviewemail",
+                "Submission Review Mail",
+                "Once external user submit their data for verification, this mail will receive a notification. ",
+                ""
+            )
+        );
     }
 }

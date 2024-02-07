@@ -29,23 +29,23 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => 'local_external_users\task\semester_validation',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '0',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    ),
-    array(
+        'month' => '*',
+    ],
+    [
         'classname' => 'local_external_users\task\comment_validation',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '0',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    )
-);
+        'month' => '*',
+    ],
+];

@@ -23,11 +23,14 @@
 
 namespace local_external_users;
 
+use coding_exception;
 use local_external_users\event\mail_failed;
 use stdClass;
 
-function send($users, $subject, $content)
-{
+/**
+ * @throws coding_exception
+ */
+function send($users, $subject, $content): int {
     global $CFG, $PAGE;
     $noreply = new stdClass();
     $noreply->firstname = $CFG->supportname;
@@ -45,17 +48,25 @@ function send($users, $subject, $content)
         return 0;
     }
     foreach ($users as $user) {
-        $success = email_to_user($user, $noreply, $subject,
-            html_to_text($content), $content, '', '', true);
+        $success = email_to_user(
+            $user,
+            $noreply,
+            $subject,
+            html_to_text($content),
+            $content,
+            '',
+            '',
+            true
+        );
         if (!$success) {
-            $event = mail_failed::create(array(
+            $event = mail_failed::create([
                 'relateduserid' => $user->id,
                 'context' => $PAGE->context,
                 'objectid' => 0,
-                'other' => array(
+                'other' => [
                     'user' => $user->username,
-                )
-            ));
+                ],
+            ]);
             $event->trigger();
         } else {
             $sucessfullcount++;

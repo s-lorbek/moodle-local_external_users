@@ -2,6 +2,20 @@
     @template local_external_users/profile_control
 }}
 <div class="card-body mx-auto" style="max-width: 1200px">
+    <form id="affiliationChange" action="affiliate.php">
+        <input type="text" name="id" value="{{userid}}" hidden>
+        <label for="affiliation">{{affiliation_label}}: </label>
+        <select id="affiliation" name="affiliation" class="select custom-select cal_courses_flt ml-1 mr-auto"
+                aria-label="Affiliation selection">
+                <option> </option>
+                {{#affiliation_options}}
+                    <option {{#selected}}selected{{/selected}} value="{{value}}">{{value}}</option>
+                {{/affiliation_options}}
+
+        </select>
+    </form>
+</div>
+<div class="card-body mx-auto" style="max-width: 1200px">
     <form action="approve.php">
         <input type="text" name="id" value="{{userid}}" hidden>
         <input type="text" name="type" value="{{action}}" hidden>
@@ -36,3 +50,13 @@
     </form>
     <hr>
 </div>
+
+{{#js}}
+    {{#affiliation_options}}
+        var e = document.getElementById('affiliation');
+        var form = document.getElementById('affiliationChange');
+        e.addEventListener("change", function() {
+            form.submit();
+        });
+    {{/affiliation_options}}
+{{/js}}

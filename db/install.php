@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @throws dml_exception
+ */
 function xmldb_local_external_users_install(): void {
     global $DB;
 
@@ -70,6 +73,20 @@ function xmldb_local_external_users_install(): void {
         'dataformat' => 'plaintext',
     ];
 
+    $affiliationfield = [
+        'shortname' => 'external_user_affiliation',
+        'name' => 'Academic Affiliation',
+        'description' => '',
+        'datatype' => 'text',
+        'descriptionformat' => FORMAT_HTML,
+        'categoryid' => 1,
+        'defaultdata' => '',
+        'sortorder' => 1,
+        'required' => 0,
+        'locked' => 0,
+        'dataformat' => 'plaintext',
+    ];
+
     // Check if the field already exists.
     if (!$field = $DB->get_record('user_info_field', ['shortname' => $externaluserfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$externaluserfield);
@@ -78,9 +95,12 @@ function xmldb_local_external_users_install(): void {
         $DB->insert_record('user_info_field', (object)$verifiedfield);
     }
     if (!$field = $DB->get_record('user_info_field', ['shortname' => $commentfield['shortname']])) {
-        $fieldid = $DB->insert_record('user_info_field', (object)$commentfield);
+        $DB->insert_record('user_info_field', (object)$commentfield);
     }
     if (!$field = $DB->get_record('user_info_field', ['shortname' => $pendingfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$pendingfield);
+    }
+    if (!$field = $DB->get_record('user_info_field', ['shortname' => $affiliationfield['shortname']])) {
+        $DB->insert_record('user_info_field', (object)$affiliationfield);
     }
 }

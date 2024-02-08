@@ -129,5 +129,13 @@ if ($hassiteconfig) {
                 ""
             )
         );
+        $settings->add(
+            new admin_setting_configtext(
+                "local_external_users/affiliations",
+                "Academic affiliations",
+                "A list of the academic affiliations to which a user can be assigned.",
+                ""
+            )
+        );
     }
 }

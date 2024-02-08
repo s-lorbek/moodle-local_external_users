@@ -20,7 +20,7 @@
  * @throws downgrade_exception
  * @throws dml_exception
  */
-function xmldb_local_external_users_upgrade($oldversion): true {
+function xmldb_local_external_users_upgrade($oldversion) {
     global $CFG, $DB;
 
     require_once($CFG->libdir . '/db/upgradelib.php');
@@ -99,6 +99,25 @@ function xmldb_local_external_users_upgrade($oldversion): true {
             $dbman->create_table($table);
         }
         upgrade_plugin_savepoint(true, 2022030113, 'local', 'external_users');
+    }
+
+    if ($oldversion <= 2024020800) {
+        $affiliationfield = [
+            'shortname' => 'external_user_affiliation',
+            'name' => 'Academic affiliation',
+            'description' => '',
+            'datatype' => 'text',
+            'descriptionformat' => FORMAT_HTML,
+            'categoryid' => 1,
+            'defaultdata' => '',
+            'sortorder' => 1,
+            'required' => 0,
+            'locked' => 0,
+            'dataformat' => 'plaintext',
+        ];
+        if ($DB->get_record('user_info_field', ['shortname' => $affiliationfield['shortname']])) {
+            $DB->insert_record('user_info_field', (object)$affiliationfield);
+        }
     }
     return true;
 }

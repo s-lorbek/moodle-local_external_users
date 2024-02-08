@@ -139,16 +139,27 @@ class external_users_test extends advanced_testcase {
     /**
      * Test call for triggering user rejection with deletion
      * @covers \local_external_users\common::reject_user
-     * @throws coding_exception
      * @throws dml_exception
      */
     public function test_getendofsemester_without_config() {
-        global $DB;
         $this->resetAfterTest();
 
         $today = new DateTime();
         $currentmonth = (int) $today->format('n');
         $result = $this->commonclass->getendofsemester();
         // TODO
+    }
+
+    /**
+     * Test call for triggering user rejection with deletion
+     * @covers \local_external_users\common::reject_user
+     * @throws dml_exception
+     */
+    public function test_setaffiliation() {
+        $this->resetAfterTest();
+        $affiliation = "University XYZ";
+        $this->commonclass->setaffiliation($this->externaluser->id, $affiliation);
+        profile_load_data($this->externaluser);
+        $this->assertEquals($affiliation, $this->externaluser->profile_field_external_user_affiliation);
     }
 }

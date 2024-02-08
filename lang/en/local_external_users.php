@@ -96,3 +96,6 @@ $string['pending_onboarding'] = 'User has not completed onboarding yet!';
 
 $string['reviewsubject'] = 'External user submitted application form: ';
 $string['reviewbody'] = 'An external user submitted their application and awaits approval.<b>Username: ';
+
+$string['affiliation'] = 'Academic affiliation';
+$string['back_label'] = 'Back to Overview';

@@ -34,6 +34,7 @@ use local_external_users\event\user_rejected;
 use local_external_users\event\user_revoked;
 use moodle_exception;
 use stdClass;
+use function PHPUnit\Framework\assertEquals;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -224,6 +225,27 @@ class common {
         } else {
             return "30.09.$nextyear";
         }
+    }
+
+
+    /**
+     * @throws dml_exception
+     */
+    public function getaffiliationoptions(): array {
+        $liststring = get_config("local_external_users", "affiliations");
+        return explode(',', $liststring);
+    }
+
+    /**
+     * @throws dml_exception
+     */
+    public function setaffiliation($userid, $affiliation): bool {
+        global $DB;
+        $user = $DB->get_record("user", ["id" => $userid]);
+        profile_load_data($user);
+        $user->profile_field_external_user_affiliation = $affiliation;
+        profile_save_data($user);
+        return ($affiliation == $user->profile_field_external_user_affiliation);
     }
 
     /**

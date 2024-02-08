@@ -86,6 +86,7 @@ $verifiedfield = match ($user->profile_field_external_user_verified) {
 };
 
 $profiledata = [
+    'back_label' => get_string('back_label', 'local_external_users'),
     'firstname' => $user->firstname,
     'middlename' => $user->middlename,
     'lastname' => $user->lastname,
@@ -110,6 +111,9 @@ $profiledata = [
         'd.m.Y',
         property_exists($user, 'profile_field_gebdat') ? $user->profile_field_gebdat : null
     ),
+    'username' => get_string('username', 'local_external_users') . ": " . $user->username,
+    'affiliation' => get_string('affiliation', 'local_external_users') . ": " .
+        $user->profile_field_external_user_affiliation,
 ];
 
 $filetable = new html_table();
@@ -192,6 +196,12 @@ $options .= html_writer::tag(
 $options .= html_writer::end_tag("div");
 
 $action = $common->is_user_verified($userid);
+$affiliationoptions = $common->getaffiliationoptions();
+$affiliationoptions = array_map(function ($affiliationoptions) {
+    global $user;
+    return ['value' => $affiliationoptions,
+        'selected' => ($affiliationoptions === $user->profile_field_external_user_affiliation)];
+}, $affiliationoptions);
 
 $profilecontrol = [
     'legend' => get_string('rejection_control_header', 'local_external_users'),
@@ -204,6 +214,8 @@ $profilecontrol = [
         'local_external_users'
     ),
     'rejection_header' => get_string('reject', 'local_external_users'),
+    'affiliation_label' => get_string('affiliation', 'local_external_users'),
+    'affiliation_options' => $affiliationoptions,
 ];
 
 if ($common->is_user_verified($userid)) {

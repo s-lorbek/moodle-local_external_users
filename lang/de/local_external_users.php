@@ -95,3 +95,6 @@ $string['pending_onboarding'] = 'Nutzer befindet sich noch im Onboarding!';
 
 $string['reviewsubject'] = 'Neuer externer Nutzer Antrag: ';
 $string['reviewbody'] = 'Ein externer Nutzer hat einen Antrag eingereicht und wartet auf eine Freischaltung.<b>Username: ';
+
+$string['affiliation'] = 'Akademische Zugehörigkeit';
+$string['back_label'] = 'Zurück zur Übersicht';

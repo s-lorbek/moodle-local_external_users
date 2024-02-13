@@ -66,24 +66,22 @@ $approveduntil = ($user->profile_field_external_user_verified != '0' &&
     $user->profile_field_external_user_verified != '1') ?
     $user->profile_field_external_user_verified : "-";
 
-$verifiedfield = match ($user->profile_field_external_user_verified) {
-    "0" => get_string(
-        'no',
-        'local_external_users'
-    ),
-    "1" => get_string(
-        'yes',
-        'local_external_users'
-    ),
-    "-1" => get_string(
-        'no',
-        'local_external_users'
-    ),
-    default => get_string(
-        'limited',
-        'local_external_users'
-    ),
-};
+$verifiedfield = "";
+
+switch ($user->profile_field_external_user_verified) {
+    case "-1":
+    case "0":
+        $verifiedfield = get_string('no',
+            'local_external_users');
+        break;
+    case "1":
+        $verifiedfield = get_string('yes',
+            'local_external_users');
+        break;
+    default:
+        $verifiedfield = get_string('limited',
+            'local_external_users');
+}
 
 $profiledata = [
     'back_label' => get_string('back_label', 'local_external_users'),

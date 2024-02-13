@@ -120,7 +120,7 @@ class common {
     (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '-1'");
     }
 
-    public function valid_pdf($file): false|int {
+    public function valid_pdf($file) {
         return preg_match("/^%PDF-/", $file);
     }
 
@@ -439,7 +439,7 @@ class common {
     /**
      * @throws moodle_exception
      */
-    public function get_user_file_table($userid): bool|string {
+    public function get_user_file_table($userid) {
         global $OUTPUT;
         $userfiles = self::get_user_files($userid);
         $data = [];

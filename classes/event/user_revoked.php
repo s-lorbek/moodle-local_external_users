@@ -53,10 +53,10 @@ class user_revoked extends base {
 
     /**
      * get_url function
-     * @return moodle_url|string
+     * @return moodle_url
      * @throws moodle_exception
      */
-    public function get_url(): moodle_url|string {
+    public function get_url() {
         return new moodle_url(
             '/local/external_users/views/profile.php',
             ['id' => $this->other['userid']]

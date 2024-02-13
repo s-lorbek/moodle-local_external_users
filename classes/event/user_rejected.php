@@ -18,6 +18,7 @@ namespace local_external_users\event;
 
 use coding_exception;
 use core\event\base;
+use moodle_exception;
 use moodle_url;
 use stdClass;
 use function get_string;
@@ -53,10 +54,10 @@ class user_rejected extends base {
 
     /**
      * get_url function
-     * @return moodle_url|string
-     * @throws \moodle_exception
+     * @return moodle_url
+     * @throws moodle_exception
      */
-    public function get_url(): moodle_url|string {
+    public function get_url(): moodle_url {
         return new moodle_url(
             '/local/external_users/views/profile.php',
             ['id' => $this->other['userid']]

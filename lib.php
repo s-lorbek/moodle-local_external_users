@@ -18,6 +18,8 @@
 /**
  *
  * @throws dml_exception
+ * @throws required_capability_exception
+ * @throws coding_exception
  * @copyright  2022 Stephan Lorbek
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package    local_external_users
@@ -25,6 +27,8 @@
 
 function local_external_users_before_http_headers() {
     global $PAGE, $USER, $DB;
+    $context = context_system::instance();
+
     $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
         "WHERE u.userid = :userid AND f.shortname = :field";
 
@@ -62,7 +66,8 @@ function local_external_users_before_http_headers() {
         }
     }
 
-    if (strpos($PAGE->url, "/user/profile.php")) {
+    if (strpos($PAGE->url, "/user/profile.php")
+        && has_capability('local/external_users:manage', $context)) {
         global $OUTPUT;
         $userid = optional_param('id', "-1", PARAM_INT);
         $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);

@@ -62,7 +62,7 @@ class external_users_test extends advanced_testcase {
         $generator = self::getDataGenerator();
         $generator->create_custom_profile_field(['datatype' => 'text', 'shortname' => 'eduPersonScopedAffiliation',
             'name' => 'eduPersonScopedAffiliation',
-            'visible' => PROFILE_VISIBLE_NONE]);
+            'visible' => 0]);
 
         // Condition after being registered using auth_external.
         profile_load_data($this->externaluser);

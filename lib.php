@@ -20,6 +20,7 @@
  * @throws dml_exception
  * @throws required_capability_exception
  * @throws coding_exception
+ * @throws moodle_exception
  * @copyright  2022 Stephan Lorbek
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package    local_external_users
@@ -66,8 +67,10 @@ function local_external_users_before_http_headers() {
         }
     }
 
-    if (strpos($PAGE->url, "/user/profile.php")
-        && has_capability('local/external_users:manage', $context)) {
+    if (
+        strpos($PAGE->url, "/user/profile.php")
+        && has_capability('local/external_users:manage', $context)
+    ) {
         global $OUTPUT;
         $userid = optional_param('id', "-1", PARAM_INT);
         $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);
@@ -133,10 +136,8 @@ function local_external_users_pluginfile(
 ) {
     global $DB;
 
-
     require_login();
     $itemid = (int)array_shift($args);
-
 
     $fs = get_file_storage();
 
@@ -166,5 +167,5 @@ function local_external_users_pluginfile(
         false,
         $options
     );
-    // @codingStandardsIgnoreEnd
+    return 0;
 }

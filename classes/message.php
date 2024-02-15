@@ -20,7 +20,9 @@
  * @copyright 2023 Stephan Lorbek
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
+// @codingStandardsIgnoreLine
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/message/lib.php');
 
@@ -31,7 +33,7 @@ function send_message_to_user($recipientid, $subject, $content, $comment): bool 
     global $DB;
 
     $recipient = $DB->get_record('user', ["id" => $recipientid]);
-    $noreply = \core_user::get_noreply_user();
+    $noreply = core_user::get_noreply_user();
 
     $content .= "<br><br>" . $comment;
     $messageid = email_to_user(

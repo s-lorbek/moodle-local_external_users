@@ -24,38 +24,35 @@
 
 namespace local_external_users\task;
 
+defined('MOODLE_INTERNAL') || die();
+
 use core\task\scheduled_task;
-use DateTime;
-use Exception;
-use local_external_users\event\user_revoked;
+use dml_exception;
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-class comment_validation extends scheduled_task
-{
-
+class comment_validation extends scheduled_task {
     /**
      * get_name function
      * @return string
      */
-    public function get_name()
-    {
+    public function get_name(): string {
         return "Comment Validation Task";
     }
 
     /**
      * execute function
      * @return void
+     * @throws dml_exception
      */
-    public function execute()
-    {
+    public function execute() {
         global $DB;
-        $dataset = $DB->get_records("user",
-            array("auth" => "external", "deleted" => 0));
+        $dataset = $DB->get_records(
+            "user",
+            ["auth" => "external", "deleted" => 0]
+        );
         /*
             TODO
         */
     }
 }
-
-

@@ -24,65 +24,33 @@
 
 namespace local_external_users\task;
 
+defined('MOODLE_INTERNAL') || die();
+
 use core\task\scheduled_task;
-use DateTime;
-use Exception;
-use local_external_users\event\user_revoked;
+use dml_exception;
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
-class semester_validation extends scheduled_task
-{
-
+class semester_validation extends scheduled_task {
     /**
      * get_name function
      * @return string
      */
-    public function get_name()
-    {
+    public function get_name(): string {
         return "Semester Validation Task";
     }
 
     /**
      * execute function
      * @return void
+     * @throws dml_exception
      */
-    public function execute()
-    {
+    public function execute(): void {
         global $DB, $PAGE;
 
-        $dataset = $DB->get_records("user",
-            array("auth" => "external", "deleted" => 0));
-        /*
-        foreach ($dataset as $user) {
-            profile_load_data($user);
-            if ($user->profile_field_external_user_verified != '0' and $user->profile_field_external_user_verified != '-1') {
-                try {
-                    $date = DateTime::createFromFormat('d.m.Y',
-                        $user->profile_field_external_user_verified);
-                    if ($date < new DateTime()) {
-
-                        $event = user_revoked::create(array(
-                            'relateduserid' => $user->id,
-                            'context' => $PAGE->context,
-                            'objectid' => $user->id,
-                            'other' => array(
-                                'oldstatus' => $user->profile_field_external_user_verified,
-                                'userid' => $user->id,
-                            )
-                        ));
-                        $event->trigger();
-
-                        $user->profile_field_external_user_verified = '0';
-                        profile_save_data($user);
-                    }
-                } catch (Exception $e) {
-                    echo 'Caught exception: ', $e->getMessage(), "\n";
-                }
-            }
-        }
-        */
+        $dataset = $DB->get_records(
+            "user",
+            ["auth" => "external", "deleted" => 0]
+        );
     }
 }
-
-

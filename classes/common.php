@@ -34,7 +34,6 @@ use local_external_users\event\user_rejected;
 use local_external_users\event\user_revoked;
 use moodle_exception;
 use stdClass;
-use function PHPUnit\Framework\assertEquals;
 
 defined('MOODLE_INTERNAL') || die();
 

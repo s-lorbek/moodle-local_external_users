@@ -24,8 +24,14 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+global $CFG;
+
+use coding_exception;
 use context_system;
+use dml_exception;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 use function get_string;
 
 require('../../../config.php');
@@ -35,29 +41,46 @@ require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = context_system::instance();
-$PAGE->set_context($context);
+class manage {
+    private array $dashboarddata;
 
-$pageurl = new moodle_url('/local/external_users/views/manage.php');
-$PAGE->set_url($pageurl);
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/manage.php'));
+        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_pagelayout('standard');
+        require_capability('local/external_users:manage', $context);
 
-$common = new common();
+        self::transform_data();
+    }
 
-$PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-$PAGE->set_pagelayout('standard');
-require_capability('local/external_users:manage', $context);
+    private function transform_data() {
+        $this->dashboarddata["pending"] = get_string('waiting', 'local_external_users');
+        $this->dashboarddata["approved"] = get_string('approved', 'local_external_users');
+        $this->dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
+    }
 
-echo $OUTPUT->header();
+    /**
+     * @throws moodle_exception
+     */
+    public function render() {
+        global $OUTPUT;
+        echo $OUTPUT->header();
+        echo $OUTPUT->render_from_template(
+            "local_external_users/dashboard",
+            $this->dashboarddata
+        );
+        echo $OUTPUT->footer();
+    }
+}
 
-$dashboarddata["pending"] = get_string('waiting', 'local_external_users');
-
-$dashboarddata["approved"] = get_string('approved', 'local_external_users');
-
-$dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
-
-echo $OUTPUT->render_from_template(
-    "local_external_users/dashboard",
-    $dashboarddata
-);
-echo $OUTPUT->footer();
+$m = new manage();
+$m->render();

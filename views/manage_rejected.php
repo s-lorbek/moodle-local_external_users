@@ -24,71 +24,103 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+global $CFG;
+
+use coding_exception;
 use context_system;
+use dml_exception;
 use html_table;
 use html_writer;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 use function get_string;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = context_system::instance();
-$PAGE->set_context($context);
+class manage_rejected {
+    private common $common;
+    private array $dashboarddata;
 
-$pageurl = new moodle_url('/local/external_users/views/manage_rejected.php');
-$PAGE->set_url($pageurl);
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     * @throws moodle_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/manage_rejected.php'));
+        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_pagelayout('standard');
+        require_capability('local/external_users:manage', $context);
+        $this->common = new common();
 
-$common = new common();
+        $this->dashboarddata = [];
 
-$PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-$PAGE->set_pagelayout('standard');
-require_capability('local/external_users:manage', $context);
+        self::transform_data();
+    }
 
-echo $OUTPUT->header();
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    private function transform_data(): void {
+        $tableheaders = [get_string('username', 'local_external_users'),
+            get_string('firstname', 'local_external_users'),
+            get_string('lastname', 'local_external_users'),
+            get_string('manage', 'local_external_users'),
+            "Moodle Link"];
 
-$dashboarddata = [];
-$tableheaders = [get_string('username', 'local_external_users'),
-    get_string('firstname', 'local_external_users'),
-    get_string('lastname', 'local_external_users'),
-    get_string('manage', 'local_external_users'),
-    "Moodle Link"];
+        $rejectedusers = $this->common->get_users_rejected();
+        $rejectedtable = new html_table();
+        $rejectedtable->head = $tableheaders;
+        $rejectedtable->id = 'sortabletablerejected';
 
-$rejectedusers = $common->get_users_rejected();
-$rejectedtable = new html_table();
-$rejectedtable->head = $tableheaders;
-$rejectedtable->id = 'sortabletablerejected';
+        foreach ($rejectedusers as $user) {
+            $actionurl = new moodle_url(
+                "/local/external_users/views/profile.php",
+                ['id' => $user->id]
+            );
+            $rejectedtable->data[] = [
+                html_writer::link($actionurl, format_string($user->username)),
+                format_string($user->firstname),
+                format_string($user->lastname),
+                html_writer::link($actionurl, "Link"),
+                html_writer::link(
+                    new moodle_url(
+                        "/user/profile.php",
+                        ["id" => $user->id]
+                    ),
+                    get_string("usericon", "local_external_users")
+                )];
+        }
+        $this->dashboarddata["table"] = html_writer::table($rejectedtable);
+        $this->dashboarddata["title"] = get_string('rejected', 'local_external_users');
+        $this->dashboarddata["count"] = strval(count($rejectedusers));
+        $this->dashboarddata["table-id"] = $rejectedtable->id;
+    }
 
-foreach ($rejectedusers as $user) {
-    $actionurl = new moodle_url(
-        "/local/external_users/views/profile.php",
-        ['id' => $user->id]
-    );
-    $rejectedtable->data[] = [
-        html_writer::link($actionurl, format_string($user->username)),
-        format_string($user->firstname),
-        format_string($user->lastname),
-        html_writer::link($actionurl, "Link"),
-        html_writer::link(
-            new moodle_url(
-                "/user/profile.php",
-                ["id" => $user->id]
-            ),
-            get_string("usericon", "local_external_users")
-        )];
+    /**
+     * @throws moodle_exception
+     */
+    public function render() {
+        global $OUTPUT;
+        echo $OUTPUT->header();
+        echo $OUTPUT->render_from_template(
+            "local_external_users/dashboard_table",
+            $this->dashboarddata
+        );
+        echo $OUTPUT->footer();
+    }
 }
-$dashboarddata["table"] = html_writer::table($rejectedtable);
-$dashboarddata["title"] = get_string('rejected', 'local_external_users');
-$dashboarddata["count"] = strval(count($rejectedusers));
-$dashboarddata["table-id"] = $rejectedtable->id;
 
-echo $OUTPUT->render_from_template(
-    "local_external_users/dashboard_table",
-    $dashboarddata
-);
-echo $OUTPUT->footer();
+$mr = new manage_rejected();
+$mr->render();

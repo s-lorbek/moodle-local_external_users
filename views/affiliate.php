@@ -24,23 +24,45 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+use coding_exception;
 use context_system;
+use dml_exception;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
 
-$context = context_system::instance();
-$PAGE->set_context($context);
+class affiliate {
+    private common $common;
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/affiliate.php'));
+        require_capability('local/external_users:manage', $context);
+        $this->common = new common();
+    }
 
-$pageurl = new moodle_url('/local/external_users/views/approve.php');
-$PAGE->set_url($pageurl);
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function process(): void {
+        $userid = required_param('id', PARAM_INT);
+        $affiliation = required_param('affiliation', PARAM_TEXT);
 
-require_capability('local/external_users:manage', $context);
-$common = new common();
+        echo $this->common->setaffiliation($userid, $affiliation);
+        redirect(new moodle_url("profile.php", ['id' => $userid]));
+    }
+}
 
-$userid = required_param('id', PARAM_INT);
-$affiliation = required_param('affiliation', PARAM_TEXT);
-
-echo $common->setaffiliation($userid, $affiliation);
-redirect(new moodle_url("profile.php", ['id' => $userid]));
+$a = new affiliate();
+$a->process();

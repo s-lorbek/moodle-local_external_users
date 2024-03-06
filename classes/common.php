@@ -29,6 +29,7 @@ use DateTime;
 use dml_exception;
 use html_writer;
 use local_external_users\event\user_approved;
+use local_external_users\event\user_deactivated;
 use local_external_users\event\user_limitedapproved;
 use local_external_users\event\user_rejected;
 use local_external_users\event\user_revoked;
@@ -145,7 +146,7 @@ class common {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function verify_user($userid, $tariff) {
+    public function verify_user($userid, $tariff): int {
         global $DB, $USER, $PAGE;
         if (
             !$DB->record_exists(
@@ -183,7 +184,34 @@ class common {
             get_config("local_external_users", "mailverificationmessage"),
             ""
         );
+
+        self::remove_user_files($userid);
         return 0;
+    }
+
+    /**
+     * @throws dml_exception
+     */
+    private function remove_user_files($userid): void {
+        global $DB;
+        $fs = get_file_storage();
+        $userfiles = self::get_user_files($userid);
+        foreach ($userfiles as $file) {
+            $fileitem = $fs->get_file(
+                $file->contextid,
+                $file->component,
+                $file->filearea,
+                $file->userid,
+                $file->filepath,
+                $file->filename
+            );
+
+            if ($fileitem) {
+                $fileitem->delete();
+                $DB->delete_records("local_external_users_files", ['userid' => $userid,
+                    'id' => $file->id]);
+            }
+        }
     }
 
     /**
@@ -251,7 +279,7 @@ class common {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function limited_verify_user($userid, $tariff, $type) {
+    public function limited_verify_user($userid, $tariff, $type): int {
         global $DB, $PAGE, $USER;
         if (
             !$DB->record_exists(
@@ -384,6 +412,17 @@ class common {
 
         if ($action == 1) {
             user_delete_user($user);
+            $deactivatedevent = user_deactivated::create([
+                'relateduserid' => $userid,
+                'context' => $PAGE->context,
+                'objectid' => $USER->id,
+                'other' => [
+                    'oldstatus' => $user->profile_field_external_user_verified,
+                    'userid' => $userid,
+                    'messageid' => $messageid,
+                ],
+            ]);
+            $deactivatedevent->trigger();
         }
         return 0;
     }
@@ -438,8 +477,7 @@ class common {
     /**
      * @throws moodle_exception
      */
-    public function get_user_file_table($userid) {
-        global $OUTPUT;
+    public function get_user_file_table($userid): array {
         $userfiles = self::get_user_files($userid);
         $data = [];
 
@@ -454,9 +492,7 @@ class common {
             );
             $data[] = html_writer::link($actionurl, $file->filename);
         }
-
-        $content = ['data' => $data];
-        return $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
+        return $data;
     }
 
     public function create_dummy_user($fullname, $email): stdClass {

@@ -24,114 +24,147 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+global $CFG;
+
+use coding_exception;
 use context_system;
+use dml_exception;
 use html_table;
 use html_writer;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 use function get_string;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = context_system::instance();
-$PAGE->set_context($context);
+class manage_pending {
+    private common $common;
+    private html_table $waitingtable;
+    private html_table $pendingtable;
 
-$pageurl = new moodle_url('/local/external_users/views/manage_pending.php');
-$PAGE->set_url($pageurl);
+    private array $pendingdata;
+    private array $waitingdata;
 
-$common = new common();
 
-$PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-$PAGE->set_pagelayout('standard');
-require_capability('local/external_users:manage', $context);
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     * @throws moodle_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/manage_pending.php'));
+        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_pagelayout('standard');
+        require_capability('local/external_users:manage', $context);
+        $this->common = new common();
 
-echo $OUTPUT->header();
+        $this->pendingtable = new html_table();
+        $this->waitingtable = new html_table();
+        $this->waitingdata = [];
+        $this->pendingdata = [];
 
-$dashboarddata = [];
-$tableheaders = [get_string('username', 'local_external_users'),
-    get_string('firstname', 'local_external_users'),
-    get_string('lastname', 'local_external_users'),
-    get_string('manage', 'local_external_users'),
-    "Moodle Link"];
+        self::transform_data();
+    }
 
-$waitingexternalusers = $common->get_users_for_verification();
-$waitingtable = new html_table();
-$waitingtable->head = $tableheaders;
-$waitingtable->id = 'sortabletablewaiting';
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    private function transform_data(): void {
+        $tableheaders = [get_string('username', 'local_external_users'),
+            get_string('firstname', 'local_external_users'),
+            get_string('lastname', 'local_external_users'),
+            get_string('manage', 'local_external_users'),
+            "Moodle Link"];
+        $waitingexternalusers = $this->common->get_users_for_verification();
+        $this->waitingtable->head = $tableheaders;
+        $this->waitingtable->id = 'sortabletablewaiting';
+        foreach ($waitingexternalusers as $user) {
+            $actionurl = new moodle_url(
+                "/local/external_users/views/profile.php",
+                ['id' => $user->id]
+            );
+            $this->waitingtable->data[] = [
+                html_writer::link(
+                    $actionurl,
+                    $user->username
+                ),
+                format_string($user->firstname),
+                format_string($user->lastname),
+                html_writer::link($actionurl, "Link"),
+                html_writer::link(
+                    new moodle_url(
+                        "/user/profile.php",
+                        ["id" => $user->id]
+                    ),
+                    get_string("usericon", "local_external_users")
+                )];
+        }
+        $pendingexternalusers = $this->common->get_pending_users_for_verification();
+        $this->pendingtable->head = $tableheaders;
+        $this->pendingtable->id = 'sortabletablepending';
 
-foreach ($waitingexternalusers as $user) {
-    $actionurl = new moodle_url(
-        "/local/external_users/views/profile.php",
-        ['id' => $user->id]
-    );
-    $waitingtable->data[] = [
-        html_writer::link(
-            $actionurl,
-            $user->username
-        ),
-        format_string($user->firstname),
-        format_string($user->lastname),
-        html_writer::link($actionurl, "Link"),
-        html_writer::link(
-            new moodle_url(
-                "/user/profile.php",
-                ["id" => $user->id]
-            ),
-            get_string("usericon", "local_external_users")
-        )];
+        foreach ($pendingexternalusers as $user) {
+            $actionurl = new moodle_url(
+                "/local/external_users/views/profile.php",
+                ['id' => $user->id]
+            );
+            $this->pendingtable->data[] = [
+                html_writer::link(
+                    $actionurl,
+                    $user->username . ' <i class="fa fa-hourglass" aria-hidden="true"></i>'
+                ),
+                format_string($user->firstname),
+                format_string($user->lastname),
+                html_writer::link($actionurl, "Link"),
+                html_writer::link(
+                    new moodle_url(
+                        "/user/profile.php",
+                        ["id" => $user->id]
+                    ),
+                    get_string("usericon", "local_external_users")
+                )];
+        }
+
+        $this->waitingdata["table"] = html_writer::table($this->waitingtable);
+        $this->waitingdata["title"] = get_string('pending', 'local_external_users');
+        $this->waitingdata["count"] = strval(count($waitingexternalusers));
+        $this->waitingdata["table-id"] = $this->waitingtable->id;
+
+        $this->pendingdata["table"] = html_writer::table($this->pendingtable);
+        $this->pendingdata["title"] = get_string('waiting', 'local_external_users');
+        $this->pendingdata["count"] = strval(count($pendingexternalusers));
+        $this->pendingdata["table-id"] = $this->pendingtable->id;
+        $this->waitingdata["legend"] = true;
+    }
+
+    /**
+     * @throws moodle_exception
+     */
+    public function render(): void {
+        global $OUTPUT;
+        echo $OUTPUT->header();
+        echo $OUTPUT->render_from_template(
+            "local_external_users/dashboard_table",
+            $this->pendingdata
+        );
+        echo $OUTPUT->render_from_template(
+            "local_external_users/dashboard_table",
+            $this->waitingdata
+        );
+        echo $OUTPUT->footer();
+    }
 }
 
-$pendingexternalusers = $common->get_pending_users_for_verification();
-$pendingtable = new html_table();
-$pendingtable->head = $tableheaders;
-$pendingtable->id = 'sortabletablepending';
-
-foreach ($pendingexternalusers as $user) {
-    $actionurl = new moodle_url(
-        "/local/external_users/views/profile.php",
-        ['id' => $user->id]
-    );
-    $pendingtable->data[] = [
-        html_writer::link(
-            $actionurl,
-            $user->username . ' <i class="fa fa-hourglass" aria-hidden="true"></i>'
-        ),
-        format_string($user->firstname),
-        format_string($user->lastname),
-        html_writer::link($actionurl, "Link"),
-        html_writer::link(
-            new moodle_url(
-                "/user/profile.php",
-                ["id" => $user->id]
-            ),
-            get_string("usericon", "local_external_users")
-        )];
-}
-
-$waitingdata["table"] = html_writer::table($waitingtable);
-$waitingdata["title"] = get_string('pending', 'local_external_users');
-$waitingdata["count"] = strval(count($waitingexternalusers));
-$waitingdata["table-id"] = $waitingtable->id;
-
-$pendingdata["table"] = html_writer::table($pendingtable);
-$pendingdata["title"] = get_string('waiting', 'local_external_users');
-$pendingdata["count"] = strval(count($pendingexternalusers));
-$pendingdata["table-id"] = $pendingtable->id;
-$waitingdata["legend"] = true;
-
-echo $OUTPUT->render_from_template(
-    "local_external_users/dashboard_table",
-    $pendingdata
-);
-
-echo $OUTPUT->render_from_template(
-    "local_external_users/dashboard_table",
-    $waitingdata
-);
-
-echo $OUTPUT->footer();
+$mp = new manage_pending();
+$mp->render();

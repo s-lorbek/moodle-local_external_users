@@ -24,34 +24,54 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+global $CFG;
+
+use coding_exception;
 use context_system;
+use dml_exception;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = context_system::instance();
-$PAGE->set_context($context);
+class reject {
+    private common $common;
 
-$pageurl = new moodle_url('/local/external_users/views/approve.php');
-$PAGE->set_url($pageurl);
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/approve.php'));
+        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_pagelayout('standard');
+        require_capability('local/external_users:manage', $context);
+        $this->common = new common();
+    }
 
-$common = new common();
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function process(): void {
+        $rejectoption = required_param('reject', PARAM_INT);
+        $userid = required_param('id', PARAM_INT);
+        $comment = optional_param('comment', "", PARAM_TEXT);
+        $this->common->reject_user($userid, $rejectoption, $comment);
 
-$PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-$PAGE->set_pagelayout('standard');
-require_capability('local/external_users:manage', $context);
-
-$rejectoption = required_param('reject', PARAM_INT);
-$userid = required_param('id', PARAM_INT);
-$comment = optional_param('comment', "", PARAM_TEXT);
-
-$common->reject_user($userid, $rejectoption, $comment);
-
-$url = new moodle_url('/local/external_users/views/manage.php');
-redirect($url, get_string('redirect', 'local_external_users'), 10);
+        $url = new moodle_url('/local/external_users/views/profile.php', ["id" => $userid]);
+        redirect($url, get_string('redirect', 'local_external_users'), 0);
+    }
+}
+$r = new reject();
+$r->process();

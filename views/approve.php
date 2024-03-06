@@ -24,8 +24,14 @@
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
+global $CFG;
+
+use coding_exception;
 use context_system;
+use dml_exception;
+use moodle_exception;
 use moodle_url;
+use required_capability_exception;
 
 require('../../../config.php');
 // @codingStandardsIgnoreEnd
@@ -34,39 +40,56 @@ require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
-$context = context_system::instance();
-$PAGE->set_context($context);
-
-$pageurl = new moodle_url('/local/external_users/views/approve.php');
-$PAGE->set_url($pageurl);
-
-$common = new common();
-
-$PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-$PAGE->set_pagelayout('standard');
-require_capability('local/external_users:manage', $context);
-
-$userid = required_param('id', PARAM_INT);
-$tariff = optional_param('tariff', "external", PARAM_TEXT);
-$type = required_param('type', PARAM_INT);
-$duration = optional_param('submitButton', "regular", PARAM_TEXT);
-
-if ($type == "1") {
-    switch ($duration) {
-        case "regular":
-            $common->verify_user($userid, $tariff);
-            break;
-        case "limited":
-            $common->limited_verify_user($userid, $tariff, "limited");
-            break;
-        case "limited2":
-            $common->limited_verify_user($userid, $tariff, "limited2");
-            break;
+class approve {
+    private common $common;
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws required_capability_exception
+     */
+    public function __construct() {
+        global $PAGE;
+        $context = context_system::instance();
+        $PAGE->set_context($context);
+        $PAGE->set_url(new moodle_url('/local/external_users/views/approve.php'));
+        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
+        $PAGE->set_pagelayout('standard');
+        require_capability('local/external_users:manage', $context);
+        $this->common = new common();
     }
-} else {
-    $common->revoke_user($userid);
+
+    /**
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function process(): void {
+        $userid = required_param('id', PARAM_INT);
+        $tariff = optional_param('tariff', "external", PARAM_TEXT);
+        $type = required_param('type', PARAM_INT);
+        $duration = optional_param('submitButton', "regular", PARAM_TEXT);
+
+        if ($type == "1") {
+            switch ($duration) {
+                case "regular":
+                    $this->common->verify_user($userid, $tariff);
+                    break;
+                case "limited":
+                    $this->common->limited_verify_user($userid, $tariff, "limited");
+                    break;
+                case "limited2":
+                    $this->common->limited_verify_user($userid, $tariff, "limited2");
+                    break;
+            }
+        } else {
+            $this->common->revoke_user($userid);
+        }
+
+        $url = new moodle_url('/local/external_users/views/profile.php', ["id" => $userid]);
+        redirect($url, get_string('redirect', 'local_external_users'), 0);
+    }
 }
 
-$url = new moodle_url('/local/external_users/views/manage.php');
-redirect($url, get_string('redirect', 'local_external_users'), 10);
+$a = new approve();
+$a->process();

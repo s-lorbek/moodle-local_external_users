@@ -241,8 +241,12 @@ class profile {
     public function render(): void {
         global $OUTPUT;
         echo $OUTPUT->header();
-        if (empty($this->userfiles)) {
-            echo $OUTPUT->notification(get_string('pending_onboarding', 'local_external_users'), 'notifymessage');
+        profile_load_data($this->user);
+        if (empty($this->userfiles) && !$this->user->profile_field_external_user_verified) {
+            echo $OUTPUT->notification(get_string(
+                'pending_onboarding',
+                'local_external_users'
+            ), 'notifymessage');
         }
         echo text_to_html($OUTPUT->render_from_template(
             "local_external_users/profile",

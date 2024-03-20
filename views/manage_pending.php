@@ -92,7 +92,7 @@ class manage_pending {
         foreach ($waitingexternalusers as $user) {
             $actionurl = new moodle_url(
                 "/local/external_users/views/profile.php",
-                ['id' => $user->id]
+                ['id' => $user->id, "referrer" => "manage_pending"]
             );
             $this->waitingtable->data[] = [
                 html_writer::link(

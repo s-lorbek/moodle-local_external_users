@@ -87,7 +87,7 @@ class manage_rejected {
         foreach ($rejectedusers as $user) {
             $actionurl = new moodle_url(
                 "/local/external_users/views/profile.php",
-                ['id' => $user->id]
+                ['id' => $user->id, "referrer" => "manage_rejected"]
             );
             $rejectedtable->data[] = [
                 html_writer::link($actionurl, format_string($user->username)),

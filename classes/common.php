@@ -160,13 +160,13 @@ class common {
         profile_load_data($user);
 
         $event = user_approved::create([
-        'relateduserid' => $userid,
-        'context' => $PAGE->context,
-        'objectid' => $USER->id,
-        'other' => [
-            'oldstatus' => $user->profile_field_external_user_verified,
-            'userid' => $userid,
-        ],
+            'relateduserid' => $userid,
+            'context' => $PAGE->context,
+            'objectid' => $USER->id,
+            'other' => [
+                'oldstatus' => $user->profile_field_external_user_verified,
+                'userid' => $userid,
+            ],
         ]);
         $event->trigger();
 
@@ -300,14 +300,14 @@ class common {
         }
 
         $event = user_limitedapproved::create([
-        'relateduserid' => $userid,
-        'context' => $PAGE->context,
-        'objectid' => $USER->id,
-        'other' => [
-            'oldstatus' => $user->profile_field_external_user_verified,
-            'newstatus' => $limited . " - " . $tariff,
-            'userid' => $userid,
-        ],
+            'relateduserid' => $userid,
+            'context' => $PAGE->context,
+            'objectid' => $USER->id,
+            'other' => [
+                'oldstatus' => $user->profile_field_external_user_verified,
+                'newstatus' => $limited . " - " . $tariff,
+                'userid' => $userid,
+            ],
         ]);
         $event->trigger();
 
@@ -347,13 +347,13 @@ class common {
         profile_load_data($user);
 
         $event = user_revoked::create([
-        'relateduserid' => $userid,
-        'context' => $PAGE->context,
-        'objectid' => $USER->id,
-        'other' => [
-            'oldstatus' => $user->profile_field_external_user_verified,
-            'userid' => $userid,
-        ],
+            'relateduserid' => $userid,
+            'context' => $PAGE->context,
+            'objectid' => $USER->id,
+            'other' => [
+                'oldstatus' => $user->profile_field_external_user_verified,
+                'userid' => $userid,
+            ],
         ]);
         $event->trigger();
 

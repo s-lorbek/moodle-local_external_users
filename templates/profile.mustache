@@ -4,8 +4,8 @@
 
 <div class="card-body mx-auto" style="max-width: 1200px">
     <div class="float-right">
-        <form action="manage.php">
-            <button class="btn btn-primary">{{back_label}}</button>
+        <form action="{{back_link}}">
+            <button id="backButton" class="btn btn-primary">{{back_label}}</button>
         </form>
     </div>
     <h3 class="lead">{{firstname}} {{middlename}} {{lastname}}</h3>
@@ -59,6 +59,3 @@
         <p>{{{filetable}}}</p>
     </div>
 </div>
-
-
-

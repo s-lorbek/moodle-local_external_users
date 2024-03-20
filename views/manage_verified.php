@@ -84,7 +84,7 @@ class manage_verified {
         foreach ($verifiedusers as $user) {
             $actionurl = new moodle_url(
                 "/local/external_users/views/profile.php",
-                ['id' => $user->id]
+                ['id' => $user->id, "referrer" => "manage_verified"]
             );
             $approvedtable->data[] = [
                 html_writer::link($actionurl, format_string($user->username)),

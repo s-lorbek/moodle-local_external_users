@@ -51,11 +51,12 @@ class profile {
     private int $userid;
     private array $profiledata;
     private array $profilecontrol;
+    private string $referrer;
     /**
      * @throws coding_exception
      * @throws dml_exception
      * @throws coding_exception
-     * @throws required_capability_exception
+     * @throws required_capability_exception|moodle_exception
      */
     public function __construct() {
         global $DB, $PAGE;
@@ -72,6 +73,7 @@ class profile {
 
         $this->common = new common();
         $this->userid = required_param('id', PARAM_INT);
+        $this->referrer = required_param('referrer', PARAM_TEXT);
         $this->user = $DB->get_record("user", ['id' => $this->userid]);
         $this->transform_data();
     }
@@ -81,7 +83,7 @@ class profile {
      * @throws dml_exception|moodle_exception
      */
     private function transform_data(): void {
-        global $OUTPUT, $DB;
+        global $DB;
         profile_load_data($this->user);
 
         $approveduntil = ($this->user->profile_field_external_user_verified != '0' &&
@@ -110,6 +112,7 @@ class profile {
         }
         $this->profiledata = [
             'back_label' => get_string('back_label', 'local_external_users'),
+            'back_link' => $this->referrer . ".php",
             'firstname' => $this->user->firstname,
             'middlename' => $this->user->middlename,
             'lastname' => $this->user->lastname,
@@ -200,7 +203,6 @@ class profile {
         $action = $this->common->is_user_verified($this->userid);
         $affiliationoptions = $this->common->getaffiliationoptions();
         $affiliationoptions = array_map(function ($affiliationoptions) {
-            global $user;
             return ['value' => $affiliationoptions,
                 'selected' => ($affiliationoptions === $this->user->profile_field_external_user_affiliation)];
         }, $affiliationoptions);

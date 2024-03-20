@@ -73,7 +73,7 @@ class profile {
 
         $this->common = new common();
         $this->userid = required_param('id', PARAM_INT);
-        $this->referrer = required_param('referrer', PARAM_TEXT);
+        $this->referrer = optional_param('referrer', "manage", PARAM_TEXT);
         $this->user = $DB->get_record("user", ['id' => $this->userid]);
         $this->transform_data();
     }

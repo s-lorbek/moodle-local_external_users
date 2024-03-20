@@ -86,7 +86,7 @@ class approve {
             $this->common->revoke_user($userid);
         }
 
-        $url = new moodle_url('/local/external_users/views/profile.php', ["id" => $userid]);
+        $url = new moodle_url('/local/external_users/views/manage.php', ["id" => $userid]);
         redirect($url, get_string('redirect', 'local_external_users'), 0);
     }
 }

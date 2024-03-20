@@ -69,7 +69,7 @@ class reject {
         $comment = optional_param('comment', "", PARAM_TEXT);
         $this->common->reject_user($userid, $rejectoption, $comment);
 
-        $url = new moodle_url('/local/external_users/views/profile.php', ["id" => $userid]);
+        $url = new moodle_url('/local/external_users/views/manage.php', ["id" => $userid]);
         redirect($url, get_string('redirect', 'local_external_users'), 0);
     }
 }

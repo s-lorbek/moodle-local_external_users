@@ -28,13 +28,6 @@ use Behat\MinkExtension\Context\RawMinkContext;
 
 class behat_external_users extends behat_base {
     /**
-     * @Given I am on the signup page
-     */
-    public function iamonthesignuppage() {
-        $this->visitPath('/login/signup.php');
-    }
-
-    /**
      * @When I fill in :field with :value
      */
     public function ifillinfieldwithvalue($field, $value) {

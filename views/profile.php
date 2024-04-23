@@ -71,7 +71,7 @@ class profile {
         $PAGE->set_pagelayout('standard');
         require_capability('local/external_users:manage', $context);
 
-        $this->common = new common();
+        $this->common = new common("referrer");
         $this->userid = required_param('id', PARAM_INT);
         $this->referrer = optional_param('referrer', "manage", PARAM_TEXT);
         $this->user = $DB->get_record("user", ['id' => $this->userid]);
@@ -220,6 +220,7 @@ class profile {
             'rejection_header' => get_string('reject', 'local_external_users'),
             'affiliation_label' => get_string('affiliation', 'local_external_users'),
             'affiliation_options' => $affiliationoptions,
+            'referrer' => $this->referrer,
         ];
 
         if ($this->common->is_user_verified($this->userid)) {

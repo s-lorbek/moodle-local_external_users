@@ -67,9 +67,11 @@ class reject {
         $rejectoption = required_param('reject', PARAM_INT);
         $userid = required_param('id', PARAM_INT);
         $comment = optional_param('comment', "", PARAM_TEXT);
+        $referrer = optional_param('referrer', "manage", PARAM_TEXT);
+
         $this->common->reject_user($userid, $rejectoption, $comment);
 
-        $url = new moodle_url('/local/external_users/views/manage.php', ["id" => $userid]);
+        $url = new moodle_url('/local/external_users/views/' . $referrer . '.php', ["id" => $userid]);
         redirect($url, get_string('redirect', 'local_external_users'), 0);
     }
 }

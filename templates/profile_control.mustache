@@ -19,6 +19,7 @@
     <form action="approve.php">
         <input type="text" name="id" value="{{userid}}" hidden>
         <input type="text" name="type" value="{{action}}" hidden>
+        <input type="text" name="referrer" value="{{referrer}}" hidden>
         {{#action}}
             <label for="price_category">eduScope:</label><br>
             <select class="select custom-select cal_courses_flt ml-1 mr-auto" name="tariff">
@@ -39,6 +40,7 @@
     <hr>
     <form method="post" action="reject.php">
         <input type="text" name="id" value="{{userid}}" hidden>
+        <input type="text" name="referrer" value="{{referrer}}" hidden>
         <fieldset>
             <legend>{{legend}}</legend>
             {{{options}}}

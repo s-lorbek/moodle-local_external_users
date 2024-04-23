@@ -69,6 +69,7 @@ class approve {
         $tariff = optional_param('tariff', "external", PARAM_TEXT);
         $type = required_param('type', PARAM_INT);
         $duration = optional_param('submitButton', "regular", PARAM_TEXT);
+        $referrer = optional_param('referrer', "manage", PARAM_TEXT);
 
         if ($type == "1") {
             switch ($duration) {
@@ -86,7 +87,7 @@ class approve {
             $this->common->revoke_user($userid);
         }
 
-        $url = new moodle_url('/local/external_users/views/manage.php', ["id" => $userid]);
+        $url = new moodle_url('/local/external_users/views/' . $referrer . '.php', ["id" => $userid]);
         redirect($url, get_string('redirect', 'local_external_users'), 0);
     }
 }

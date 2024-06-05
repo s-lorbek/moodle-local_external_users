@@ -137,5 +137,14 @@ if ($hassiteconfig) {
                 ""
             )
         );
+        $settings->add(
+            new admin_setting_configtext(
+                "local_external_users/comment_validation_age",
+                "Validation age for comment removal",
+                "Sets the maximum age for the comment validation. If a external user is older, the comment
+                 profile field, will be cleared.",
+                ""
+            )
+        );
     }
 }

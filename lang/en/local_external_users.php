@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'External Users';
 $string['verify_redirect'] = 'You must first be verified!';
+$string['upload_picture_redirect'] = 'You must upload an user picture!';
+
 $string['pending_header'] = 'Pending verification';
 $string['already_verified_header'] = 'Already verified';
 $string['rejected_header'] = "Rejected";

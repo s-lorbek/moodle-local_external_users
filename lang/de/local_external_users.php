@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'External Users';
 $string['verify_redirect'] = 'Sie müssen zuerst zugelassen werden!';
+$string['upload_picture_redirect'] = 'Laden Sie bitte ein Nutzerfoto hoch!';
+
 $string['pending_header'] = 'In Bearbeitung';
 $string['already_verified_header'] = 'Bereits zugelassen';
 $string['rejected_header'] = "Abgelehnt";

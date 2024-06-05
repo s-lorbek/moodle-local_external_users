@@ -45,14 +45,29 @@ class comment_validation extends scheduled_task {
      * @return void
      * @throws dml_exception
      */
-    public function execute() {
+    public function execute(): void {
         global $DB;
         $dataset = $DB->get_records(
             "user",
             ["auth" => "external", "deleted" => 0]
         );
-        /*
-            TODO
-        */
+
+        $dateformat = "d. M. Y";
+
+        foreach ($dataset as $user) {
+            profile_load_custom_fields($user);
+            $timestamp = $user->profile["gebdat"];
+            $birthdate = date($dateformat, $timestamp);
+            $today = date($dateformat);
+            $diff = date_diff(date_create($birthdate), date_create($today));
+            $age = $diff->format('%y');
+
+            $agethreshold = intval(get_config("local_external_users", "comment_validation_age"));
+            if (!empty($agethreshold) && intval($age) > $agethreshold) {
+                $customfields = [];
+                $customfields["external_user_comment"] = "";
+                profile_save_custom_fields($user->id, $customfields);
+            }
+        }
     }
 }

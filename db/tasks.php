@@ -38,6 +38,7 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
+        'disabled' => 1,
     ],
     [
         'classname' => 'local_external_users\task\comment_validation',
@@ -47,5 +48,6 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
+        'disabled' => 1,
     ],
 ];

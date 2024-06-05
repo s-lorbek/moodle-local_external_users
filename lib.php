@@ -34,6 +34,8 @@ function local_external_users_before_http_headers() {
         "WHERE u.userid = :userid AND f.shortname = :field";
 
     $params = ['userid' => $USER->id, 'field' => 'external_user'];
+    $user = $DB->get_record("user", ['id' => $USER->id]);
+
     $external = 0;
     if ($DB->record_exists_sql($query, $params)) {
         $external = boolval($DB->get_fieldset_sql($query, $params)[0]);
@@ -57,12 +59,31 @@ function local_external_users_before_http_headers() {
                     get_string('verify_redirect', 'local_external_users'),
                     10
                 );
+                return;
             }
         } else if ($externalverified != 1) {
             redirect(
                 $url,
                 get_string('verify_redirect', 'local_external_users'),
                 10
+            );
+            return;
+        }
+    }
+    if ($external && $externalverified != 0 && $user->picture == "0" && !strpos($PAGE->url, "/user/edit.php")) {
+        redirect(
+            new moodle_url('/user/edit.php'),
+            get_string('upload_picture_redirect', 'local_external_users'),
+            10
+        );
+        return;
+    }
+
+    if (strpos($PAGE->url, "/user/edit.php")) {
+        if ($USER->id != '-1') {
+            $PAGE->requires->js_call_amd(
+                'local_external_users/mandatory_pic',
+                "init"
             );
         }
     }

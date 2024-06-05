@@ -171,7 +171,10 @@ class verification {
             $cancel = false,
             $submitlabel = get_string('form_submit', 'local_external_users')
         );
-        if (strlen($this->user->profile_field_external_user_comment)) {
+        if (
+            property_exists($this->user, 'profile_field_external_user_comment') &&
+            strlen($this->user->profile_field_external_user_comment)
+        ) {
             echo $OUTPUT->notification(
                 $this->user->profile_field_external_user_comment,
                 'errormessage'

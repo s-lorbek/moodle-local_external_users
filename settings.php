@@ -146,5 +146,15 @@ if ($hassiteconfig) {
                 ""
             )
         );
+        $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/mandatoryprofilepicture",
+                "Mandatory Profile Picture",
+                "If set, an user is forced to upload a profile picture.",
+                '0',
+                true,
+                false
+            )
+        );
     }
 }

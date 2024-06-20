@@ -17,6 +17,21 @@
             <button class="btn btn-primary w-100" type="submit">{{rejected}}</button>
         </form>
     </div>
+    <hr>
+    <div class="settings card py-2">
+        <form action="/admin/category.php?category=local_external_users" method="post">
+            <button class="btn btn-secondary w-100" type="submit">
+                <i class="fa-solid fa-gear"></i> {{settings}}
+            </button>
+        </form>
+    </div>
+    <div class="authentication-settings card py-2">
+        <form action="/admin/settings.php?section=authsettingexternal" method="post">
+            <button class="btn btn-secondary w-100" type="submit">
+                <i class="fa-solid fa-gear"></i> {{auth_settings}}
+            </button>
+        </form>
+    </div>
 </div>
 
 

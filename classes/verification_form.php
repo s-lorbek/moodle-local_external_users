@@ -34,6 +34,7 @@ require_once('common.php');
 class verification_form extends moodleform {
     /**
      * @throws coding_exception
+     * @throws \dml_exception
      */
     public function definition(): void {
         global $CFG;
@@ -49,7 +50,9 @@ class verification_form extends moodleform {
             'image/gif',
             'image/bmp']]
         );
-        $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
+        if (get_config("local_external_users", "required_photo")) {
+            $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
+        }
         $mform->addElement(
             'filepicker',
             'userfile',
@@ -57,7 +60,9 @@ class verification_form extends moodleform {
             null,
             ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => ['application/pdf']]
         );
-        $mform->addRule('userfile', 'Please upload a valid document', 'required');
+        if (get_config("local_external_users", "required_document")) {
+            $mform->addRule('userfile', 'Please upload a valid document', 'required');
+        }
     }
 
     public function validation($data, $files): array {

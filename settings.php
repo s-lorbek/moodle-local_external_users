@@ -149,9 +149,29 @@ if ($hassiteconfig) {
         $settings->add(
             new admin_setting_configcheckbox(
                 "local_external_users/mandatoryprofilepicture",
-                "Mandatory Profile Picture",
+                "Mandatory profile picture",
                 "If set, an user is forced to upload a profile picture.",
                 '0',
+                true,
+                false
+            )
+        );
+        $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/required_photo",
+                "Mandatory photo upload",
+                "If set, an user is required to upload a photo for verification during onboarding.",
+                '1',
+                true,
+                false
+            )
+        );
+        $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/required_document",
+                "Mandatory document Upload",
+                "If set, an user is required to upload a document for verification during onboarding.",
+                '1',
                 true,
                 false
             )

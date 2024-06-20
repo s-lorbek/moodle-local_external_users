@@ -62,10 +62,16 @@ class manage {
         self::transform_data();
     }
 
+    /**
+     * @throws coding_exception
+     */
     private function transform_data() {
         $this->dashboarddata["pending"] = get_string('waiting', 'local_external_users');
         $this->dashboarddata["approved"] = get_string('approved', 'local_external_users');
         $this->dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
+
+        $this->dashboarddata["settings"] = "Plugin " . get_string('settings');
+        $this->dashboarddata["auth_settings"] = get_string('authentication') . " " . get_string('settings');
     }
 
     /**

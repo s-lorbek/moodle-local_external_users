@@ -71,27 +71,6 @@ function local_external_users_before_http_headers() {
         }
     }
 
-    if (get_config('local_external_users', 'mandatoryprofilepicture')) {
-        if ($external && $externalverified != 0 && $user->picture == "0" && !strpos($PAGE->url, "/user/edit.php")) {
-            redirect(
-                new moodle_url('/user/edit.php'),
-                get_string('upload_picture_redirect', 'local_external_users'),
-                10
-            );
-            return;
-        }
-
-        if (strpos($PAGE->url, "/user/edit.php")) {
-            if ($USER->id != '-1') {
-                $PAGE->requires->js_call_amd(
-                    'local_external_users/mandatory_pic',
-                    "init"
-                );
-            }
-        }
-    }
-
-
     if (
         strpos($PAGE->url, "/user/profile.php")
         && has_capability('local/external_users:manage', $context)

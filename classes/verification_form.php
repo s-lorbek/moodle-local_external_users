@@ -39,28 +39,29 @@ class verification_form extends moodleform {
     public function definition(): void {
         global $CFG;
         $mform = $this->_form;
-        $mform->addElement(
-            'filepicker',
-            'userfileimage',
-            get_string('form_image', 'local_external_users'),
-            null,
-            ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
-            'accepted_types' => ['image/png',
-            'image/jpeg',
-            'image/gif',
-            'image/bmp']]
-        );
         if (get_config("local_external_users", "required_photo")) {
+            $mform->addElement(
+                'filepicker',
+                'userfileimage',
+                get_string('form_image', 'local_external_users'),
+                null,
+                ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
+                    'accepted_types' => ['image/png',
+                        'image/jpeg',
+                        'image/gif',
+                        'image/bmp']]
+            );
             $mform->addRule('userfileimage', 'Please upload a valid scan/image', 'required');
         }
-        $mform->addElement(
-            'filepicker',
-            'userfile',
-            get_string('form_document', 'local_external_users'),
-            null,
-            ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => ['application/pdf']]
-        );
+
         if (get_config("local_external_users", "required_document")) {
+            $mform->addElement(
+                'filepicker',
+                'userfile',
+                get_string('form_document', 'local_external_users'),
+                null,
+                ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'accepted_types' => ['application/pdf']]
+            );
             $mform->addRule('userfile', 'Please upload a valid document', 'required');
         }
     }

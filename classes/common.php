@@ -444,8 +444,13 @@ class common {
     /**
      * @throws dml_exception
      */
-    public function storefiletodb($mform, $user, $fileelement, $ispdf): bool {
+    public function storefiletodb($mform, $user, $fileelement, $ispdf, $mandatory): bool {
         global $DB;
+
+        if (!$mandatory) {
+            return true;
+        }
+
         $name = $mform->get_new_filename($fileelement);
         $filecontent = $mform->get_file_content($fileelement);
 

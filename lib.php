@@ -34,7 +34,6 @@ function local_external_users_before_http_headers() {
         "WHERE u.userid = :userid AND f.shortname = :field";
 
     $params = ['userid' => $USER->id, 'field' => 'external_user'];
-    $user = $DB->get_record("user", ['id' => $USER->id]);
 
     $external = 0;
     if ($DB->record_exists_sql($query, $params)) {
@@ -45,6 +44,10 @@ function local_external_users_before_http_headers() {
     $params = ['userid' => $USER->id, 'field' => 'external_user_verified'];
     if ($DB->record_exists_sql($query, $params)) {
         $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
+    }
+
+    if (isloggedin() && !$USER->policyagreed) {
+        return;
     }
 
     $limited = DateTime::createFromFormat('d.m.Y', $externalverified);

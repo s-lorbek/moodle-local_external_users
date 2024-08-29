@@ -114,8 +114,20 @@ class verification {
             }
 
             if (
-                $this->common->storeFileToDB($this->mform, $USER, 'userfile', true) &&
-                $this->common->storeFileToDB($this->mform, $USER, 'userfileimage', false)
+                $this->common->storeFileToDB(
+                    $this->mform,
+                    $USER,
+                    'userfile',
+                    true,
+                    get_config("local_external_users", "required_document")
+                ) &&
+                $this->common->storeFileToDB(
+                    $this->mform,
+                    $USER,
+                    'userfileimage',
+                    false,
+                    get_config("local_external_users", "required_photo")
+                )
             ) {
                 $this->user->profile_field_external_user_pending = true;
                 $this->user->profile_field_external_user_verified = 0;

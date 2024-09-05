@@ -146,7 +146,14 @@ if ($hassiteconfig) {
                 ""
             )
         );
-
+        $settings->add(
+            new admin_setting_configtext(
+                "local_external_users/price_category_order",
+                "Price Category Order",
+                "Determines the available price categories and the order in which they are displayed within the profile control.",
+                'external,student,staff'
+            )
+        );
         $settings->add(
             new admin_setting_configcheckbox(
                 "local_external_users/required_photo",

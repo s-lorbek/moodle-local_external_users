@@ -221,6 +221,8 @@ class profile {
             'affiliation_label' => get_string('affiliation', 'local_external_users'),
             'affiliation_options' => $affiliationoptions,
             'referrer' => $this->referrer,
+            'price_categories' =>
+                $this->common->parse_string_to_array(get_config("local_external_users", "price_category_order")),
         ];
 
         if ($this->common->is_user_verified($this->userid)) {

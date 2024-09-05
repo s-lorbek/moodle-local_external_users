@@ -514,4 +514,9 @@ class common {
         $user->alternatename = '';
         return $user;
     }
+
+    public function parse_string_to_array($string): array {
+        $string = preg_replace('/\s+/', '', $string);
+        return explode(',', $string);
+    }
 }

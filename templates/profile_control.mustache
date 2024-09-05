@@ -23,9 +23,9 @@
         {{#action}}
             <label for="price_category">eduScope:</label><br>
             <select class="select custom-select cal_courses_flt ml-1 mr-auto" name="tariff">
-                <option value="external">external</option>
-                <option value="student">student</option>
-                <option value="staff">staff</option>
+            {{#price_categories}}
+                <option value="{{.}}">{{.}}</option>
+            {{/price_categories}}
             </select>
         {{/action}}
         {{#approve}}

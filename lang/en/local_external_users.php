@@ -90,6 +90,7 @@ $string['event_limitedapproved'] = 'External user limited approved';
 $string['event_rejected'] = 'External user rejected';
 $string['event_revoked'] = 'External user revoked';
 $string['event_submit'] = 'External user submitted';
+$string['event_deactivated'] = 'Externer Nutzer deactivated/deleted';
 
 $string['form_image'] = 'Photo/scan of your ID document';
 $string['form_document'] = 'Study confirmation or certificate of completion';

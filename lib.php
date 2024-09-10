@@ -46,7 +46,7 @@ function local_external_users_before_http_headers() {
         $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
     }
 
-    if (isloggedin() && !$USER->policyagreed) {
+    if (isloggedin() && !$USER->policyagreed && !get_config('core', 'sitepolicyhandler') == "tool_policy") {
         return;
     }
 

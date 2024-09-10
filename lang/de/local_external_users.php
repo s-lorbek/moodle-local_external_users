@@ -89,6 +89,7 @@ $string['event_limitedapproved'] = 'Externer Nutzer befristet zugelassen';
 $string['event_rejected'] = 'Externer Nutzer abgewiesen';
 $string['event_revoked'] = 'Externer Nutzer widerrufen';
 $string['event_submit'] = 'Externer Nutzer eingereicht';
+$string['event_deactivated'] = 'Externer Nutzer deaktiviert/gelöscht';
 
 $string['form_image'] = 'Foto/Scan Ihres Ausweisdokuments';
 $string['form_document'] = 'Studienbestätigung oder Abschlusszeugnis';

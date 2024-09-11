@@ -174,5 +174,13 @@ if ($hassiteconfig) {
                 false
             )
         );
+        $settings->add(
+            new admin_setting_configtextarea(
+                "local_external_users/redirect_excludes",
+                "URL exclusions",
+                "Excludes the verfication redirect for certain links",
+                'login_redirect/index.php, user/edit.php',
+            )
+        );
     }
 }

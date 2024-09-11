@@ -519,4 +519,18 @@ class common {
         $string = preg_replace('/\s+/', '', $string);
         return explode(',', $string);
     }
+
+    /**
+     * @throws dml_exception
+     */
+    public function check_redirect_excludes($url): bool {
+        $exludes = $this->parse_string_to_array(get_config("local_external_users", "redirect_excludes"));
+
+        foreach ($exludes as $exclude) {
+            if (str_contains($url, $exclude)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

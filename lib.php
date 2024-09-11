@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use local_external_users\common;
 
 /**
  *
@@ -21,6 +22,7 @@
  * @throws required_capability_exception
  * @throws coding_exception
  * @throws moodle_exception
+ * @throws \dml_exception
  * @copyright  2022 Stephan Lorbek
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package    local_external_users
@@ -40,18 +42,28 @@ function local_external_users_before_http_headers() {
         $external = boolval($DB->get_fieldset_sql($query, $params)[0]);
     }
 
+    if (!$external) {
+        return;
+    }
     $externalverified = false;
     $params = ['userid' => $USER->id, 'field' => 'external_user_verified'];
     if ($DB->record_exists_sql($query, $params)) {
         $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
     }
 
-    if (isloggedin() && !$USER->policyagreed && !get_config('core', 'sitepolicyhandler') == "tool_policy") {
+    if (
+        isloggedin()
+        && (get_config('core', 'sitepolicyhandler') == "tool_policy" && !$USER->policyagreed)
+    ) {
         return;
     }
 
     $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
     $url = new moodle_url('/local/external_users/views/verification.php');
+
+    if (check_redirect_excludes($PAGE->url)) {
+        return;
+    }
 
     if ($external && !strpos($PAGE->url, "verification.php")) {
         if ($limited !== false) {
@@ -175,4 +187,23 @@ function local_external_users_pluginfile(
         $options
     );
     return 0;
+}
+
+function parse_string_to_array($string): array {
+    $string = preg_replace('/\s+/', '', $string);
+    return explode(',', $string);
+}
+
+/**
+ * @throws dml_exception
+ */
+function check_redirect_excludes($url): bool {
+    $exludes = parse_string_to_array(get_config("local_external_users", "redirect_excludes"));
+
+    foreach ($exludes as $exclude) {
+        if (str_contains($url, $exclude)) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -189,6 +189,13 @@ function local_external_users_pluginfile(
     return 0;
 }
 
+/**
+ * parse_string_to_array
+ *
+ * Cleans string and constructs array from input
+ * @param string $string
+ * @return array
+ */
 function parse_string_to_array($string): array {
     $string = preg_replace('/\s+/', '', $string);
     return explode(',', $string);

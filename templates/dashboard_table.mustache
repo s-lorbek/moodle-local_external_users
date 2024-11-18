@@ -4,7 +4,7 @@
 
 <head>
     <title>External Users Dashboard</title>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    <script src="{{host}}/theme/musi/javascript/datatables.min.js"></script>
 </head>
 
 {{^legend}}
@@ -31,12 +31,10 @@
     {{/legend}}
 </div>
 
-<script src="../scripts/jquery-3.7.1.min.js"></script>
-<script src="../scripts/jquery.dataTables.js"></script>
 {{#js}}
     var linkElement = document.createElement("link");
     linkElement.rel = "stylesheet";
-    linkElement.href = "../scripts/jquery.dataTables.css";
+    linkElement.href = "{{host}}/theme/musi/scss/datatables.min.css";
     document.head.appendChild(linkElement);
 
     const tableCount{{table-id}} = document.getElementById("{{table-id}}").rows.length;

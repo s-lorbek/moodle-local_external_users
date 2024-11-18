@@ -52,7 +52,7 @@ class manage_rejected {
      * @throws moodle_exception
      */
     public function __construct() {
-        global $PAGE;
+        global $PAGE, $CFG;
         $context = context_system::instance();
         $PAGE->set_context($context);
         $PAGE->set_url(new moodle_url('/local/external_users/views/manage_rejected.php'));
@@ -62,7 +62,7 @@ class manage_rejected {
         require_capability('local/external_users:manage', $context);
         $this->common = new common();
 
-        $this->dashboarddata = [];
+        $this->dashboarddata = ['host' => $CFG->wwwroot];
 
         self::transform_data();
     }

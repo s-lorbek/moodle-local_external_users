@@ -51,7 +51,7 @@ class manage_verified {
      * @throws moodle_exception
      */
     public function __construct() {
-        global $PAGE;
+        global $PAGE, $CFG;
         $context = context_system::instance();
         $PAGE->set_context($context);
         $PAGE->set_url(new moodle_url('/local/external_users/views/manage_verified.php'));
@@ -60,7 +60,7 @@ class manage_verified {
         $PAGE->set_pagelayout('standard');
         require_capability('local/external_users:manage', $context);
         $this->common = new common();
-        $this->dashboarddata = [];
+        $this->dashboarddata = ['host' => $CFG->wwwroot];
         self::transform_data();
     }
 

@@ -57,7 +57,7 @@ class manage_pending {
      * @throws moodle_exception
      */
     public function __construct() {
-        global $PAGE;
+        global $PAGE, $CFG;
         $context = context_system::instance();
         $PAGE->set_context($context);
         $PAGE->set_url(new moodle_url('/local/external_users/views/manage_pending.php'));
@@ -69,8 +69,8 @@ class manage_pending {
 
         $this->pendingtable = new html_table();
         $this->waitingtable = new html_table();
-        $this->waitingdata = [];
-        $this->pendingdata = [];
+        $this->waitingdata = ['host' => $CFG->wwwroot];
+        $this->pendingdata = ['host' => $CFG->wwwroot];
 
         self::transform_data();
     }

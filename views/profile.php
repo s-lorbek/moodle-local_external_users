@@ -44,7 +44,21 @@ require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
+/**
+ * Class profile
+ *
+ * This class handles the user profile functionalities within the external users module.
+ *
+ * @package    local_external_users
+ * @subpackage views
+ * @category   profile
+ * @author     Stephan
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class profile {
+    /**
+     * @var stdClass $user User profile data
+     */
     private stdClass $user;
     private common $common;
     private array $userfiles;
@@ -148,13 +162,13 @@ class profile {
                 ["userid" => $this->userid]
             )
         ) {
-            $this->profiledata['userpiclink'] = "";
+            $this->profiledata['userpiclink'] = null;
         } else {
             $userpic = $DB->get_record_sql(
                 "SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea LIKE 'userfileimage'",
                 ["userid" => $this->userid]
             );
-            if (isset($userpic)) {
+            if ($userpic) {
                 $actionurl = moodle_url::make_pluginfile_url(
                     $userpic->contextid,
                     $userpic->component,

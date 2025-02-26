@@ -17,7 +17,7 @@
 /**
  *
  * @package   local_external_users
- * @copyright 2022 Stephan Lorbek
+ * @copyright 2022 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,9 +43,22 @@ require_once('message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 
+/**
+ * Class common
+ *
+ * This class provides common functionalities for external users in the Moodle local plugin.
+ *
+ * @package    local_external_users
+ */
 class common {
     /**
      * @throws dml_exception
+     */
+    /**
+     * Retrieves the files associated with a specific user.
+     *
+     * @param int $userid The ID of the user whose files are to be retrieved.
+     * @return array An array of files associated with the user.
      */
     public function get_user_files($userid): array {
         global $DB;
@@ -57,6 +70,11 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Retrieves a list of users that need to be verified.
+     *
+     * @return array An array of users pending verification.
      */
     public function get_users_for_verification(): array {
         global $DB;
@@ -77,6 +95,11 @@ class common {
     /**
      * @throws dml_exception
      */
+    /**
+     * Retrieves a list of users who are pending verification.
+     *
+     * @return array An array of users pending verification.
+     */
     public function get_pending_users_for_verification(): array {
         global $DB;
         return $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
@@ -87,6 +110,11 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Retrieves a list of users who have already been verified.
+     *
+     * @return array An array of verified users.
      */
     public function get_users_already_verified(): array {
         global $DB;
@@ -112,6 +140,11 @@ class common {
     /**
      * @throws dml_exception
      */
+    /**
+     * Retrieves a list of users who have been rejected.
+     *
+     * @return array An array of rejected users.
+     */
     public function get_users_rejected(): array {
         global $DB;
         return $DB->get_records_sql("SELECT u.id, u.username, u.firstname, u.lastname, muid.data
@@ -120,12 +153,24 @@ class common {
     (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '-1'");
     }
 
+    /**
+     * Validates if the given file is a valid PDF.
+     *
+     * @param string $file The path to the file to be validated.
+     * @return bool True if the file is a valid PDF, false otherwise.
+     */
     public function valid_pdf($file) {
         return preg_match("/^%PDF-/", $file);
     }
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Checks if the user is verified.
+     *
+     * @param int $userid The ID of the user to check.
+     * @return int Returns 1 if the user is verified, 0 otherwise.
      */
     public function is_user_verified($userid): int {
         global $DB;
@@ -145,6 +190,13 @@ class common {
     /**
      * @throws coding_exception
      * @throws dml_exception
+     */
+    /**
+     * Verifies the user based on the provided user ID and tariff.
+     *
+     * @param int $userid The ID of the user to verify.
+     * @param mixed $tariff The tariff associated with the user.
+     * @return int The verification status code.
      */
     public function verify_user($userid, $tariff): int {
         global $DB, $USER, $PAGE;
@@ -192,9 +244,16 @@ class common {
     /**
      * @throws dml_exception
      */
-    private function remove_user_files($userid): void {
+    /**
+     * Removes all files associated with a given user.
+     *
+     * @param int $userid The ID of the user whose files are to be removed.
+     * @return int The number of files that were removed.
+     */
+    public function remove_user_files($userid): int {
         global $DB;
         $fs = get_file_storage();
+        $deletedcounter = 0;
         $userfiles = self::get_user_files($userid);
         foreach ($userfiles as $file) {
             $fileitem = $fs->get_file(
@@ -210,12 +269,21 @@ class common {
                 $fileitem->delete();
                 $DB->delete_records("local_external_users_files", ['userid' => $userid,
                     'id' => $file->id]);
+                $deletedcounter++;
             }
         }
+        return $deletedcounter;
     }
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Retrieves the end date of the semester.
+     *
+     * This function calculates and returns the end date of the current semester.
+     *
+     * @return DateTime The end date of the semester.
      */
     public function getendofsemester() {
         $today = new DateTime();
@@ -235,6 +303,13 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Get the end date of the next semester.
+     *
+     * This function calculates and returns the end date of the next semester.
+     *
+     * @return DateTime The end date of the next semester.
      */
     public function getendofnextsemester() {
         $today = new DateTime();
@@ -258,6 +333,11 @@ class common {
     /**
      * @throws dml_exception
      */
+    /**
+     * Retrieves the affiliation options.
+     *
+     * @return array An array of affiliation options.
+     */
     public function getaffiliationoptions(): array {
         $liststring = get_config("local_external_users", "affiliations");
         return explode(',', $liststring);
@@ -265,6 +345,13 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Sets the affiliation for a given user.
+     *
+     * @param int $userid The ID of the user.
+     * @param string $affiliation The affiliation to set for the user.
+     * @return bool Returns true on success, false on failure.
      */
     public function setaffiliation($userid, $affiliation): bool {
         global $DB;
@@ -278,6 +365,14 @@ class common {
     /**
      * @throws coding_exception
      * @throws dml_exception
+     */
+    /**
+     * Verifies a user with limited access based on the provided tariff and type.
+     *
+     * @param int $userid The ID of the user to verify.
+     * @param string $tariff The tariff plan associated with the user.
+     * @param string $type The type of verification to perform.
+     * @return int The result of the verification process.
      */
     public function limited_verify_user($userid, $tariff, $type): int {
         global $DB, $PAGE, $USER;
@@ -333,6 +428,12 @@ class common {
      * @throws coding_exception
      * @throws dml_exception
      */
+    /**
+     * Revokes a user based on the provided user ID.
+     *
+     * @param int $userid The ID of the user to be revoked.
+     * @return int The result of the revocation process.
+     */
     public function revoke_user($userid): int {
         global $DB, $USER, $PAGE;
         if (
@@ -367,6 +468,14 @@ class common {
     /**
      * @throws coding_exception
      * @throws dml_exception
+     */
+    /**
+     * Rejects a user based on the provided user ID, action, and comment.
+     *
+     * @param int $userid The ID of the user to be rejected.
+     * @param string $action The action to be taken for the rejection.
+     * @param string $comment A comment explaining the reason for the rejection.
+     * @return int The result of the rejection process.
      */
     public function reject_user($userid, $action, $comment): int {
         global $DB, $USER, $PAGE;
@@ -431,6 +540,12 @@ class common {
     /**
      * @throws dml_exception
      */
+    /**
+     * Checks if the given user ID belongs to an external user.
+     *
+     * @param int $userid The ID of the user to check.
+     * @return bool True if the user is an external user, false otherwise.
+     */
     public function is_external_user($userid) {
         global $DB;
         if (!$DB->record_exists("user", ["id" => $userid])) {
@@ -443,6 +558,16 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Stores a file to the database.
+     *
+     * @param object $mform The form object containing the file.
+     * @param object $user The user object associated with the file.
+     * @param string $fileelement The name of the file element in the form.
+     * @param bool $ispdf Whether the file is a PDF.
+     * @param bool $mandatory Whether the file upload is mandatory.
+     * @return bool True on success, false on failure.
      */
     public function storefiletodb($mform, $user, $fileelement, $ispdf, $mandatory): bool {
         global $DB;
@@ -482,6 +607,12 @@ class common {
     /**
      * @throws moodle_exception
      */
+    /**
+     * Retrieves the file table for a specific user.
+     *
+     * @param int $userid The ID of the user whose file table is to be retrieved.
+     * @return array An array containing the user's file table.
+     */
     public function get_user_file_table($userid): array {
         $userfiles = self::get_user_files($userid);
         $data = [];
@@ -500,6 +631,13 @@ class common {
         return $data;
     }
 
+    /**
+     * Creates a dummy user with the given full name and email.
+     *
+     * @param string $fullname The full name of the dummy user.
+     * @param string $email The email address of the dummy user.
+     * @return stdClass An object representing the dummy user.
+     */
     public function create_dummy_user($fullname, $email): stdClass {
         $user = new stdClass();
         $user->email = $email;
@@ -515,6 +653,12 @@ class common {
         return $user;
     }
 
+    /**
+     * Parses a string into an array.
+     *
+     * @param string $string The string to be parsed.
+     * @return array The parsed array.
+     */
     public function parse_string_to_array($string): array {
         $string = preg_replace('/\s+/', '', $string);
         return explode(',', $string);
@@ -522,6 +666,12 @@ class common {
 
     /**
      * @throws dml_exception
+     */
+    /**
+     * Checks if the given URL should be excluded from redirection.
+     *
+     * @param string $url The URL to check.
+     * @return bool True if the URL should be excluded, false otherwise.
      */
     public function check_redirect_excludes($url): bool {
         $exludes = $this->parse_string_to_array(get_config("local_external_users", "redirect_excludes"));

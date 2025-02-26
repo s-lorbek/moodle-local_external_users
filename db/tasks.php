@@ -50,4 +50,14 @@ $tasks = [
         'month' => '*',
         'disabled' => 1,
     ],
+    [
+        'classname' => 'local_external_users\task\cleanup_files',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '0',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+        'disabled' => 1,
+    ],
 ];

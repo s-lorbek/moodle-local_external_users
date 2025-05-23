@@ -14,13 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- *
- * @package   local_external_users
- * @copyright 2022 Stephan Lorbek
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_external_users;
 
 // @codingStandardsIgnoreStart
@@ -41,10 +34,24 @@ require_once($CFG->libdir . '/datalib.php');
 require_once('../classes/verification_form.php');
 require_once('../classes/common.php');
 
+/**
+ * Class manage
+ *
+ * Handles the management dashboard for the local_external_users plugin.
+ *
+ * @package    local_external_users
+ * @copyright  2024 Stephan (your name or organization)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class manage {
+    /**
+     * @var array $dashboarddata Data for the management dashboard template.
+     */
     private array $dashboarddata;
 
     /**
+     * Constructs the manage dashboard page for the plugin.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws required_capability_exception
@@ -58,23 +65,29 @@ class manage {
         $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
         $PAGE->set_pagelayout('standard');
         require_capability('local/external_users:manage', $context);
-
         self::transform_data();
     }
 
     /**
+     * Prepares and sets dashboard data for the management dashboard template.
+     *
      * @throws coding_exception
      */
     private function transform_data() {
+        global $USER;
         $this->dashboarddata["pending"] = get_string('waiting', 'local_external_users');
         $this->dashboarddata["approved"] = get_string('approved', 'local_external_users');
         $this->dashboarddata["rejected"] = get_string('rejected', 'local_external_users');
 
-        $this->dashboarddata["settings"] = "Plugin " . get_string('settings');
-        $this->dashboarddata["auth_settings"] = get_string('authentication') . " " . get_string('settings');
+        if (has_capability('local/external_users:manage', context_system::instance(), $USER)) {
+            $this->dashboarddata["settings"] = "Plugin " . get_string('settings');
+            $this->dashboarddata["auth_settings"] = get_string('authentication') . " " . get_string('settings');
+        }
     }
 
     /**
+     * Renders the management dashboard page.
+     *
      * @throws moodle_exception
      */
     public function render() {

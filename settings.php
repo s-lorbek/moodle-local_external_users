@@ -166,9 +166,29 @@ if ($hassiteconfig) {
         );
         $settings->add(
             new admin_setting_configcheckbox(
+                "local_external_users/show_photo",
+                "Enable photo upload",
+                "If set, an user has the option to upload a photo for verification during onboarding.",
+                '1',
+                true,
+                false
+            )
+        );
+        $settings->add(
+            new admin_setting_configcheckbox(
                 "local_external_users/required_document",
                 "Mandatory document Upload",
                 "If set, an user is required to upload a document for verification during onboarding.",
+                '1',
+                true,
+                false
+            )
+        );
+         $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/show_document",
+                "Enable document Upload",
+                "If set, an user has the option to upload a document for verification during onboarding.",
                 '1',
                 true,
                 false

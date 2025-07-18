@@ -16,6 +16,8 @@
 
 namespace local_external_users;
 
+defined('MOODLE_INTERNAL') || die();
+
 use local_external_users\common;
 use context_system;
 use moodle_url;
@@ -64,10 +66,11 @@ class hook_callbacks {
             return;
         }
 
-        $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
+        $limited = \DateTime::createFromFormat('d.m.Y', $externalverified);
         $url = new moodle_url('/local/external_users/views/verification.php');
 
-        if (check_redirect_excludes($PAGE->url)) {
+        $common = new common();
+        if ($common->check_redirect_excludes($PAGE->url)) {
             return;
         }
 

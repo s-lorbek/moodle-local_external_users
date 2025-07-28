@@ -184,7 +184,7 @@ if ($hassiteconfig) {
                 false
             )
         );
-         $settings->add(
+        $settings->add(
             new admin_setting_configcheckbox(
                 "local_external_users/show_document",
                 "Enable document Upload",
@@ -200,6 +200,16 @@ if ($hassiteconfig) {
                 "URL exclusions",
                 "Excludes the verfication redirect for certain links",
                 'login_redirect/index.php, user/edit.php',
+            )
+        );
+         $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/removefiles",
+                "Remove User Uploaded Files",
+                "If set, user uploaded files will be removed after verification.",
+                '0',
+                true,
+                false
             )
         );
     }

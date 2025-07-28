@@ -237,7 +237,9 @@ class common {
             ""
         );
 
-        self::remove_user_files($userid);
+        if (get_config("local_external_users", "removefiles")) {
+            self::remove_user_files($userid);
+        }
         return 0;
     }
 

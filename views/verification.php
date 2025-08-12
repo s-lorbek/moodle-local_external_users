@@ -119,14 +119,14 @@ class verification {
                     $USER,
                     'userfile',
                     true,
-                    get_config("local_external_users", "required_document")
+                    get_config("local_external_users", "show_document")
                 ) &&
                 $this->common->storeFileToDB(
                     $this->mform,
                     $USER,
                     'userfileimage',
                     false,
-                    get_config("local_external_users", "required_photo")
+                    get_config("local_external_users", "show_photo")
                 )
             ) {
                 $this->user->profile_field_external_user_pending = true;

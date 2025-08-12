@@ -568,13 +568,13 @@ class common {
      * @param object $user The user object associated with the file.
      * @param string $fileelement The name of the file element in the form.
      * @param bool $ispdf Whether the file is a PDF.
-     * @param bool $mandatory Whether the file upload is mandatory.
+     * @param bool $available Whether the file upload is available.
      * @return bool True on success, false on failure.
      */
-    public function storefiletodb($mform, $user, $fileelement, $ispdf, $mandatory): bool {
+    public function storefiletodb($mform, $user, $fileelement, $ispdf, $available): bool {
         global $DB;
 
-        if (!$mandatory) {
+        if (!$available) {
             return true;
         }
 

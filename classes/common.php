@@ -574,12 +574,12 @@ class common {
     public function storefiletodb($mform, $user, $fileelement, $ispdf, $available): bool {
         global $DB;
 
-        if (!$available) {
-            return true;
-        }
-
         $name = $mform->get_new_filename($fileelement);
         $filecontent = $mform->get_file_content($fileelement);
+
+        if (!$available || (empty($filecontent))) {
+            return true;
+        }
 
         if ($ispdf && !self::valid_pdf($filecontent)) {
             return false;

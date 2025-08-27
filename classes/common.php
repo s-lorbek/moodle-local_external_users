@@ -38,8 +38,8 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once('mail.php');
-require_once('message.php');
+require_once(__DIR__ . '/mail.php');
+require_once(__DIR__ . '/message.php');
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 

@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 use local_external_users\common;
 use context_system;
 use moodle_url;
+use DateTime;
 
 /**
  * Class hook_callbacks
@@ -76,7 +77,7 @@ class hook_callbacks {
 
         if ($external && !strpos($PAGE->url, "verification.php")) {
             if ($limited !== false) {
-                $currentdate = new DateTime();
+                $currentdate = new \DateTime();
                 if ($limited < $currentdate) {
                     redirect(
                         $url,

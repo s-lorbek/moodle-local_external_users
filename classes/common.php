@@ -288,7 +288,7 @@ class common {
      * @return DateTime The end date of the semester.
      */
     public function getendofsemester() {
-        $today = new DateTime();
+        $today = new \DateTime();
         $currentmonth = (int)$today->format('n');
 
         if (!empty(get_config("local_external_users", "endofterm"))) {
@@ -314,7 +314,7 @@ class common {
      * @return DateTime The end date of the next semester.
      */
     public function getendofnextsemester() {
-        $today = new DateTime();
+        $today = new \DateTime();
 
         $currentmonth = (int)$today->format('n');
         $currentyear = $today->format('Y');

@@ -47,7 +47,7 @@ class verification {
     private stdClass $user;
     private common $common;
     private verification_form $mform;
-    private DateTime $currentdate;
+    private \DateTime $currentdate;
 
     /**
      * @throws dml_exception
@@ -69,7 +69,7 @@ class verification {
 
         $this->mform = new verification_form();
         $this->common = new common();
-        $this->currentdate = new DateTime();
+        $this->currentdate = new \DateTime();
         $this->user = $DB->get_record("user", ["id" => $USER->id]);
         self::transform_data();
     }
@@ -84,7 +84,7 @@ class verification {
             !$this->user->profile_field_external_user || ($this->user->profile_field_external_user_verified != 0 &&
                 $this->user->profile_field_external_user_verified != -1)
         ) {
-            $limited = DateTime::createFromFormat('d.m.Y', $this->user->profile_field_external_user_verified);
+            $limited = \DateTime::createFromFormat('d.m.Y', $this->user->profile_field_external_user_verified);
             if (!$limited || $limited > $this->currentdate) {
                 redirect('/', get_string('redirect', 'local_external_users'), 0);
             }

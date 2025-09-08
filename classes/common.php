@@ -568,16 +568,20 @@ class common {
      * @param object $user The user object associated with the file.
      * @param string $fileelement The name of the file element in the form.
      * @param bool $ispdf Whether the file is a PDF.
-     * @param bool $available Whether the file upload is available.
+     * @param bool $isEnabled Whether the file upload is available.
      * @return bool True on success, false on failure.
      */
-    public function storefiletodb($mform, $user, $fileelement, $ispdf, $available): bool {
+    public function storefiletodb($mform, $user, $fileelement, $ispdf, $isenabled): bool {
         global $DB;
+
+        if (!$isenabled) {
+            return true;
+        }
 
         $name = $mform->get_new_filename($fileelement);
         $filecontent = $mform->get_file_content($fileelement);
 
-        if (!$available || (empty($filecontent))) {
+        if (empty($filecontent)) {
             return true;
         }
 
@@ -586,7 +590,7 @@ class common {
         }
         $mform->save_stored_file(
             $fileelement,
-            context_system::instance()->id,
+            \context_system::instance()->id,
             'local_external_users',
             $fileelement,
             $user->id,
@@ -595,7 +599,7 @@ class common {
             true
         );
 
-        $file = ['contextid' => context_system::instance()->id,
+        $file = ['contextid' => \context_system::instance()->id,
             'component' => 'local_external_users',
             'filearea' => $fileelement,
             'filepath' => '/',

@@ -58,9 +58,10 @@ class affiliate {
     public function process(): void {
         $userid = required_param('id', PARAM_INT);
         $affiliation = required_param('affiliation', PARAM_TEXT);
+        $referrer = optional_param('referrer', '', PARAM_TEXT);
 
         echo $this->common->setaffiliation($userid, $affiliation);
-        redirect(new moodle_url("profile.php", ['id' => $userid]));
+        redirect(new moodle_url("profile.php", ['id' => $userid, 'referrer' => $referrer]));
     }
 }
 

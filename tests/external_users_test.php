@@ -144,7 +144,7 @@ class external_users_test extends advanced_testcase {
     public function test_getendofsemester_without_config() {
         $this->resetAfterTest();
 
-        $today = new DateTime();
+        $today = new \DateTime();
         $currentmonth = (int) $today->format('n');
         $result = $this->commonclass->getendofsemester();
     }

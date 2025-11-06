@@ -60,11 +60,11 @@ class hook_callbacks {
             $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
         }
 
-        if (
-            isloggedin()
-            && (get_config('core', 'sitepolicyhandler') == "tool_policy" && !$USER->policyagreed)
-        ) {
-            return;
+        if (get_config('core', 'sitepolicyhandler') == "tool_policy") {
+            $activepolicies = $DB->get_records('tool_policy_versions', ['archived' => 0, 'optional' => 0]);
+            if (count($activepolicies) > 0 && !$USER->policyagreed && isloggedin()) {
+                return;
+            }
         }
 
         $limited = \DateTime::createFromFormat('d.m.Y', $externalverified);

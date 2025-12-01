@@ -34,7 +34,7 @@ use advanced_testcase;
  * @copyright  2024 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class external_users_test extends advanced_testcase {
+final class external_users_test extends advanced_testcase {
     /** @var stdClass A test course. */
     protected stdClass $course;
 
@@ -51,6 +51,7 @@ class external_users_test extends advanced_testcase {
      */
     protected function setUp(): void {
         global $CFG;
+        parent::setUp();
         $this->resetAfterTest(false);
         require_once($CFG->dirroot . '/user/profile/lib.php');
 
@@ -78,7 +79,7 @@ class external_users_test extends advanced_testcase {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function test_verify_user() {
+    public function test_verify_user(): void {
         $this->resetAfterTest();
         $tariff = 'external';
         $defaultcomment = get_config("local_external_users", "discounturl");
@@ -99,7 +100,7 @@ class external_users_test extends advanced_testcase {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function test_reject_user_without_deletion() {
+    public function test_reject_user_without_deletion(): void {
         $this->resetAfterTest();
         global $DB;
         $comment = 'Reason of rejection';
@@ -125,7 +126,7 @@ class external_users_test extends advanced_testcase {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function test_reject_user_with_deletion() {
+    public function test_reject_user_with_deletion(): void {
         global $DB;
         $this->resetAfterTest();
         $comment = 'Reason of rejection';
@@ -141,7 +142,7 @@ class external_users_test extends advanced_testcase {
      * @covers \local_external_users\common::reject_user
      * @throws dml_exception
      */
-    public function test_getendofsemester_without_config() {
+    public function test_getendofsemester_without_config(): void {
         $this->resetAfterTest();
 
         $today = new \DateTime();
@@ -154,7 +155,7 @@ class external_users_test extends advanced_testcase {
      * @covers \local_external_users\common::reject_user
      * @throws dml_exception
      */
-    public function test_setaffiliation() {
+    public function test_setaffiliation(): void {
         $this->resetAfterTest();
         $affiliation = "University XYZ";
         $this->commonclass->setaffiliation($this->externaluser->id, $affiliation);

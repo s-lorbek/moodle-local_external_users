@@ -202,7 +202,7 @@ if ($hassiteconfig) {
                 'login_redirect/index.php, user/edit.php',
             )
         );
-         $settings->add(
+        $settings->add(
             new admin_setting_configcheckbox(
                 "local_external_users/removefiles",
                 "Remove User Uploaded Files",
@@ -210,6 +210,24 @@ if ($hassiteconfig) {
                 '0',
                 true,
                 false
+            )
+        );
+        $settings->add(
+            new admin_setting_configcheckbox(
+                "local_external_users/allowbrowsing",
+                "Allow Browsing",
+                "If set, users are allowed to browse the site even if they are not verified.",
+                '0',
+                true,
+                false
+            )
+        );
+        $settings->add(
+            new admin_setting_configtext(
+                "local_external_users/allowbrowsing_tariff",
+                "Allow Browsing Tariff",
+                "Defines the tariff for unverified users when the setting local_external_users/allowbrowsing is allowed.",
+                'external'
             )
         );
     }

@@ -29,6 +29,17 @@ use local_external_users\common;
  */
 
 /**
+ * Serves the local_external_users plugin files.
+ *
+ * @param stdClass $course the course object
+ * @param stdClass $cm the course module object
+ * @param stdClass $context the context
+ * @param string $filearea the name of the file area
+ * @param array $args extra arguments (itemid, path)
+ * @param bool $forcedownload whether or not force download
+ * @param array $options additional options affecting the file serving
+ * @return int|bool false if file not found, does not return if found - just send the file
+ *
  * @throws require_login_exception
  * @throws coding_exception
  * @throws moodle_exception
@@ -43,13 +54,11 @@ function local_external_users_pluginfile(
     array $options = []
 ) {
     global $DB;
-
     require_login();
     $itemid = (int)array_shift($args);
-
     $fs = get_file_storage();
-
     $filename = array_pop($args);
+
     if (empty($args)) {
         $filepath = '/';
     } else {
@@ -64,6 +73,7 @@ function local_external_users_pluginfile(
         $filepath,
         $filename
     );
+
     if (!$file) {
         return false;
     }
@@ -91,12 +101,15 @@ function parse_string_to_array($string): array {
 }
 
 /**
+ * Checks if the given URL should be excluded from redirection.
+ *
+ * @param string $url The URL to check.
+ * @return bool True if the URL should be excluded, false otherwise.
  * @throws dml_exception
  */
-function check_redirect_excludes($url): bool {
-    $exludes = parse_string_to_array(get_config("local_external_users", "redirect_excludes"));
-
-    foreach ($exludes as $exclude) {
+function check_redirect_excludes(string $url): bool {
+    $excludes = parse_string_to_array(get_config("local_external_users", "redirect_excludes"));
+    foreach ($excludes as $exclude) {
         if (str_contains($url, $exclude)) {
             return true;
         }

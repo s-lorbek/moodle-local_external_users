@@ -16,12 +16,11 @@
 
 namespace local_external_users;
 
-defined('MOODLE_INTERNAL') || die();
-
 use local_external_users\common;
 use context_system;
 use moodle_url;
 use DateTime;
+use core\output\html_writer;
 
 /**
  * Class hook_callbacks
@@ -31,121 +30,188 @@ use DateTime;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_callbacks {
-
     /**
      * Core hook to intercept page requests and redirect users to the verification page if needed.
      *
      * @param \core\hook\output\before_http_headers $hook
      */
     public static function onload(\core\hook\output\before_http_headers $hook): void {
-        global $PAGE, $USER, $DB;
-        $context = context_system::instance();
-
-        $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
-            "WHERE u.userid = :userid AND f.shortname = :field";
-
-        $params = ['userid' => $USER->id, 'field' => 'external_user'];
-
-        $external = 0;
-        if ($DB->record_exists_sql($query, $params)) {
-            $external = boolval($DB->get_fieldset_sql($query, $params)[0]);
-        }
-
-        if (!$external) {
+        if (!isloggedin()) {
             return;
         }
-        $externalverified = false;
-        $params = ['userid' => $USER->id, 'field' => 'external_user_verified'];
-        if ($DB->record_exists_sql($query, $params)) {
-            $externalverified = ($DB->get_fieldset_sql($query, $params)[0]);
+
+        if (static::check_policy_agreements()) {
+            return;
         }
 
-        if (get_config('core', 'sitepolicyhandler') == "tool_policy") {
-            $activepolicies = $DB->get_records('tool_policy_versions', ['archived' => 0, 'optional' => 0]);
-            if (count($activepolicies) > 0 && !$USER->policyagreed && isloggedin()) {
+        $externalstatus = static::is_external_user();
+        if ($externalstatus->isexternal) {
+            if (static::redirect_if_unverified($externalstatus->verified_status)) {
                 return;
             }
         }
 
-        $limited = \DateTime::createFromFormat('d.m.Y', $externalverified);
-        $url = new moodle_url('/local/external_users/views/verification.php');
+        static::display_user_files($externalstatus->isexternal);
+    }
+
+    /**
+     * Checks if the current user is marked as an external user and gets their verification status.
+     *
+     * @return object { isexternal: bool, verified_status: string|null }
+     */
+    protected static function is_external_user(): object {
+        global $USER, $DB;
+        $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
+                 "WHERE u.userid = :userid AND f.shortname = :field";
+
+        $output = (object)['isexternal' => false, 'verified_status' => null];
+        $userid = $USER->id;
+
+        // Check 1: Is user marked as 'external_user'?
+        $paramsexternal = ['userid' => $userid, 'field' => 'external_user'];
+        if ($DB->record_exists_sql($query, $paramsexternal)) {
+            $data = $DB->get_field_sql($query, $paramsexternal);
+            $output->isexternal = boolval($data);
+        }
+
+        if (!$output->isexternal) {
+            return $output;
+        }
+
+        // Check 2: Get verification status ('external_user_verified' field).
+        $paramsverified = ['userid' => $userid, 'field' => 'external_user_verified'];
+        if ($DB->record_exists_sql($query, $paramsverified)) {
+            $output->verified_status = $DB->get_field_sql($query, $paramsverified);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Checks if the user needs to agree to site policies and returns true if redirection should be blocked.
+     *
+     * @return bool
+     */
+    protected static function check_policy_agreements(): bool {
+        global $USER, $DB;
+
+        if (get_config('core', 'sitepolicyhandler') == "tool_policy" && !$USER->policyagreed) {
+            $activepolicies = $DB->get_records('tool_policy_versions', ['archived' => 0, 'optional' => 0]);
+            if (count($activepolicies) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Redirects the unverified external user to the verification page based on status or expiry date.
+     *
+     * @param string|null $externalverified The verification status field value.
+     * @return bool True if a redirection occurred.
+     */
+    protected static function redirect_if_unverified(?string $externalverified): bool {
+        global $PAGE, $USER, $DB;
 
         $common = new common();
-        if ($common->check_redirect_excludes($PAGE->url)) {
+        if ($common->check_redirect_excludes($PAGE->url) || str_contains($PAGE->url, "verification.php")) {
+            return false;
+        }
+
+        $url = new moodle_url('/local/external_users/views/verification.php');
+        $redirectmessage = get_string('verify_redirect', 'local_external_users');
+
+        // Check 1: Verification status is an expiry date (d.m.Y) and it is passed.
+        $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
+        if ($limited instanceof DateTime) {
+            $currentdate = new DateTime();
+            if ($limited < $currentdate) {
+                redirect($url, $redirectmessage, 10);
+                return true;
+            }
+        }
+
+        $allowbrowsing = get_config("local_external_users", "allowbrowsing");
+
+        if ($externalverified !== '1') {
+            if ($allowbrowsing) {
+                global $DB;
+                $tariff = get_config("local_external_users", "allowbrowsing_tariff");
+                $user = $DB->get_record("user", ["id" => $USER->id]);
+                profile_load_data($user);
+                $user->profile_field_eduPersonScopedAffiliation = $tariff;
+                $user->profile_field_external_user_comment = "browsing";
+                profile_save_data($user);
+            }
+
+            if ($externalverified === '-1') {
+                // Pass.
+            } else if (!$allowbrowsing) {
+                // Pass.
+            } else {
+                return false;
+            }
+            redirect($url, $redirectmessage, 10);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Injects the external user files and comments table onto the user profile page for admins.
+     *
+     * @param bool $isexternal True if the currently viewed user is an external user.
+     */
+    protected static function display_user_files(bool $isexternal): void {
+        global $PAGE, $DB, $OUTPUT;
+        $context = context_system::instance();
+
+        if (
+            !str_contains($PAGE->url, "/user/profile.php") ||
+            !has_capability('local/external_users:manage', $context)
+        ) {
             return;
         }
 
-        if ($external && !strpos($PAGE->url, "verification.php")) {
-            if ($limited !== false) {
-                $currentdate = new \DateTime();
-                if ($limited < $currentdate) {
-                    redirect(
-                        $url,
-                        get_string('verify_redirect', 'local_external_users'),
-                        10
-                    );
-                    return;
-                }
-            } else if ($externalverified != 1) {
-                redirect(
-                    $url,
-                    get_string('verify_redirect', 'local_external_users'),
-                    10
-                );
-                return;
-            }
+        $userid = optional_param('id', -1, PARAM_INT);
+        if ($userid === -1) {
+            return;
         }
 
-        if (
-            strpos($PAGE->url, "/user/profile.php")
-            && has_capability('local/external_users:manage', $context)
-        ) {
-            global $OUTPUT;
-            $userid = optional_param('id', "-1", PARAM_INT);
-            $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);
-
-            $data = [];
-            foreach ($userfiles as $file) {
-                $actionurl = \moodle_url::make_pluginfile_url(
-                    $file->contextid,
-                    $file->component,
-                    $file->filearea,
-                    $file->userid,
-                    $file->filepath,
-                    $file->filename,
-                    false
-                );
-                $data[] = \html_writer::link($actionurl, $file->filename);
-            }
-
-            $comment = $DB->get_record_sql(
-                "SELECT uid.data " .
-                    "FROM {user_info_data} uid " .
-                    "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) " .
-                    "WHERE uid.userid = :userid AND uif.shortname LIKE 'external_user_comment'",
-                ["userid" => $userid]
+        // 1. Collect files data
+        $data = [];
+        $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);
+        foreach ($userfiles as $file) {
+            $actionurl = \moodle_url::make_pluginfile_url(
+                $file->contextid,
+                $file->component,
+                $file->filearea,
+                $file->userid,
+                $file->filepath,
+                $file->filename,
+                false
             );
-
-            $comment = $comment->data ?? null;
-            $content = ['data' => $data,
-                'sectiontitle' => get_string(
-                    "pluginname",
-                    "local_external_users"
-                ) . " " . get_string(
-                    "files",
-                    "local_external_users"
-                ),
-                'comment' => $comment];
-
-            $filetable = $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
-
-            if ($userid != '-1') {
-                $PAGE->requires->js_call_amd(
-                    'local_external_users/profilefiles',
-                    "append",
-                    [$filetable]
-                );
-            }
+            $data[] = html_writer::link($actionurl, $file->filename);
         }
+
+        // 2. Get comment data
+        $comment = $DB->get_field_sql(
+            "SELECT uid.data " .
+            "FROM {user_info_data} uid " .
+            "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) " .
+            "WHERE uid.userid = :userid AND uif.shortname = 'external_user_comment'",
+            ["userid" => $userid]
+        );
+
+        // 3. Render and inject the table
+        $content = [
+            'data' => $data,
+            'sectiontitle' => get_string("pluginname", "local_external_users") . " " . get_string("files", "local_external_users"),
+            'comment' => $comment,
+        ];
+
+        $filetable = $OUTPUT->render_from_template("local_external_users/profilefiles", $content);
+
+        $PAGE->requires->js_call_amd('local_external_users/profilefiles', "append", [$filetable]);
     }
 }

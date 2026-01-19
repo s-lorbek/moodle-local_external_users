@@ -38,12 +38,13 @@ final class external_users_test extends advanced_testcase {
     /** @var stdClass A test course. */
     protected stdClass $course;
 
-
     /** @var stdClass $external_user A test user of type external user. */
     protected stdClass $externaluser;
 
     /** @var common $commonClass Class object of utility class common */
     protected common $commonclass;
+
+    protected stdClass $coursecontext;
 
 
     /**
@@ -90,7 +91,7 @@ final class external_users_test extends advanced_testcase {
         $this->assertEquals($tariff, $this->externaluser->profile_field_eduPersonScopedAffiliation);
         $this->assertEquals(1, $this->externaluser->profile_field_external_user);
         $this->assertEquals(1, $this->externaluser->profile_field_external_user_verified);
-        $this->assertEquals(0, $this->externaluser->profile_field_external_user_pending);
+        $this->assertEquals('', $this->externaluser->profile_field_external_user_pending);
         $this->assertEquals($defaultcomment, $this->externaluser->profile_field_external_user_comment);
     }
 
@@ -111,7 +112,7 @@ final class external_users_test extends advanced_testcase {
         profile_load_data($this->externaluser);
         $this->assertEquals(1, $this->externaluser->profile_field_external_user);
         $this->assertEquals(-1, $this->externaluser->profile_field_external_user_verified);
-        $this->assertEquals(0, $this->externaluser->profile_field_external_user_pending);
+        $this->assertEquals('', $this->externaluser->profile_field_external_user_pending);
         $this->assertEquals($comment, $this->externaluser->profile_field_external_user_comment);
         $this->assertEquals(0, $DB->get_field(
             "user",
@@ -161,5 +162,30 @@ final class external_users_test extends advanced_testcase {
         $this->commonclass->setaffiliation($this->externaluser->id, $affiliation);
         profile_load_data($this->externaluser);
         $this->assertEquals($affiliation, $this->externaluser->profile_field_external_user_affiliation);
+    }
+
+    public function test_redirect_on_expired_date(): void {
+        // 1. Setup User and Status
+        $this->setUser($this->externaluser);
+        profile_load_data($this->externaluser);
+        $this->externaluser->profile_field_external_user_verified = '01.01.2025';
+        profile_save_data($this->externaluser);
+
+        // 2. Mock Redirect
+        $this->mock_function('redirect');
+
+        // 3. Mock PAGE->url and common::check_redirect_excludes (to allow redirect)
+        global $PAGE;
+        $PAGE = $this->getMockBuilder(\moodle_page::class)
+            ->onlyMethods(['url'])
+            ->getMock();
+        $PAGE->url = new moodle_url('/course/view.php');
+
+
+        // 4. Execute and Assert
+        $result = hook_callbacks::redirect_if_unverified('01.01.2025');
+
+        $this->assertTrue($result, 'Should redirect because the date has expired.');
+        $this->assert_function_called('redirect');
     }
 }

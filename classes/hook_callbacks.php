@@ -61,30 +61,34 @@ class hook_callbacks {
      */
     protected static function is_external_user(): object {
         global $USER, $DB;
-        $query = "SELECT data FROM {user_info_data} u INNER JOIN {user_info_field} f ON (u.fieldid = f.id) " .
-                 "WHERE u.userid = :userid AND f.shortname = :field";
+        static $cache = null;
 
-        $output = (object)['isexternal' => false, 'verified_status' => null];
-        $userid = $USER->id;
-
-        // Check 1: Is user marked as 'external_user'?
-        $paramsexternal = ['userid' => $userid, 'field' => 'external_user'];
-        if ($DB->record_exists_sql($query, $paramsexternal)) {
-            $data = $DB->get_field_sql($query, $paramsexternal);
-            $output->isexternal = boolval($data);
+        if (isset($USER->local_external_users_cache)) {
+            return $USER->local_external_users_cache;
         }
 
-        if (!$output->isexternal) {
-            return $output;
+        if ($cache !== null) {
+            return $cache;
         }
+        $data = (object)['isexternal' => false, 'verified_status' => null];
 
-        // Check 2: Get verification status ('external_user_verified' field).
-        $paramsverified = ['userid' => $userid, 'field' => 'external_user_verified'];
-        if ($DB->record_exists_sql($query, $paramsverified)) {
-            $output->verified_status = $DB->get_field_sql($query, $paramsverified);
+        $sql = "SELECT f.shortname, d.data
+            FROM {user_info_field} f
+            JOIN {user_info_data} d ON d.fieldid = f.id
+            WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified')";
+
+        $fields = $DB->get_records_sql($sql, ['userid' => $USER->id]);
+
+        if (isset($fields['external_user'])) {
+            $data->isexternal = (bool)$fields['external_user']->data;
         }
+        if (isset($fields['external_user_verified'])) {
+            $data->verified_status = $fields['external_user_verified']->data;
+        }
+        $USER->local_external_users_cache = $data;
+        $cache = $data;
 
-        return $output;
+        return $data;
     }
 
     /**
@@ -111,7 +115,7 @@ class hook_callbacks {
      * @return bool True if a redirection occurred.
      */
     protected static function redirect_if_unverified(?string $externalverified): bool {
-        global $PAGE, $USER, $DB;
+        global $PAGE, $USER;
 
         $common = new common();
         if ($common->check_redirect_excludes($PAGE->url) || str_contains($PAGE->url, "verification.php")) {
@@ -121,37 +125,34 @@ class hook_callbacks {
         $url = new moodle_url('/local/external_users/views/verification.php');
         $redirectmessage = get_string('verify_redirect', 'local_external_users');
 
-        // Check 1: Verification status is an expiry date (d.m.Y) and it is passed.
         $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
-        if ($limited instanceof DateTime) {
-            $currentdate = new DateTime();
-            if ($limited < $currentdate) {
-                redirect($url, $redirectmessage, 10);
-                return true;
-            }
+        if ($limited instanceof DateTime && $limited < new DateTime()) {
+            redirect($url, $redirectmessage, 10);
+            return true;
         }
 
-        $allowbrowsing = get_config("local_external_users", "allowbrowsing");
-
         if ($externalverified !== '1') {
-            if ($allowbrowsing) {
-                global $DB;
-                $tariff = get_config("local_external_users", "allowbrowsing_tariff");
-                $user = $DB->get_record("user", ["id" => $USER->id]);
-                profile_load_data($user);
-                $user->profile_field_eduPersonScopedAffiliation = $tariff;
-                $user->profile_field_external_user_comment = "browsing";
-                profile_save_data($user);
+            if (get_config("local_external_users", "allowbrowsing")) {
+                      $tariff = get_config("local_external_users", "allowbrowsing_tariff");
+                if (
+                    !isset($USER->profile['eduPersonScopedAffiliation']) ||
+                    $USER->profile['eduPersonScopedAffiliation'] !== $tariff
+                ) {
+                    $userrecord = get_complete_user_data('id', $USER->id);
+                    $userrecord->profile_field_eduPersonScopedAffiliation = $tariff;
+                    $userrecord->profile_field_external_user_comment = "browsing";
+                    profile_save_data($userrecord);
+                }
             }
 
             if ($externalverified === '-1') {
                 // Pass.
-            } else if (!$allowbrowsing) {
+            } else if (!get_config("local_external_users", "allowbrowsing")) {
                 // Pass.
             } else {
                 return false;
             }
-            redirect($url, $redirectmessage, 10);
+            redirect(new moodle_url('/local/external_users/views/verification.php'), get_string('verify_redirect', 'local_external_users'), 10);
             return true;
         }
         return false;
@@ -164,21 +165,21 @@ class hook_callbacks {
      */
     protected static function display_user_files(bool $isexternal): void {
         global $PAGE, $DB, $OUTPUT;
-        $context = context_system::instance();
 
-        if (
-            !str_contains($PAGE->url, "/user/profile.php") ||
-            !has_capability('local/external_users:manage', $context)
-        ) {
+        if (!str_contains($PAGE->url->out(), "/user/profile.php")) {
+            return;
+        }
+
+        $context = context_system::instance();
+        if (!has_capability('local/external_users:manage', $context)) {
             return;
         }
 
         $userid = optional_param('id', -1, PARAM_INT);
-        if ($userid === -1) {
+        if ($userid <= 0) {
             return;
         }
 
-        // 1. Collect files data
         $data = [];
         $userfiles = $DB->get_records("local_external_users_files", ['userid' => $userid]);
         foreach ($userfiles as $file) {
@@ -194,7 +195,6 @@ class hook_callbacks {
             $data[] = html_writer::link($actionurl, $file->filename);
         }
 
-        // 2. Get comment data
         $comment = $DB->get_field_sql(
             "SELECT uid.data " .
             "FROM {user_info_data} uid " .
@@ -203,7 +203,6 @@ class hook_callbacks {
             ["userid" => $userid]
         );
 
-        // 3. Render and inject the table
         $content = [
             'data' => $data,
             'sectiontitle' => get_string("pluginname", "local_external_users") . " " . get_string("files", "local_external_users"),

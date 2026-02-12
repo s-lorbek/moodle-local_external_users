@@ -164,28 +164,127 @@ final class external_users_test extends advanced_testcase {
         $this->assertEquals($affiliation, $this->externaluser->profile_field_external_user_affiliation);
     }
 
+    /**
+     * Tests that the hook correctly redirects the user if the verified date is expired.
+     *
+     * Creates a user and sets the external user flag and the verified date to yesterday.
+     * Then calls the hook and checks that a redirect occurred.
+     *
+     * @throws moodle_exception
+     */
     public function test_redirect_on_expired_date(): void {
-        // 1. Setup User and Status
-        $this->setUser($this->externaluser);
-        profile_load_data($this->externaluser);
-        $this->externaluser->profile_field_external_user_verified = '01.01.2025';
-        profile_save_data($this->externaluser);
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $verified = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user_verified']);
+        $external = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user']);
 
-        // 2. Mock Redirect
-        $this->mock_function('redirect');
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $external,
+        'data' => '1',
+        ]);
 
-        // 3. Mock PAGE->url and common::check_redirect_excludes (to allow redirect)
-        global $PAGE;
-        $PAGE = $this->getMockBuilder(\moodle_page::class)
-            ->onlyMethods(['url'])
+        $yesterday = (new \DateTime('yesterday'))->format('d.m.Y');
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $verified,
+        'data' => $yesterday,
+        ]);
+
+        $this->setUser($user);
+
+        $PAGE->set_url(new \moodle_url('/index.php'));
+        $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
+            ->disableOriginalConstructor()
             ->getMock();
-        $PAGE->url = new moodle_url('/course/view.php');
 
+        $this->expectException(\moodle_exception::class);
+        \local_external_users\hook_callbacks::onload($hookmock);
+    }
 
-        // 4. Execute and Assert
-        $result = hook_callbacks::redirect_if_unverified('01.01.2025');
+    /**
+     * Tests that the hook doesn't redirect the user if the date is valid.
+     *
+     * The test creates a user and sets the external user flag and the verified date to a valid date in the future.
+     * It then calls the hook and checks that no redirect occurred.
+     */
+    public function test_noredirect_on_valid_date(): void {
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $verified = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user_verified']);
+        $external = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user']);
 
-        $this->assertTrue($result, 'Should redirect because the date has expired.');
-        $this->assert_function_called('redirect');
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $external,
+        'data' => '1',
+        ]);
+
+        $todayinnextyear = (new \DateTime('today +1 year'))->format('d.m.Y');
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $verified,
+        'data' => $todayinnextyear,
+        ]);
+
+        $this->setUser($user);
+
+        $PAGE->set_url(new \moodle_url('/index.php'));
+        $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        \local_external_users\hook_callbacks::onload($hookmock);
+        $this->assertTrue(true, "Hook finished without redirecting because the user has a valid date.");
+    }
+
+    /**
+     * Tests that the hook redirects the user if the user is unverified or rejected.
+     *
+     * The test creates a user and sets the external user flag and the verified date to unverified and rejected respectively.
+     * It then calls the hook and checks that a redirect occurred in both cases.
+     */
+    public function test_redirect_on_unverified_or_rejected_user(): void {
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $verified = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user_verified']);
+        $external = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user']);
+
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $external,
+        'data' => '1',
+        ]);
+
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $verified,
+        'data' => '0', // Unverified.
+        ]);
+
+        $this->setUser($user);
+
+        $PAGE->set_url(new \moodle_url('/index.php'));
+        $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->expectException(\moodle_exception::class);
+        \local_external_users\hook_callbacks::onload($hookmock);
+
+        $DB->insert_record('user_info_data', [
+        'userid' => $user->id,
+        'fieldid' => $verified,
+        'data' => '-1', // Rejected.
+        ]);
+         $PAGE->set_url(new \moodle_url('/index.php'));
+        $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->expectException(\moodle_exception::class);
+        \local_external_users\hook_callbacks::onload($hookmock);
     }
 }

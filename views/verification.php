@@ -80,14 +80,17 @@ class verification {
      */
     private function transform_data(): void {
         profile_load_data($this->user);
-        if (
-            !$this->user->profile_field_external_user || ($this->user->profile_field_external_user_verified != 0 &&
-                $this->user->profile_field_external_user_verified != -1)
-        ) {
-            $limited = \DateTime::createFromFormat('d.m.Y', $this->user->profile_field_external_user_verified);
-            if (!$limited || $limited > $this->currentdate) {
-                redirect('/', get_string('redirect', 'local_external_users'), 0);
-            }
+
+        $status = $this->user->profile_field_external_user_verified;
+        $isverified = ($status === '1');
+
+        $limited = \DateTime::createFromFormat('d.m.Y', $status);
+        if ($limited && $limited >= $this->currentdate) {
+            $isverified = true;
+        }
+
+        if (!$this->user->profile_field_external_user || $isverified) {
+            redirect('/', get_string('redirect', 'local_external_users'), 0);
         }
     }
 

@@ -61,18 +61,15 @@ class hook_callbacks {
      */
     protected static function is_external_user(): object {
         global $USER, $DB;
-        static $cache = null;
+        static $requestcache = null;
 
-        if (isset($USER->local_external_users_cache)) {
-            return $USER->local_external_users_cache;
+        if ($requestcache !== null) {
+            return $requestcache;
         }
 
-        if ($cache !== null) {
-            return $cache;
-        }
         $data = (object)['isexternal' => false, 'verified_status' => null];
 
-        $sql = "SELECT f.shortname, d.data
+        $sql = "SELECT f.id, f.shortname, d.data
             FROM {user_info_field} f
             JOIN {user_info_data} d ON d.fieldid = f.id
             WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified')";
@@ -85,8 +82,7 @@ class hook_callbacks {
         if (isset($fields['external_user_verified'])) {
             $data->verified_status = $fields['external_user_verified']->data;
         }
-        $USER->local_external_users_cache = $data;
-        $cache = $data;
+        $requestcache = $data;
 
         return $data;
     }
@@ -115,48 +111,47 @@ class hook_callbacks {
      * @return bool True if a redirection occurred.
      */
     protected static function redirect_if_unverified(?string $externalverified): bool {
-        global $PAGE, $USER;
+        global $PAGE;
 
         $common = new common();
-        if ($common->check_redirect_excludes($PAGE->url) || str_contains($PAGE->url, "verification.php")) {
+        if ($common->check_redirect_excludes($PAGE->url) || str_contains(qualified_me(), "verification.php")) {
             return false;
         }
 
-        $url = new moodle_url('/local/external_users/views/verification.php');
+        $url = new \moodle_url('/local/external_users/views/verification.php');
         $redirectmessage = get_string('verify_redirect', 'local_external_users');
 
-        $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
-        if ($limited instanceof DateTime && $limited < new DateTime()) {
-            redirect($url, $redirectmessage, 10);
-            return true;
-        }
-
-        if ($externalverified !== '1') {
-            if (get_config("local_external_users", "allowbrowsing")) {
-                      $tariff = get_config("local_external_users", "allowbrowsing_tariff");
-                if (
-                    !isset($USER->profile['eduPersonScopedAffiliation']) ||
-                    $USER->profile['eduPersonScopedAffiliation'] !== $tariff
-                ) {
-                    $userrecord = get_complete_user_data('id', $USER->id);
-                    $userrecord->profile_field_eduPersonScopedAffiliation = $tariff;
-                    $userrecord->profile_field_external_user_comment = "browsing";
-                    profile_save_data($userrecord);
+        if (!empty($externalverified) && strlen($externalverified) > 2) {
+            $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
+            if ($limited instanceof DateTime) {
+                if ($limited >= new DateTime('today')) {
+                    return false;
                 }
             }
-
-            if ($externalverified === '-1') {
-                // Pass.
-            } else if (!get_config("local_external_users", "allowbrowsing")) {
-                // Pass.
-            } else {
-                return false;
-            }
-            redirect(new moodle_url('/local/external_users/views/verification.php'), get_string('verify_redirect', 'local_external_users'), 10);
-            return true;
         }
-        return false;
+
+        if ($externalverified === '1') {
+            return false;
+        }
+
+        if (get_config("local_external_users", "allowbrowsing")) {
+                  $tariff = get_config("local_external_users", "allowbrowsing_tariff");
+            if (
+                !isset($USER->profile['eduPersonScopedAffiliation']) ||
+                $USER->profile['eduPersonScopedAffiliation'] !== $tariff
+            ) {
+                $userrecord = get_complete_user_data('id', $USER->id);
+                $userrecord->profile_field_eduPersonScopedAffiliation = $tariff;
+                $userrecord->profile_field_external_user_comment = "browsing";
+                profile_save_data($userrecord);
+            }
+        }
+
+        redirect($url, $redirectmessage, 10);
+        return true;
     }
+
+
 
     /**
      * Injects the external user files and comments table onto the user profile page for admins.

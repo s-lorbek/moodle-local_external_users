@@ -16,38 +16,20 @@
 
 namespace local_external_users;
 
-// @codingStandardsIgnoreStart
-global $CFG;
-
-use coding_exception;
 use context_system;
-use dml_exception;
-use moodle_exception;
-use moodle_url;
-use required_capability_exception;
-use function get_string;
-
-require('../../../config.php');
-// @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/verification_form.php');
-require_once('../classes/common.php');
 
 /**
  * Class manage
  *
- * Handles the management dashboard for the local_external_users plugin.
- *
  * @package    local_external_users
- * @copyright  2024 Stephan (your name or organization)
+ * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manage {
     /**
      * @var array $dashboarddata Data for the management dashboard template.
      */
-    private array $dashboarddata;
+    private array $dashboarddata = [];
 
     /**
      * Constructs the manage dashboard page for the plugin.
@@ -57,14 +39,6 @@ class manage {
      * @throws required_capability_exception
      */
     public function __construct() {
-        global $PAGE;
-        $context = context_system::instance();
-        $PAGE->set_context($context);
-        $PAGE->set_url(new moodle_url('/local/external_users/views/manage.php'));
-        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_pagelayout('standard');
-        require_capability('local/external_users:manage', $context);
         self::transform_data();
     }
 
@@ -100,6 +74,3 @@ class manage {
         echo $OUTPUT->footer();
     }
 }
-
-$m = new manage();
-$m->render();

@@ -59,7 +59,7 @@ class user_rejected extends base {
      */
     public function get_url(): moodle_url {
         return new moodle_url(
-            '/local/external_users/views/profile.php',
+            '/local/external_users/profile.php',
             ['id' => $this->other['userid']]
         );
     }

@@ -28,5 +28,5 @@ $plugin->component = 'local_external_users';
 $plugin->release = '2.0.9';
 $plugin->version = 2026021200;
 $plugin->requires = 2020110900;
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = ['auth_external' => 2022081801];

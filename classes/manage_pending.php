@@ -14,17 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- *
- * @package   local_external_users
- * @copyright 2022 Stephan Lorbek
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_external_users;
-
-// @codingStandardsIgnoreStart
-global $CFG;
 
 use coding_exception;
 use context_system;
@@ -36,10 +26,13 @@ use moodle_url;
 use required_capability_exception;
 use function get_string;
 
-require('../../../config.php');
-// @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/common.php');
+/**
+ * Class manage_pending
+ *
+ * @package    local_external_users
+ * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 class manage_pending {
     private common $common;
@@ -57,14 +50,8 @@ class manage_pending {
      * @throws moodle_exception
      */
     public function __construct() {
-        global $PAGE, $CFG;
-        $context = context_system::instance();
-        $PAGE->set_context($context);
-        $PAGE->set_url(new moodle_url('/local/external_users/views/manage_pending.php'));
-        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_pagelayout('standard');
-        require_capability('local/external_users:manage', $context);
+        global $CFG;
+
         $this->common = new common();
 
         $this->pendingtable = new html_table();
@@ -91,7 +78,7 @@ class manage_pending {
         $this->waitingtable->id = 'sortabletablewaiting';
         foreach ($waitingexternalusers as $user) {
             $actionurl = new moodle_url(
-                "/local/external_users/views/profile.php",
+                "/local/external_users/profile.php",
                 ['id' => $user->id, "referrer" => "manage_pending"]
             );
             $this->waitingtable->data[] = [
@@ -116,7 +103,7 @@ class manage_pending {
 
         foreach ($pendingexternalusers as $user) {
             $actionurl = new moodle_url(
-                "/local/external_users/views/profile.php",
+                "/local/external_users/profile.php",
                 ['id' => $user->id, "referrer" => "manage_pending"]
             );
             $this->pendingtable->data[] = [
@@ -165,6 +152,3 @@ class manage_pending {
         echo $OUTPUT->footer();
     }
 }
-
-$mp = new manage_pending();
-$mp->render();

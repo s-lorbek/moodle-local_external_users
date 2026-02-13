@@ -49,6 +49,6 @@ class mail_failed extends base {
      * @return moodle_url
      */
     public function get_url(): moodle_url {
-        return new moodle_url('/local/external_users/views/manage.php');
+        return new moodle_url('/local/external_users/manage.php');
     }
 }

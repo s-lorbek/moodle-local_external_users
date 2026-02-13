@@ -86,6 +86,10 @@ class verification_form extends moodleform {
                     "required"
                 );
             }
+            $this->add_action_buttons(
+                false,
+                get_string('form_submit', 'local_external_users')
+            );
         }
     }
     /**

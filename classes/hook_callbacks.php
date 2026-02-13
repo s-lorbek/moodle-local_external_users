@@ -69,7 +69,7 @@ class hook_callbacks {
 
         $data = (object)['isexternal' => false, 'verified_status' => null];
 
-        $sql = "SELECT f.id, f.shortname, d.data
+        $sql = "SELECT f.shortname, d.data
             FROM {user_info_field} f
             JOIN {user_info_data} d ON d.fieldid = f.id
             WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified')";
@@ -114,11 +114,11 @@ class hook_callbacks {
         global $PAGE;
 
         $common = new common();
-        if ($common->check_redirect_excludes($PAGE->url) || str_contains(qualified_me(), "verification.php")) {
+        if ($common->check_redirect_excludes($PAGE->url) || str_contains(qualified_me(), "verify.php")) {
             return false;
         }
 
-        $url = new \moodle_url('/local/external_users/views/verification.php');
+        $url = new \moodle_url('/local/external_users/verify.php');
         $redirectmessage = get_string('verify_redirect', 'local_external_users');
 
         if (!empty($externalverified) && strlen($externalverified) > 2) {

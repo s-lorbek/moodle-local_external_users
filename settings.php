@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $ADMIN->add('modsettings', new admin_externalpage(
     'external_users',
     get_string('pluginname', 'local_external_users') . " Dashboard",
-    new moodle_url('/local/external_users/views/manage.php'),
+    new moodle_url('/local/external_users/manage.php'),
     'local/external_users:manage'
 ));
 

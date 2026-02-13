@@ -178,7 +178,7 @@ class common {
             !$DB->record_exists(
                 "user",
                 ["id" => $userid]
-            ) && !self::is_external_user($userid)
+            ) || !self::is_external_user($userid)
         ) {
             return -1;
         }
@@ -391,9 +391,9 @@ class common {
 
         $limited = "";
         if ($type == "limited2") {
-            $limited = self::getEndOfNextSemester();
+            $limited = self::getendofnextsemester();
         } else {
-            $limited = self::getEndOfSemester();
+            $limited = self::getendofsemester();
         }
 
         $event = user_limitedapproved::create([
@@ -490,12 +490,14 @@ class common {
             return -1;
         }
         $user = $DB->get_record("user", ["id" => $userid]);
+
+        $cleancomment = clean_param($comment, PARAM_TEXT);
         profile_load_data($user);
 
         $user->profile_field_external_user = 1;
         $user->profile_field_external_user_verified = -1;
         $user->profile_field_external_user_pending = false;
-        $user->profile_field_external_user_comment = $comment;
+        $user->profile_field_external_user_comment = $cleancomment;
 
         profile_save_data($user);
         $messageid = send_message_to_user(

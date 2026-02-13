@@ -2,64 +2,68 @@
     @template local_external_users/profile_control
 }}
 <div class="card-body mx-auto" style="max-width: 1200px">
-    <form id="affiliationChange" action="affiliate.php">
-        <input type="text" name="id" value="{{userid}}" hidden>
+    <form id="affiliationChange" action="action.php" method="post">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="affiliate">
+        <input type="hidden" name="id" value="{{userid}}">
+        <input type="hidden" name="referrer" value="{{referrer}}">
+        
         <label for="affiliation">{{affiliation_label}}: </label>
-        <select id="affiliation" name="affiliation" class="select custom-select cal_courses_flt ml-1 mr-auto"
-                aria-label="Affiliation selection">
+        <select id="affiliation" name="affiliation" class="custom-select ml-1 mr-auto">
                 <option> </option>
                 {{#affiliation_options}}
                     <option {{#selected}}selected{{/selected}} value="{{value}}">{{value}}</option>
                 {{/affiliation_options}}
-
         </select>
-        <input type="text" name="referrer" value="{{referrer}}" hidden>
     </form>
 </div>
+
 <div class="card-body mx-auto" style="max-width: 1200px">
-    <form action="approve.php">
-        <input type="text" name="id" value="{{userid}}" hidden>
-        <input type="text" name="type" value="{{action}}" hidden>
-        <input type="text" name="referrer" value="{{referrer}}" hidden>
-        {{#action}}
-            <label for="price_category">eduScope:</label><br>
-            <select class="select custom-select cal_courses_flt ml-1 mr-auto" name="tariff">
+    <form action="action.php" method="post">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="approve">
+        <input type="hidden" name="id" value="{{userid}}">
+        <input type="hidden" name="referrer" value="{{referrer}}">
+        
+        <input type="hidden" name="type" value="{{verify_mode}}">
+
+        {{#is_unverified}}
+            <label for="tariff">eduScope:</label><br>
+            <select class="custom-select ml-1 mr-auto" name="tariff" id="tariff">
             {{#price_categories}}
                 <option value="{{.}}">{{.}}</option>
             {{/price_categories}}
             </select>
-        {{/action}}
+        {{/is_unverified}}
+
         {{#approve}}
             <button name="submitButton" value="regular" class="btn btn-{{btn1_style}} ml-2">{{approve}}</button>
             <button name="submitButton" value="limited" class="btn btn-{{btn1_style}} ml-2">{{approve-limited}}</button>
             <button name="submitButton" value="limited2" class="btn btn-{{btn1_style}} ml-2">{{approve-limited2}}</button>
         {{/approve}}
+        
         {{#revoke}}
             <button class="btn btn-{{btn1_style}}">{{revoke}}</button>
         {{/revoke}}
     </form>
     <hr>
-    <form method="post" action="reject.php">
-        <input type="text" name="id" value="{{userid}}" hidden>
-        <input type="text" name="referrer" value="{{referrer}}" hidden>
+    <form method="post" action="action.php">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="reject">
+        <input type="hidden" name="id" value="{{userid}}">
+        <input type="hidden" name="referrer" value="{{referrer}}">
         <fieldset>
             <legend>{{legend}}</legend>
             {{{options}}}
             <label for="comment">{{rejection_control_additional_comment}}</label><br>
-            <textarea class="w-100" id="comment" name="comment" rows="4" cols="50">
-        </textarea>
+            <textarea class="w-100" id="comment" name="comment" rows="4"></textarea>
         </fieldset>
         <button class="btn btn-danger">{{rejection_header}}</button>
     </form>
-    <hr>
 </div>
 
 {{#js}}
-    {{#affiliation_options}}
-        var e = document.getElementById('affiliation');
-        var form = document.getElementById('affiliationChange');
-        e.addEventListener("change", function() {
-            form.submit();
-        });
-    {{/affiliation_options}}
+    document.getElementById('affiliation').addEventListener("change", function() {
+        document.getElementById('affiliationChange').submit();
+    });
 {{/js}}

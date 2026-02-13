@@ -14,45 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- *
- * @package   local_external_users
- * @copyright 2022 Stephan Lorbek
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_external_users;
 
-// @codingStandardsIgnoreStart
-global $CFG;
+defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
-use context_system;
-use dml_exception;
+use stdClass;
+use moodle_url;
 use html_table;
 use html_writer;
-use moodle_exception;
-use moodle_url;
-use required_capability_exception;
-use stdClass;
-use function get_string;
-
-require('../../../config.php');
-// @codingStandardsIgnoreEnd
-require_once($CFG->libdir . '/formslib.php');
-require_once($CFG->libdir . '/datalib.php');
-require_once('../classes/verification_form.php');
-require_once('../classes/common.php');
 
 /**
  * Class profile
  *
- * This class handles the user profile functionalities within the external users module.
- *
  * @package    local_external_users
- * @subpackage views
- * @category   profile
- * @author     Stephan
+ * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class profile {
@@ -73,21 +48,15 @@ class profile {
      * @throws required_capability_exception|moodle_exception
      */
     public function __construct() {
-        global $DB, $PAGE;
-
-        $context = context_system::instance();
-        $PAGE->set_context($context);
-
-        $pageurl = new moodle_url('/local/external_users/views/manage.php');
-        $PAGE->set_url($pageurl);
-        $PAGE->set_title(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_heading(get_string('pluginname', 'local_external_users'));
-        $PAGE->set_pagelayout('standard');
-        require_capability('local/external_users:manage', $context);
+        global $DB;
 
         $this->common = new common("referrer");
         $this->userid = required_param('id', PARAM_INT);
-        $this->referrer = optional_param('referrer', "manage", PARAM_TEXT);
+        $referrer = optional_param('referrer', "manage", PARAM_ALPHANUMEXT);
+
+        $allowedreferrers = ['manage', 'profile', 'verification', 'manage_pending', 'manage_verified', 'manage_rejected'];
+        $this->referrer = in_array($referrer, $allowedreferrers) ? $referrer : "manage";
+
         $this->user = $DB->get_record("user", ['id' => $this->userid]);
         $this->transform_data();
     }
@@ -124,9 +93,17 @@ class profile {
                     'local_external_users'
                 );
         }
+
+        $birthtimestamp = property_exists($this->user, 'profile_field_gebdat') ? $this->user->profile_field_gebdat : null;
+        if ($birthtimestamp && is_numeric($birthtimestamp)) {
+            $formattedbirthdate = date('d.m.Y', (int)$birthtimestamp);
+        } else {
+            $formattedbirthdate = "---";
+        }
+
         $this->profiledata = [
             'back_label' => get_string('back_label', 'local_external_users'),
-            'back_link' => $this->referrer . ".php",
+            'back_link' => new moodle_url('/local/external_users/' . $this->referrer . '.php'),
             'firstname' => $this->user->firstname,
             'middlename' => $this->user->middlename,
             'lastname' => $this->user->lastname,
@@ -144,13 +121,7 @@ class profile {
                 'uploadedfiles',
                 'local_external_users'
             ),
-            'birthdate' => get_string(
-                'birthdate',
-                'local_external_users'
-            ) . ": " . date(
-                'd.m.Y',
-                property_exists($this->user, 'profile_field_gebdat') ? $this->user->profile_field_gebdat : null
-            ),
+            'birthdate' => get_string('birthdate', 'local_external_users') . ": " . $formattedbirthdate,
             'username' => get_string('username', 'local_external_users') . ": " . $this->user->username,
             'affiliation' => get_string('affiliation', 'local_external_users') . ": " .
                 $this->user->profile_field_external_user_affiliation,
@@ -165,7 +136,7 @@ class profile {
             $this->profiledata['userpiclink'] = null;
         } else {
             $userpic = $DB->get_record_sql(
-                "SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea LIKE 'userfileimage'",
+                "SELECT * FROM {local_external_users_files} WHERE userid = :userid and filearea = 'userfileimage'",
                 ["userid" => $this->userid]
             );
             if ($userpic) {
@@ -221,10 +192,13 @@ class profile {
                 'selected' => ($affiliationoptions === $this->user->profile_field_external_user_affiliation)];
         }, $affiliationoptions);
 
+        $isverified = $this->common->is_user_verified($this->userid);
+
         $this->profilecontrol = [
             'legend' => get_string('rejection_control_header', 'local_external_users'),
             'options' => $options,
-            'action' => !$action,
+            'is_unverified' => !$isverified,
+            'verify_mode'   => !$isverified ? 1 : 0,
             'userid' => $this->userid,
             'btn1_style' => !$action ? "primary" : "warning",
             'rejection_control_additional_comment' => get_string(
@@ -237,6 +211,7 @@ class profile {
             'referrer' => $this->referrer,
             'price_categories' =>
                 $this->common->parse_string_to_array(get_config("local_external_users", "price_category_order")),
+            'sesskey' => sesskey(),
         ];
 
         if ($this->common->is_user_verified($this->userid)) {
@@ -260,24 +235,13 @@ class profile {
     public function render(): void {
         global $OUTPUT;
         echo $OUTPUT->header();
-        profile_load_data($this->user);
-        if (empty($this->userfiles) && !$this->user->profile_field_external_user_verified) {
-            echo $OUTPUT->notification(get_string(
-                'pending_onboarding',
-                'local_external_users'
-            ), 'notifymessage');
+
+        $hasfiles = $this->common->get_user_files($this->userid);
+        if (empty($hasfiles) && !$this->user->profile_field_external_user_verified) {
+            echo $OUTPUT->notification(get_string('pending_onboarding', 'local_external_users'), 'notifymessage');
         }
-        echo text_to_html($OUTPUT->render_from_template(
-            "local_external_users/profile",
-            $this->profiledata
-        ));
-        echo text_to_html($OUTPUT->render_from_template(
-            "local_external_users/profile_control",
-            $this->profilecontrol
-        ));
+        echo $OUTPUT->render_from_template("local_external_users/profile", $this->profiledata);
+        echo $OUTPUT->render_from_template("local_external_users/profile_control", $this->profilecontrol);
         echo $OUTPUT->footer();
     }
 }
-
-$p = new profile();
-$p->render();

@@ -69,21 +69,25 @@ class hook_callbacks {
 
         $data = (object)['isexternal' => false, 'verified_status' => null];
 
-        $sql = "SELECT f.shortname, d.data
+        $sql = "SELECT f.id, f.shortname, d.data
             FROM {user_info_field} f
             JOIN {user_info_data} d ON d.fieldid = f.id
             WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified')";
 
-        $fields = $DB->get_records_sql($sql, ['userid' => $USER->id]);
+        $rs = $DB->get_records_sql($sql, ['userid' => $USER->id]);
+        $fields = [];
+        foreach ($rs as $item) {
+            $fields[$item->shortname] = $item->data;
+        }
 
         if (isset($fields['external_user'])) {
-            $data->isexternal = (bool)$fields['external_user']->data;
+            $data->isexternal = (bool)$fields['external_user'];
         }
         if (isset($fields['external_user_verified'])) {
-            $data->verified_status = $fields['external_user_verified']->data;
+            $data->verified_status = $fields['external_user_verified'];
         }
-        $requestcache = $data;
 
+        $requestcache = $data;
         return $data;
     }
 
@@ -111,7 +115,7 @@ class hook_callbacks {
      * @return bool True if a redirection occurred.
      */
     protected static function redirect_if_unverified(?string $externalverified): bool {
-        global $PAGE;
+        global $PAGE, $USER;
 
         $common = new common();
         if ($common->check_redirect_excludes($PAGE->url) || str_contains(qualified_me(), "verify.php")) {
@@ -122,11 +126,9 @@ class hook_callbacks {
         $redirectmessage = get_string('verify_redirect', 'local_external_users');
 
         if (!empty($externalverified) && strlen($externalverified) > 2) {
-            $limited = DateTime::createFromFormat('d.m.Y', $externalverified);
-            if ($limited instanceof DateTime) {
-                if ($limited >= new DateTime('today')) {
-                    return false;
-                }
+            $limited = \DateTime::createFromFormat('!d.m.Y', $externalverified);
+            if ($limited instanceof \DateTime && $limited >= new \DateTime('today')) {
+                return false;
             }
         }
 
@@ -135,16 +137,16 @@ class hook_callbacks {
         }
 
         if (get_config("local_external_users", "allowbrowsing")) {
-                  $tariff = get_config("local_external_users", "allowbrowsing_tariff");
-            if (
-                !isset($USER->profile['eduPersonScopedAffiliation']) ||
-                $USER->profile['eduPersonScopedAffiliation'] !== $tariff
-            ) {
+            $tariff = get_config("local_external_users", "allowbrowsing_tariff");
+            if (!isset($USER->profile['eduPersonScopedAffiliation']) || $USER->profile['eduPersonScopedAffiliation'] !== $tariff) {
                 $userrecord = get_complete_user_data('id', $USER->id);
-                $userrecord->profile_field_eduPersonScopedAffiliation = $tariff;
-                $userrecord->profile_field_external_user_comment = "browsing";
-                profile_save_data($userrecord);
+                if ($userrecord) {
+                    $userrecord->profile_field_eduPersonScopedAffiliation = $tariff;
+                    $userrecord->profile_field_external_user_comment = "browsing";
+                    profile_save_data($userrecord);
+                }
             }
+            return false;
         }
 
         redirect($url, $redirectmessage, 10);

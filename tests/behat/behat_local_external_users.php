@@ -105,40 +105,45 @@ class behat_local_external_users extends behat_base {
      * @Given /^I set the following custom profile field values:$/
      */
     public function iSetTheFollowingCustomProfileFieldValues(TableNode $dataTable) {
-        global $DB;
-        $data = $dataTable->getRowsHash();
+         global $DB;
 
-        foreach ($data as $username => $fieldvalues) {
-            $user = $DB->get_record('user', ['username' => $username]);
-            if (!$user) {
-                throw new Exception("User '$username' not found");
-            }
+        $rows = $dataTable->getColumnsHash(); // <-- correct method for multi-column tables
 
-            foreach ($fieldvalues as $shortname => $value) {
-                $field = $DB->get_record('user_info_field', ['shortname' => $shortname]);
-                if (!$field) {
-                    throw new Exception("Profile field '$shortname' not found");
-                }
+        foreach ($rows as $row) {
+            $username = $row['username'];
+            $fieldshortname = 'external_user_verified';
+            $value = $row[$fieldshortname];
 
-                $record = $DB->get_record('user_info_data', [
-                    'userid' => $user->id,
-                    'fieldid' => $field->id,
-                ]);
+            $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
-                $datarecord = (object)[
-                    'userid' => $user->id,
-                    'fieldid' => $field->id,
-                    'data' => $value,
-                    'dataformat' => 0,
-                ];
+            $field = $DB->get_record('user_info_field', ['shortname' => $fieldshortname], '*', MUST_EXIST);
 
-                if ($record) {
-                    $datarecord->id = $record->id;
-                    $DB->update_record('user_info_data', $datarecord);
-                } else {
-                    $DB->insert_record('user_info_data', $datarecord);
-                }
+            $record = $DB->get_record('user_info_data', [
+            'userid' => $user->id,
+            'fieldid' => $field->id,
+            ]);
+
+            $datarecord = (object)[
+                'userid' => $user->id,
+                'fieldid' => $field->id,
+                'data' => (string)$value,
+                'dataformat' => 0,
+            ];
+
+            if ($record) {
+                $datarecord->id = $record->id;
+                $DB->update_record('user_info_data', $datarecord);
+            } else {
+                $DB->insert_record('user_info_data', $datarecord);
             }
         }
+    }
+
+    /**
+     * @Given /^I wait for the filepicker modal to load$/
+     */
+    public function i_wait_for_the_filepicker_modal_to_load() {
+        // Wait until the 'loading' div is hidden and the repository list is present
+        $this->getSession()->wait(10000, "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')");
     }
 }

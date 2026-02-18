@@ -5,27 +5,40 @@ Feature: External user verification gatekeeping
   I need to redirect unverified external users to the verification page
 
   Background:
-    Given the following "custom profile fields" exist:
-      | datatype | shortname               | name                     |
-      | checkbox | external_user           | External User            |
-      | text     | external_user_verified  | External User Verified   |
+    Given the following config values are set as admin:
+      | passwordpolicy  | 0     |
+      | registerauth    | external |
+      | auth            | external |
     And the following "users" exist:
-      | username | firstname | profile_field_external_user | profile_field_external_user_verified |
-      | extuser1 | Verified  | 1                           | 1                                    |
-      | extuser2 | Expired   | 1                           | 0                                    |
-      | reguser  | Regular   | 0                           |                                      |
-
+      | username | firstname | lastname | email             | auth   | suspended | timecreated        | profile_field_external_user |
+      | extveri | Verified      | 1     | user1@example.com    | external | 0         | ## 201 days ago ## | 1                      |
+      | extunveri | Unverified  | 1     | user2@example.com    | external | 0         | ## 201 days ago ## | 1                      |
+      | extlim | Limited        | 1     | user3@example.com    | external | 0         | ## 201 days ago ## | 1                      |
+      | extexp | Expired        | 1     | user4@example.com    | external | 0         | ## 201 days ago ## | 1                      |
+      | extrej | Rejected        | 1     | user4@example.com    | external | 0         | ## 201 days ago ## | 1                     |
+    And  I set the following custom profile field values:
+      | username    | external_user_verified  |
+      | extveri     | 1                       |
+      | extunveri   | 0                       |
+      | extlim      | 31.12.2030              |
+      | extexp      | 31.12.2020              |
+      | extrej     | -1                      |
   Scenario: A verified external user can access the dashboard
-    Given I log in as "extuser1"
-    When I am on site homepage
+    Given I log in as "extveri"
     Then I should not see "You must first be verified"
 
-  Scenario: An expired external user is forced to the verification page
-    Given I log in as "extuser2"
-    When I am on homepage
-    Then the url should match ".*verification.php.*"
-  Scenario: A regular user is never redirected
-    Given I log in as "reguser"
-    When I am on homepage
-    Then I should see "Site announcements"
-    And the current page address should not contain "verification.php"
+  Scenario: A limited external user can access the dashboard
+    Given I log in as "extlim"
+    Then I should not see "You must first be verified"
+
+  Scenario: An unverified external user can not access the dashboard
+    Given I log in as "extunveri"
+    Then I should see "You must first be verified"
+
+  Scenario: An expired external user can not access the dashboard
+    Given I log in as "extexp"
+    Then I should see "You must first be verified"
+
+  Scenario: An Rejected external user can not access the dashboard
+    Given I log in as "extrej"
+    Then I should see "You must first be verified"

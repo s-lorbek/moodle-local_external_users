@@ -59,18 +59,22 @@ class verification {
         $status = $this->user->profile_field_external_user_verified;
         $isverified = ($status === '1');
 
-        $limited = \DateTime::createFromFormat('d.m.Y', $status);
-        if ($limited && $limited >= $this->currentdate) {
+        $limited = \DateTime::createFromFormat('!d.m.Y', $status);
+        $today = $this->currentdate->setTime(0, 0, 0);
+
+        if ($limited instanceof \DateTime && $limited >= $today) {
             $isverified = true;
         }
 
-        if (empty($this->user->profile_field_external_user) || $isverified) {
+        $allowbrowsing = get_config("local_external_users", "allowbrowsing");
+
+        if (empty($this->user->profile_field_external_user) || $isverified || $allowbrowsing) {
             redirect(new moodle_url('/'));
         }
     }
 
     public function process_and_render(): void {
-        global $OUTPUT, $PAGE, $DB, $USER;
+        global $OUTPUT;
 
         if ($this->mform->is_cancelled()) {
             redirect(new moodle_url('/'));

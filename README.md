@@ -148,7 +148,9 @@ After installation, configure the plugin at:
 ### For External Users
 
 1. **Registration:** User registers through the external authentication method
-2. **Verification Redirect:** User is automatically redirected to `/local/external_users/verify.php`
+2. **Verification Redirect:** User is automatically redirected to `/local/external_users/verify.php`.  Once the form has been submitted the user is marked `pending` so they can
+view the homepage message without being pushed back to the form (avoids a
+redirect loop).
 3. **Submit Documents:** User uploads required documents and photos
 4. **Await Review:** Administrator reviews the submission
 5. **Access Grant:** User receives approval notification and gains access

@@ -25,50 +25,50 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'External Users';
-$string['verify_redirect'] = 'You must first be verified!';
-$string['upload_picture_redirect'] = 'You must upload an user picture!';
-
-$string['pending_header'] = 'Pending verification';
 $string['already_verified_header'] = 'Already verified';
-$string['rejected_header'] = "Rejected";
-$string['rejection_control_header'] = "Select a rejection reason";
-$string['rejection_control_mailonly'] = "Notify user by E-Mail only";
-$string['rejection_control_maildelete'] = "Notify user by E-Mail and delete user";
-$string['rejection_control_additional_comment'] = "Additional comment";
-$string['reject'] = "Reject";
-
-
-$string['username'] = 'Username';
-$string['firstname'] = 'Firstname';
-$string['lastname'] = 'Lastname';
-$string['manage'] = 'Manage';
 $string['approve'] = 'Approve';
+$string['approved'] = 'Approved';
 $string['approvelimited'] = 'Approve for a single semester (until ';
 $string['approvelimited2'] = 'Approve for a single semester +1 (until ';
-
-$string['approved'] = 'Approved';
+$string['download'] = 'Download';
+$string['files'] = 'Files';
+$string['firstname'] = 'Firstname';
+$string['form_body'] = "Body";
+$string['form_subject'] = "Subject";
+$string['form_submit'] = "Submit";
+$string['lastname'] = 'Lastname';
+$string['mail'] = "E-Mail";
+$string['manage'] = 'Manage';
+$string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+$string['pdf_error'] = "PDF File not valid!";
 $string['pending'] = 'Onboarding (no filed uploaded yet)';
+$string['pending_header'] = 'Pending verification';
+$string['pending_msg'] = "Your application is pending!";
+$string['phone'] = "Telephone";
+$string['pluginname'] = 'External Users';
+$string['redirect'] = "Redirecting";
+$string['reject'] = "Reject";
 $string['rejected'] = "Rejected";
+$string['rejected_header'] = "Rejected";
+$string['rejection_control_additional_comment'] = "Additional comment";
+$string['rejection_control_header'] = "Select a rejection reason";
+$string['rejection_control_maildelete'] = "Notify user by E-Mail and delete user";
+$string['rejection_control_mailonly'] = "Notify user by E-Mail only";
+$string['revoke'] = 'Revoke';
+$string['success'] = "Success!";
+$string['upload_picture_redirect'] = 'You must upload an user picture!';
+$string['username'] = 'Username';
+$string['verify_redirect'] = 'You must first be verified!';
+
+
+
+
 $string['waiting'] = 'Waiting for approval';
 
-$string['revoke'] = 'Revoke';
-$string['files'] = 'Files';
-$string['download'] = 'Download';
 
-$string['form_submit'] = "Submit";
-$string['form_subject'] = "Subject";
-$string['form_body'] = "Body";
 
-$string['phone'] = "Telephone";
-$string['mail'] = "E-Mail";
 
-$string['pending_msg'] = "Your application is pending!";
-$string['success'] = "Success!";
-$string['pdf_error'] = "PDF File not valid!";
-$string['redirect'] = "Redirecting";
 
-$string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 // MAIL Notification.
 $string['rejection_subject'] = "Personal information is missing or invalid";
 
@@ -102,3 +102,7 @@ $string['reviewbody'] = 'An external user submitted their application and awaits
 
 $string['affiliation'] = 'Academic affiliation';
 $string['back_label'] = 'Back to Overview';
+
+$string['verified'] = 'Verified';
+$string['idcard'] = 'ID Card';
+$string['user_image'] = 'User image';

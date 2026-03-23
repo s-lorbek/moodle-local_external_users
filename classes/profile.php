@@ -107,24 +107,17 @@ class profile {
             'firstname' => $this->user->firstname,
             'middlename' => $this->user->middlename,
             'lastname' => $this->user->lastname,
-            'mail' => get_string('mail', 'local_external_users') . ": " . $this->user->email,
-            'verified' => get_string(
-                'approved',
-                'local_external_users'
-            ) . ": " . $verifiedfield,
-            'verifiedtill' => get_string(
-                'approveduntil',
-                'local_external_users'
-            ) . ": " . $approveduntil,
-            'eduScope' => "EduScope : " . $this->user->profile_field_eduPersonScopedAffiliation,
+            'mail' => $this->user->email,
+            'verified' => $verifiedfield,
+            'verifiedtill' => $approveduntil,
+            'eduScope' => $this->user->profile_field_eduPersonScopedAffiliation,
             'uploadedfiles_header' => get_string(
                 'uploadedfiles',
                 'local_external_users'
             ),
-            'birthdate' => get_string('birthdate', 'local_external_users') . ": " . $formattedbirthdate,
-            'username' => get_string('username', 'local_external_users') . ": " . $this->user->username,
-            'affiliation' => get_string('affiliation', 'local_external_users') . ": " .
-                $this->user->profile_field_external_user_affiliation,
+            'birthdate' => $formattedbirthdate,
+            'username' => $this->user->username,
+            'affiliation' => $this->user->profile_field_external_user_affiliation,
         ];
 
         if (

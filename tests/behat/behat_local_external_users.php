@@ -105,36 +105,43 @@ class behat_local_external_users extends behat_base {
      * @Given /^I set the following custom profile field values:$/
      */
     public function iSetTheFollowingCustomProfileFieldValues(TableNode $dataTable) {
-         global $DB;
+        global $DB;
 
-        $rows = $dataTable->getColumnsHash(); // <-- correct method for multi-column tables
+        $rows = $dataTable->getColumnsHash();
 
         foreach ($rows as $row) {
+            // 1. Get the user once per row.
             $username = $row['username'];
-            $fieldshortname = 'external_user_verified';
-            $value = $row[$fieldshortname];
-
             $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
-            $field = $DB->get_record('user_info_field', ['shortname' => $fieldshortname], '*', MUST_EXIST);
+            // 2. Iterate through all columns except 'username'.
+            foreach ($row as $fieldshortname => $value) {
+                if ($fieldshortname === 'username') {
+                    continue;
+                }
 
-            $record = $DB->get_record('user_info_data', [
-            'userid' => $user->id,
-            'fieldid' => $field->id,
-            ]);
+                // 3. Find the custom field definition.
+                $field = $DB->get_record('user_info_field', ['shortname' => $fieldshortname], '*', MUST_EXIST);
 
-            $datarecord = (object)[
-                'userid' => $user->id,
-                'fieldid' => $field->id,
-                'data' => (string)$value,
-                'dataformat' => 0,
-            ];
+                // 4. Check if a value already exists for this user and field.
+                $record = $DB->get_record('user_info_data', [
+                    'userid'  => $user->id,
+                    'fieldid' => $field->id,
+                ]);
 
-            if ($record) {
-                $datarecord->id = $record->id;
-                $DB->update_record('user_info_data', $datarecord);
-            } else {
-                $DB->insert_record('user_info_data', $datarecord);
+                $datarecord = (object)[
+                    'userid'     => $user->id,
+                    'fieldid'    => $field->id,
+                    'data'       => (string)$value,
+                    'dataformat' => 0,
+                ];
+
+                if ($record) {
+                    $datarecord->id = $record->id;
+                    $DB->update_record('user_info_data', $datarecord);
+                } else {
+                    $DB->insert_record('user_info_data', $datarecord);
+                }
             }
         }
     }

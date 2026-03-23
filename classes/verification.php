@@ -67,8 +67,13 @@ class verification {
         }
 
         $allowbrowsing = get_config("local_external_users", "allowbrowsing");
+        $ispending = !empty($this->user->profile_field_external_user_pending);
 
-        if (empty($this->user->profile_field_external_user) || $isverified || $allowbrowsing) {
+        if (empty($this->user->profile_field_external_user) || $isverified) {
+            redirect(new moodle_url('/'));
+        }
+
+        if ($allowbrowsing && $ispending) {
             redirect(new moodle_url('/'));
         }
     }

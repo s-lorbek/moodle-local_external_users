@@ -201,6 +201,7 @@ final class external_users_test extends advanced_testcase {
 
         $this->expectException(\moodle_exception::class);
         \local_external_users\hook_callbacks::onload($hookmock);
+        $this->assertTrue(true, "Hook finished with redirecting because the user has a expired date.");
     }
 
     /**
@@ -222,7 +223,7 @@ final class external_users_test extends advanced_testcase {
         'data' => '1',
         ]);
 
-        $todayinnextyear = (new \DateTime('today +1 year'))->format('d.m.Y');
+        $todayinnextyear = (new \DateTime())->modify('+1 year')->format('d.m.Y');
         $DB->insert_record('user_info_data', [
         'userid' => $user->id,
         'fieldid' => $verified,
@@ -286,5 +287,46 @@ final class external_users_test extends advanced_testcase {
 
         $this->expectException(\moodle_exception::class);
         \local_external_users\hook_callbacks::onload($hookmock);
+    }
+
+    /**
+     * Ensure the hook does **not** redirect when the user has a pending
+     * verification request and allow browsing is enabled. A pending flag is set by the submission handler
+     * and prevents the homepage-from-submission redirect loop.
+     */
+    public function test_no_redirect_for_pending_user_with_allowbrowsing(): void {
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $verified = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user_verified']);
+        $external = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user']);
+        $pending = $DB->get_field('user_info_field', 'id', ['shortname' => 'external_user_pending']);
+
+        set_config("allowbrowsing", 1, "local_external_users");
+
+        $DB->insert_record('user_info_data', [
+            'userid' => $user->id,
+            'fieldid' => $external,
+            'data' => '1',
+        ]);
+        $DB->insert_record('user_info_data', [
+            'userid' => $user->id,
+            'fieldid' => $verified,
+            'data' => '0', // unverified
+        ]);
+        $DB->insert_record('user_info_data', [
+            'userid' => $user->id,
+            'fieldid' => $pending,
+            'data' => '1',
+        ]);
+
+        $this->setUser($user);
+        $PAGE->set_url(new \moodle_url('/index.php'));
+        $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        // no exception means redirect was skipped
+        \local_external_users\hook_callbacks::onload($hookmock);
+        $this->assertTrue(true, 'Pending user should not be redirected');
     }
 }

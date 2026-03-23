@@ -25,49 +25,43 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'External Users';
-$string['verify_redirect'] = 'Sie müssen zuerst zugelassen werden!';
-$string['upload_picture_redirect'] = 'Laden Sie bitte ein Nutzerfoto hoch!';
-
-$string['pending_header'] = 'In Bearbeitung';
 $string['already_verified_header'] = 'Bereits zugelassen';
-$string['rejected_header'] = "Abgelehnt";
-$string['rejection_control_header'] = "Begründung der Ablehnung";
-$string['rejection_control_mailonly'] = "Benachrichtigung des Benutzers per E-Mail";
-$string['rejection_control_maildelete'] = "Benachrichtigung des Benutzers per E-Mail und Löschung des Benutzers";
-$string['rejection_control_additional_comment'] = "Ergänzender Kommentar";
-$string['reject'] = "Ablehnen";
-
-$string['username'] = 'Benutzername';
-$string['firstname'] = 'Vorname';
-$string['lastname'] = 'Nachname';
-$string['manage'] = 'Verwaltung';
 $string['approve'] = 'Zulassen';
+$string['approved'] = 'Zugelassen';
 $string['approvelimited'] = 'Zulassung für ein Semester (bis ';
 $string['approvelimited2'] = 'Zulassung für ein Semester +1 (bis ';
-
-$string['approved'] = 'Zugelassen';
+$string['download'] = 'Download';
+$string['files'] = 'Dateien';
+$string['firstname'] = 'Vorname';
+$string['form_body'] = "Beschreibung";
+$string['form_subject'] = "Betreff";
+$string['form_submit'] = "Absenden";
+$string['lastname'] = 'Nachname';
+$string['mail'] = "E-Mail";
+$string['manage'] = 'Verwaltung';
+$string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+$string['pdf_error'] = "PDF-Dokument ist nicht gültig!";
 $string['pending'] = 'Im Onboarding (noch keine Dateien hochgeladen)';
+$string['pending_header'] = 'In Bearbeitung';
+$string['pending_msg'] = "Ihr Antrag ist in Bearbeitung!";
+$string['phone'] = "Telefon";
+$string['pluginname'] = 'External Users';
+$string['redirect'] = "Weiterleitung";
+$string['reject'] = "Ablehnen";
 $string['rejected'] = "Abgelehnt";
+$string['rejected_header'] = "Abgelehnt";
+$string['rejection_control_additional_comment'] = "Ergänzender Kommentar";
+$string['rejection_control_header'] = "Begründung der Ablehnung";
+$string['rejection_control_maildelete'] = "Benachrichtigung des Benutzers per E-Mail und Löschung des Benutzers";
+$string['rejection_control_mailonly'] = "Benachrichtigung des Benutzers per E-Mail";
+$string['revoke'] = 'Widerruf';
+$string['success'] = "Erfolg!";
+$string['upload_picture_redirect'] = 'Laden Sie bitte ein Nutzerfoto hoch!';
+$string['username'] = 'Benutzername';
+$string['verify_redirect'] = 'Sie müssen zuerst zugelassen werden!';
+
 $string['waiting'] = 'In Bearbeitung';
 
-$string['revoke'] = 'Widerruf';
-$string['files'] = 'Dateien';
-$string['download'] = 'Download';
-
-$string['form_submit'] = "Absenden";
-$string['form_subject'] = "Betreff";
-$string['form_body'] = "Beschreibung";
-
-$string['phone'] = "Telefon";
-$string['mail'] = "E-Mail";
-
-$string['pending_msg'] = "Ihr Antrag ist in Bearbeitung!";
-$string['success'] = "Erfolg!";
-$string['pdf_error'] = "PDF-Dokument ist nicht gültig!";
-$string['redirect'] = "Weiterleitung";
-
-$string['onboarding_description'] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 // MAIL Notification.
 $string['rejection_subject'] = "Personal information is missing or invalid";
 
@@ -101,3 +95,6 @@ $string['reviewbody'] = 'Ein externer Nutzer hat einen Antrag eingereicht und wa
 
 $string['affiliation'] = 'Akademische Zugehörigkeit';
 $string['back_label'] = 'Zurück zur Übersicht';
+
+$string['idcard'] = 'Benutzer ID Karte';
+$string['user_image'] = 'Benutzer Foto';

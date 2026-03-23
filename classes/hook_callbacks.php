@@ -36,6 +36,8 @@ class hook_callbacks {
      * @param \core\hook\output\before_http_headers $hook
      */
     public static function onload(\core\hook\output\before_http_headers $hook): void {
+        global $PAGE;
+
         if (!isloggedin()) {
             return;
         }
@@ -46,7 +48,19 @@ class hook_callbacks {
 
         $externalstatus = static::is_external_user();
         if ($externalstatus->isexternal) {
-            if (static::redirect_if_unverified($externalstatus->verified_status)) {
+            $common = new common();
+            if (
+                $common->check_redirect_excludes($PAGE->url) ||
+                strpos($PAGE->url->out_as_local_url(), '/local/external_users/verify.php') !== false
+            ) {
+                return;
+            }
+            $allowbrowsing = get_config("local_external_users", "allowbrowsing");
+            $ispending = $externalstatus->ispending;
+            if ($allowbrowsing && $ispending) {
+                return;
+            }
+            if (static::redirect_if_unverified($externalstatus)) {
                 return;
             }
         }
@@ -61,18 +75,18 @@ class hook_callbacks {
      */
     protected static function is_external_user(): object {
         global $USER, $DB;
-        static $requestcache = null;
+        static $requestcache = [];
 
-        if ($requestcache !== null) {
-            return $requestcache;
+        if (isset($requestcache[$USER->id])) {
+            return $requestcache[$USER->id];
         }
 
-        $data = (object)['isexternal' => false, 'verified_status' => null];
+        $data = (object)['isexternal' => false, 'verified_status' => null, 'ispending' => false];
 
         $sql = "SELECT f.id, f.shortname, d.data
             FROM {user_info_field} f
             JOIN {user_info_data} d ON d.fieldid = f.id
-            WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified')";
+            WHERE d.userid = :userid AND f.shortname IN ('external_user', 'external_user_verified', 'external_user_pending')";
 
         $rs = $DB->get_records_sql($sql, ['userid' => $USER->id]);
         $fields = [];
@@ -86,8 +100,11 @@ class hook_callbacks {
         if (isset($fields['external_user_verified'])) {
             $data->verified_status = $fields['external_user_verified'];
         }
+        if (isset($fields['external_user_pending'])) {
+            $data->ispending = (bool)$fields['external_user_pending'];
+        }
 
-        $requestcache = $data;
+        $requestcache[$USER->id] = $data;
         return $data;
     }
 
@@ -114,29 +131,24 @@ class hook_callbacks {
      * @param string|null $externalverified The verification status field value.
      * @return bool True if a redirection occurred.
      */
-    protected static function redirect_if_unverified(?string $externalverified): bool {
-        global $PAGE, $USER;
-
-        $common = new common();
-        if ($common->check_redirect_excludes($PAGE->url) || str_contains(qualified_me(), "verify.php")) {
-            return false;
-        }
+    protected static function redirect_if_unverified(?object $externalstatus): bool {
+        global $USER;
 
         $url = new \moodle_url('/local/external_users/verify.php');
         $redirectmessage = get_string('verify_redirect', 'local_external_users');
 
-        if (!empty($externalverified) && strlen($externalverified) > 2) {
-            $limited = \DateTime::createFromFormat('!d.m.Y', $externalverified);
+        if (!empty($externalstatus->verified_status) && strlen($externalstatus->verified_status) > 2) {
+            $limited = \DateTime::createFromFormat('!d.m.Y', $externalstatus->verified_status);
             if ($limited instanceof \DateTime && $limited >= new \DateTime('today')) {
                 return false;
             }
         }
 
-        if ($externalverified === '1') {
+        if ($externalstatus->verified_status === '1') {
             return false;
         }
 
-        if (get_config("local_external_users", "allowbrowsing")) {
+        if (get_config("local_external_users", "allowbrowsing") && $externalstatus->ispending) {
             $tariff = get_config("local_external_users", "allowbrowsing_tariff");
             if (!isset($USER->profile['eduPersonScopedAffiliation']) || $USER->profile['eduPersonScopedAffiliation'] !== $tariff) {
                 $userrecord = get_complete_user_data('id', $USER->id);

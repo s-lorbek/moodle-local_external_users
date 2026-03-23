@@ -67,7 +67,7 @@ switch ($action) {
         break;
 
     case 'affiliate':
-        $affiliation = required_param('affiliation', PARAM_ALPHANUMEXT);
+        $affiliation = required_param('affiliation', PARAM_RAW);
         $common->setaffiliation($userid, $affiliation);
         break;
 

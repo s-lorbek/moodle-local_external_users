@@ -19,10 +19,13 @@ Feature: Allow browsing
       | extuser     | 0                       |
   Scenario: A verified external user can browse
     Given I log in as "extuser"
+    And I change window size to "large"
     Then I should see "You must first be verified"
-    And I upload "local/external_users/tests/fixtures/pic.jpg" file to "Photo/scan of your ID document" filemanager
-    And I wait "5" seconds
-    And I upload "local/external_users/tests/fixtures/doc.pdf" file to "Study confirmation or certificate of completion" filemanager
-    And I press "Submit"
 
+    And I upload "local/external_users/tests/fixtures/doc.pdf" file to "Study confirmation or certificate of completion" filemanager
+    And I wait "3" seconds
+
+    And I upload "local/external_users/tests/fixtures/pic.jpg" file to "Photo/scan of your ID document" filemanager
+
+    And I press "Submit"
 

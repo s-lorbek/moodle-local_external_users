@@ -75,14 +75,8 @@ class hook_callbacks {
      */
     protected static function is_external_user(): object {
         global $USER, $DB;
-        static $requestcache = [];
-
-        if (isset($requestcache[$USER->id])) {
-            return $requestcache[$USER->id];
-        }
 
         $data = (object)['isexternal' => false, 'verified_status' => null, 'ispending' => false];
-
         $sql = "SELECT f.id, f.shortname, d.data
             FROM {user_info_field} f
             JOIN {user_info_data} d ON d.fieldid = f.id
@@ -104,7 +98,6 @@ class hook_callbacks {
             $data->ispending = (bool)$fields['external_user_pending'];
         }
 
-        $requestcache[$USER->id] = $data;
         return $data;
     }
 

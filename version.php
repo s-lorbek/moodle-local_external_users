@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_external_users';
 $plugin->release = '2.1.1';
-$plugin->version = 2026040200;
+$plugin->version = 2026050600;
 $plugin->requires = 2020110900;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = ['auth_external' => 2022081801];

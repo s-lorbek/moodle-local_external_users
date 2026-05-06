@@ -39,7 +39,8 @@ $referrer = optional_param('referrer', 'manage', PARAM_ALPHANUMEXT);
 $allowedreferrers = ['manage', 'profile', 'verification', 'manage_pending', 'manage_verified', 'manage_rejected'];
 if (!in_array($referrer, $allowedreferrers)) {
     $referrer = 'manage';
-}$common   = new \local_external_users\common();
+}
+$common   = new \local_external_users\common();
 
 switch ($action) {
     case 'approve':
@@ -69,6 +70,8 @@ switch ($action) {
     case 'affiliate':
         $affiliation = required_param('affiliation', PARAM_RAW);
         $common->setaffiliation($userid, $affiliation);
+        $url = new moodle_url('/local/external_users/profile.php', ['id' => $userid, 'referrer' => $referrer]);
+        redirect($url, get_string('redirect', 'local_external_users'), 0);
         break;
 
     default:

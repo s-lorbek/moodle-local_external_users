@@ -30,7 +30,6 @@ require_login();
 $PAGE->set_url(new moodle_url('/local/external_users/verify.php'));
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('pluginname', 'local_external_users'));
-$PAGE->set_heading(get_string('pluginname', 'local_external_users'));
 $PAGE->set_pagelayout('standard');
 
 $v = new \local_external_users\verification();

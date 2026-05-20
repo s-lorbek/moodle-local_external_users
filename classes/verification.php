@@ -99,7 +99,12 @@ class verification {
             echo $OUTPUT->spacer(['height' => 20, 'br' => true]);
             $this->mform->display();
         } else {
-            echo $OUTPUT->notification(get_string('pending_msg', 'local_external_users'), 'info');
+            $renderdata = [
+                'fullname' => fullname($this->user),
+                'username' => $this->user->username,
+                'email' => $this->user->email,
+            ];
+            echo $OUTPUT->render_from_template('local_external_users/pending_status', $renderdata);
         }
 
         echo $OUTPUT->footer();

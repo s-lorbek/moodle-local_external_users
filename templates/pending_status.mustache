@@ -1,0 +1,38 @@
+{{!
+    @template local_external_users/pending_status
+}}
+<div class="local_external_users_pending_status py-5">
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-body text-center p-5">
+            <div class="mb-4">
+                <i class="fa fa-clock-o fa-4x text-info"></i>
+            </div>
+            <h2 class="h3 mb-3">{{#str}}pending_status_title, local_external_users{{/str}}</h2>
+            <p class="lead text-muted mb-4">
+                {{#str}}pending_status_description, local_external_users{{/str}}
+            </p>
+            <div class="alert alert-info border-0 bg-light py-3 px-4 mb-4">
+                <div class="d-flex align-items-center justify-content-center">
+                    <i class="fa fa-info-circle mr-3 fa-lg"></i>
+                    <span class="text-left">{{#str}}pending_status_next_steps, local_external_users{{/str}}</span>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-left">
+                <h4 class="h6 text-uppercase font-weight-bold text-muted mb-3">{{#str}}details, local_external_users{{/str}}</h4>
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">{{#str}}fullname{{/str}}:</div>
+                    <div class="col-sm-7">{{fullname}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">{{#str}}username, local_external_users{{/str}}:</div>
+                    <div class="col-sm-7"><code>{{username}}</code></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">{{#str}}mail, local_external_users{{/str}}:</div>
+                    <div class="col-sm-7">{{email}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,3 +31,15 @@ table.dataTable thead > tr > th.sorting:after, table.dataTable thead > tr > th.s
 table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting_asc_disabled, table.dataTable thead > tr > th.sorting_desc_disabled, table.dataTable thead > tr > td.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting_asc_disabled, table.dataTable thead > tr > td.sorting_desc_disabled {
     padding-left: 1%;
 }
+
+.hover-zoom {
+    transition: transform .2s;
+}
+
+.hover-zoom:hover {
+    transform: scale(1.02);
+}
+
+.bg-light-danger {
+    background-color: #fff5f5;
+}

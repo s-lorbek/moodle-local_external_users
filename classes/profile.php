@@ -118,6 +118,7 @@ class profile {
             'birthdate' => $formattedbirthdate,
             'username' => $this->user->username,
             'affiliation' => $this->user->profile_field_external_user_affiliation,
+            'moodle_profile_link' => new moodle_url('/user/view.php', ['id' => $this->userid]),
         ];
 
         if (

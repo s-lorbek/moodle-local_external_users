@@ -2,89 +2,104 @@
     @template local_external_users/profile
 }}
 
-<div class="card p-4 mx-auto" style="max-width: 1200px;">
-    <!-- Zurück-Button oben rechts -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="h4 mb-0">
-            {{firstname}} {{middlename}} {{lastname}}
+<div class="card shadow-sm mb-3 mx-auto" style="max-width: 1200px;">
+    <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
+        <h2 class="h4 mb-0 text-primary">
+            <i class="fa fa-user-circle-o mr-2"></i>{{firstname}} {{middlename}} {{lastname}}
         </h2>
-        <form action="{{back_link}}">
-            <button id="backButton" class="btn btn-sm btn-outline-primary">
-                {{back_label}}
-            </button>
-        </form>
-    </div>
-
-    <!-- User-Infos in einer Tabelle / Liste -->
-    <div class="row mb-4">
-        <div class="col-12 col-lg-6">
-            <dl class="row mb-0">
-                <dt class="col-5">{{#str}}approved,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{verified}}</dd>
-
-                <dt class="col-5">{{#str}}approveduntil,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{verifiedtill}}</dd>
-
-                <dt class="col-5">{{#str}}mail,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{mail}}</dd>
-
-                <dt class="col-5">{{#str}}birthdate,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{birthdate}}</dd>
-
-                <dt class="col-5">{{#str}}username,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{username}}</dd>
-
-                <dt class="col-5">{{#str}}affiliation,local_external_users{{/str}}:</dt>
-                <dd class="col-7">{{affiliation}}</dd>
-            </dl>
+        <div class="d-flex">
+            <a href="{{moodle_profile_link}}" class="btn btn-sm btn-outline-info mr-2" target="_blank">
+                <i class="fa fa-external-link mr-1"></i>{{#str}}moodle_profile, local_external_users{{/str}}
+            </a>
+            <form action="{{back_link}}">
+                <button id="backButton" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-arrow-left mr-1"></i>{{back_label}}
+                </button>
+            </form>
         </div>
-
-        <!-- User-Bild (ID Card) -->
-        {{#userpiclink}}
-            <div class="col-12 col-lg-6 text-center">
-                <h3 class="h6 mb-2">{{#str}}idcard,local_external_users{{/str}}</h3>
-                <p>
-                    <a href="#" data-toggle="modal" data-target="#imageModal">
-                        <img
-                            src="{{{userpiclink}}}"
-                            alt="User image"
-                            class="img-thumbnail shadow-sm"
-                            style="max-height: 200px; width: auto;"
-                        >
-                    </a>
-                </p>
-            </div>
-        {{/userpiclink}}
     </div>
 
-    <!-- Modal für großes Bild -->
-    {{#userpiclink}}
-        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="imageModalLabel">{{#str}}user_image,local_external_users{{/str}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <img
-                            src="{{{userpiclink}}}"
-                            alt="User image"
-                            class="img-fluid rounded shadow"
-                        >
-                    </div>
+    <div class="card-body">
+        <!-- User-Infos -->
+        <div class="row">
+            <div class="col-12 col-lg-7">
+                <h3 class="h5 mb-3 border-bottom pb-2">{{#str}}details,local_external_users{{/str}}</h3>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}approved,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8">{{verified}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}approveduntil,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8">{{verifiedtill}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}mail,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8"><a href="mailto:{{mail}}">{{mail}}</a></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}birthdate,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8">{{birthdate}}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}username,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8"><code>{{username}}</code></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 font-weight-bold">{{#str}}affiliation,local_external_users{{/str}}:</div>
+                    <div class="col-sm-8">{{affiliation}}</div>
                 </div>
             </div>
-        </div>
-    {{/userpiclink}}
 
-    <!-- Upload-Tabelle -->
-    <div class="content mt-4">
-        <h3 class="h5">{{uploadedfiles_header}}</h3>
-        <div class="table-responsive">
-            {{{filetable}}}
+            <!-- User-Bild (ID Card) -->
+            {{#userpiclink}}
+                <div class="col-12 col-lg-5">
+                    <div class="text-center p-3 border rounded bg-light">
+                        <h3 class="h6 mb-3 text-muted text-uppercase font-weight-bold">{{#str}}idcard,local_external_users{{/str}}</h3>
+                        <a href="#" data-toggle="modal" data-target="#imageModal" class="d-inline-block">
+                            <img
+                                src="{{{userpiclink}}}"
+                                alt="User image"
+                                class="img-fluid rounded shadow-sm hover-zoom"
+                                style="max-height: 250px; cursor: zoom-in;"
+                            >
+                        </a>
+                        <div class="mt-2 small text-muted">
+                            <i class="fa fa-search-plus mr-1"></i>{{#str}}click_to_enlarge,local_external_users{{/str}}
+                        </div>
+                    </div>
+                </div>
+            {{/userpiclink}}
+        </div>
+
+        <!-- Upload-Tabelle -->
+        <div class="mt-5">
+            <h3 class="h5 mb-3 border-bottom pb-2">{{uploadedfiles_header}}</h3>
+            <div class="table-responsive">
+                {{{filetable}}}
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Modal für großes Bild -->
+{{#userpiclink}}
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">{{#str}}user_image,local_external_users{{/str}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img
+                        src="{{{userpiclink}}}"
+                        alt="User image"
+                        class="img-fluid rounded shadow"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+{{/userpiclink}}

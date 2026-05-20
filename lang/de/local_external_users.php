@@ -98,3 +98,10 @@ $string['back_label'] = 'Zurück zur Übersicht';
 
 $string['idcard'] = 'Benutzer ID Karte';
 $string['user_image'] = 'Benutzer Foto';
+$string['verified'] = 'Zugelassen';
+$string['details'] = 'Details';
+$string['click_to_enlarge'] = 'Zum Vergrößern anklicken';
+$string['controls'] = 'Aktionen & Steuerung';
+$string['affiliation_help'] = 'Änderungen an der Zugehörigkeit werden automatisch gespeichert.';
+$string['comment_placeholder'] = 'Optionales Feedback für den Benutzer eingeben...';
+$string['moodle_profile'] = 'Moodle-Profil';

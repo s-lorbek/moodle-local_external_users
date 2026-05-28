@@ -29,16 +29,22 @@ use core\output\html_writer;
  * @copyright  2025 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class hook_callbacks {
+class hook_callbacks
+{
     /**
      * Core hook to intercept page requests and redirect users to the verification page if needed.
      *
      * @param \core\hook\output\before_http_headers $hook
      */
-    public static function onload(\core\hook\output\before_http_headers $hook): void {
+    public static function onload(\core\hook\output\before_http_headers $hook): void
+    {
         global $PAGE;
 
         if (!isloggedin()) {
+            return;
+        }
+
+        if (get_user_preferences('auth_forcepasswordchange') && !\core\session\manager::is_loggedinas()) {
             return;
         }
 
@@ -73,7 +79,8 @@ class hook_callbacks {
      *
      * @return object { isexternal: bool, verified_status: string|null }
      */
-    protected static function is_external_user(): object {
+    protected static function is_external_user(): object
+    {
         global $USER, $DB;
 
         $data = (object)['isexternal' => false, 'verified_status' => null, 'ispending' => false];
@@ -106,7 +113,8 @@ class hook_callbacks {
      *
      * @return bool
      */
-    protected static function check_policy_agreements(): bool {
+    protected static function check_policy_agreements(): bool
+    {
         global $USER, $DB;
 
         if (get_config('core', 'sitepolicyhandler') == "tool_policy" && !$USER->policyagreed) {
@@ -124,7 +132,8 @@ class hook_callbacks {
      * @param string|null $externalverified The verification status field value.
      * @return bool True if a redirection occurred.
      */
-    protected static function redirect_if_unverified(?object $externalstatus): bool {
+    protected static function redirect_if_unverified(?object $externalstatus): bool
+    {
         global $USER;
 
         $url = new \moodle_url('/local/external_users/verify.php');
@@ -165,7 +174,8 @@ class hook_callbacks {
      *
      * @param bool $isexternal True if the currently viewed user is an external user.
      */
-    protected static function display_user_files(bool $isexternal): void {
+    protected static function display_user_files(bool $isexternal): void
+    {
         global $PAGE, $DB, $OUTPUT;
 
         if (!str_contains($PAGE->url->out(), "/user/profile.php")) {
@@ -199,9 +209,9 @@ class hook_callbacks {
 
         $comment = $DB->get_field_sql(
             "SELECT uid.data " .
-            "FROM {user_info_data} uid " .
-            "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) " .
-            "WHERE uid.userid = :userid AND uif.shortname = 'external_user_comment'",
+                "FROM {user_info_data} uid " .
+                "INNER JOIN {user_info_field} uif ON (uid.fieldid = uif.id) " .
+                "WHERE uid.userid = :userid AND uif.shortname = 'external_user_comment'",
             ["userid" => $userid]
         );
 

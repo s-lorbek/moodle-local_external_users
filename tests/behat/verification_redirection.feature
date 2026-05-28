@@ -59,7 +59,8 @@ Feature: External user verification gatekeeping
       | username | external_user_verified | external_user_pending |
       | extexp   |             31.12.2020 |                     1 |
     And I log in as "extexp"
-    Then I should see "Dashboard"
+    Then I should not see "You must first be verified"
+    And I should not see "Registration Status"
 
   Scenario: A pending external user may not browse when allow‑browsing is disabled
     Given the following config values are set as admin:
@@ -68,7 +69,7 @@ Feature: External user verification gatekeeping
       | username | external_user_verified | external_user_pending |
       | extexp   |             31.12.2020 |                     1 |
     And I log in as "extexp"
-    Then I should see "Dashboard"
+    Then I should see "You must first be verified"
 
   Scenario: A browsing user cannot access the verification page to submit documents
     Given the following config values are set as admin:
@@ -137,4 +138,56 @@ Feature: External user verification gatekeeping
       | extunveri |                      0 |
     And I log in as "extunveri"
     And I visit "/user/profile.php"
+    Then I should not see "You must first be verified"
+
+  Scenario: Unverified external user with expired password is forced to change it and then blocked by gatekeeping
+    Given the following config values are set as admin:
+      | expiration     | 1  | auth_external |
+      | expirationtime | 30 | auth_external |
+    And the following "users" exist:
+      | username   | firstname | lastname | email                 | auth     | suspended | password      | profile_field_external_user |
+      | extpassexp | Expired   | Pass     | expassexp@example.com | external | 0         | Moodle@12345! | 1                           |
+    And I set the following custom profile field values:
+      | username   | external_user_verified |
+      | extpassexp | 0                      |
+    And the user "extpassexp" has the following preferences:
+      | auth_external_passwordupdatetime | -2678400 |
+    When I am on homepage
+    And I click on "Log in" "link"
+    And I set the field "Username" to "extpassexp"
+    And I set the field "Password" to "Moodle@12345!"
+    And I press "Log in"
+    Then I should see "Your password has expired"
+    And I click on "Continue" "button"
+    And I set the field "Current password" to "Moodle@12345!"
+    And I set the field "New password" to "Moodle@12345?"
+    And I set the field "New password (again)" to "Moodle@12345?"
+    And I press "Save changes"
+    Then I should see "You must first be verified"
+
+  Scenario: Verified external user with expired password is forced to change it and can then access dashboard
+    Given the following config values are set as admin:
+      | expiration     | 1  | auth_external |
+      | expirationtime | 30 | auth_external |
+    And the following "users" exist:
+      | username   | firstname | lastname | email                  | auth     | suspended | password      | profile_field_external_user |
+      | extveriexp | Verified  | Exp      | extveriexp@example.com | external | 0         | Moodle@12345! | 1                           |
+    And I set the following custom profile field values:
+      | username   | external_user_verified |
+      | extveriexp | 1                      |
+    And the user "extveriexp" has the following preferences:
+      | auth_external_passwordupdatetime | -2678400 |
+    When I am on homepage
+    And I click on "Log in" "link"
+    And I set the field "Username" to "extveriexp"
+    And I set the field "Password" to "Moodle@12345!"
+    And I press "Log in"
+    Then I should see "Your password has expired"
+    And I click on "Continue" "button"
+    And I set the field "Current password" to "Moodle@12345!"
+    And I set the field "New password" to "Moodle@12345?"
+    And I set the field "New password (again)" to "Moodle@12345?"
+    And I press "Save changes"
+    Then I should see "Password has been changed"
+    And I click on "Continue" "button"
     Then I should not see "You must first be verified"

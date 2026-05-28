@@ -17,6 +17,7 @@
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+require_once(__DIR__ . '/../../../../lib/behat/core_behat_file_helper.php');
 
 use Behat\Behat\Context\Step\Given;
 use local_shopping_cart\local\cartstore;
@@ -33,6 +34,7 @@ use Behat\Behat\Hook\Scope\AfterScenarioScope;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_local_external_users extends behat_base {
+    use core_behat_file_helper;
     /**
      * @Given the :arg1 page is available
      */
@@ -153,4 +155,103 @@ class behat_local_external_users extends behat_base {
         // Wait until the 'loading' div is hidden and the repository list is present
         $this->getSession()->wait(10000, "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')");
     }
+    /**
+     * Uploads a file to the specified filepicker when there are multiple filepickers on the same page.
+     *
+     * @Given /^I upload "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filepicker_field_string>(?:[^"]|\\")*)" filepicker$/
+     */
+    public function i_upload_file_to_filepicker($filepath, $filepickerlabel) {
+        $filepickercontainer = $this->get_filepicker_node($filepickerlabel);
+
+        $this->execute('behat_general::i_click_on_in_the', [
+            'div.fp-btn-add a, input.fp-btn-choose', 'css_element',
+            $filepickercontainer, 'NodeElement'
+        ]);
+
+        $this->getSession()->wait(10000, "document.querySelectorAll('.moodle-dialogue').length > 0");
+
+        $dialogues = $this->getSession()->getPage()->findAll('css', '.moodle-dialogue');
+        $activedialogue = null;
+        for ($i = 0; $i < 50; $i++) {
+            foreach ($dialogues as $dialogue) {
+                if ($dialogue->isVisible()) {
+                    $activedialogue = $dialogue;
+                    break 2;
+                }
+            }
+            usleep(100000);
+        }
+
+        if (!$activedialogue) {
+            throw new \Exception("Could not find a visible filepicker dialogue modal");
+        }
+
+        $repositoryname = behat_context_helper::escape(get_string('pluginname', 'repository_upload'));
+        $repositorylink = null;
+
+        for ($i = 0; $i < 50; $i++) {
+            $repositorylink = $activedialogue->find('xpath',
+                ".//div[contains(concat(' ', normalize-space(@class), ' '), ' fp-repo-area ')]" .
+                "//descendant::span[contains(concat(' ', normalize-space(@class), ' '), ' fp-repo-name ')]" .
+                "[normalize-space(.)=$repositoryname]"
+            );
+            if ($repositorylink && $repositorylink->isVisible()) {
+                break;
+            }
+            usleep(100000);
+        }
+
+        if (!$repositorylink) {
+            throw new \Exception("The 'Upload a file' repository could not be found or is not visible inside the active dialogue");
+        }
+
+        $parent = $repositorylink->getParent();
+        while ($parent && !$parent->hasClass('fp-repo')) {
+            $parent = $parent->getParent();
+        }
+        if ($parent && !$parent->hasClass('active')) {
+            $this->execute('behat_general::i_click_on', [$repositorylink, 'NodeElement']);
+        }
+
+        $fileinput = null;
+        for ($i = 0; $i < 50; $i++) {
+            $fileinput = $activedialogue->find('css', 'input[name="repo_upload_file"]');
+            if ($fileinput && $fileinput->isVisible()) {
+                break;
+            }
+            usleep(100000);
+        }
+
+        if (!$fileinput) {
+            throw new \Exception("The file upload form in the active dialogue is not ready");
+        }
+
+        global $CFG;
+        if (substr($filepath, 0, 6) === 'admin/') {
+            $filepath = $CFG->dirroot . DIRECTORY_SEPARATOR . $CFG->admin .
+                    DIRECTORY_SEPARATOR . substr($filepath, 6);
+        }
+        $filepath = str_replace('/', DIRECTORY_SEPARATOR, $filepath);
+        if (!is_readable($filepath)) {
+            $filepath = $CFG->dirroot . DIRECTORY_SEPARATOR . $filepath;
+            if (!is_readable($filepath)) {
+                throw new \Exception('The file to be uploaded does not exist: ' . $filepath);
+            }
+        }
+
+        $fileinput->attachFile($filepath);
+
+        $submit = $activedialogue->find('css', '.fp-upload-btn');
+        if (!$submit) {
+            throw new \Exception("Upload button (.fp-upload-btn) not found inside the active dialogue");
+        }
+        $submit->click();
+
+        $this->getSession()->wait(10000, "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')");
+        $this->getSession()->wait(behat_base::get_timeout(), behat_base::PAGE_READY_JS);
+    }
 }
+
+
+
+

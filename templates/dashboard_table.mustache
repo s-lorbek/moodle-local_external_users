@@ -39,9 +39,11 @@
 
     const tableCount{{table-id}} = document.getElementById("{{table-id}}").rows.length;
     if(tableCount{{table-id}} > 2) {
-        let table = new DataTable('#{{table-id}}', {
-        // options
-        });
+        if (typeof DataTable !== 'undefined') {
+            let table = new DataTable('#{{table-id}}', {
+            // options
+            });
+        }
     }
 {{/js}}
 

@@ -204,7 +204,7 @@ class common {
             !$DB->record_exists(
                 "user",
                 ["id" => $userid]
-            ) && !self::is_external_user($userid)
+            ) || !self::is_external_user($userid)
         ) {
             return -1;
         }
@@ -382,7 +382,7 @@ class common {
             !$DB->record_exists(
                 "user",
                 ["id" => $userid]
-            ) && !self::is_external_user($userid)
+            ) || !self::is_external_user($userid)
         ) {
             return -1;
         }
@@ -442,7 +442,7 @@ class common {
             !$DB->record_exists(
                 "user",
                 ["id" => $userid]
-            ) && !self::is_external_user($userid)
+            ) || !self::is_external_user($userid)
         ) {
             return -1;
         }
@@ -485,7 +485,7 @@ class common {
             !$DB->record_exists(
                 "user",
                 ["id" => $userid]
-            ) && !self::is_external_user($userid)
+            ) || !self::is_external_user($userid)
         ) {
             return -1;
         }

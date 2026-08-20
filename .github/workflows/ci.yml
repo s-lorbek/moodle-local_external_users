@@ -1,0 +1,162 @@
+# SPDX-FileCopyrightText: 2026 University of Graz
+# SPDX-License-Identifier: CC0-1.0
+
+name: Moodle Plugin CI
+
+on:
+  push:
+    branches:
+      - main
+      - MOODLE_*
+  pull_request:
+    branches:
+      - main
+      - MOODLE_*
+
+jobs:
+  moodle_plugin_ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - moodle_branch: "MOODLE_502_STABLE"
+            moodle_php_image: "moodlehq/moodle-php-apache:8.3"
+            postgres_image: "postgres:18-alpine"
+            moodle_dir: "/var/www/html"
+            moodle_dir_public: "/var/www/html/public"
+          - moodle_branch: "MOODLE_405_STABLE"
+            moodle_php_image: "moodlehq/moodle-php-apache:8.3"
+            postgres_image: "postgres:16-alpine"
+            moodle_dir: "/var/www/html"
+            moodle_dir_public: "/var/www/html"
+
+    container:
+      image: ${{ matrix.moodle_php_image }}
+
+    services:
+      selenium:
+        image: selenium/standalone-chrome:4
+        options: >-
+          --health-cmd "curl --silent --fail http://localhost:4444/wd/hub/status || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --shm-size=2gb
+      db:
+        image: ${{ matrix.postgres_image }}
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB: "pgsql"
+      MOODLE_BEHAT_WDHOST: "http://selenium:4444/wd/hub"
+      MOODLE_START_BEHAT_SERVERS: "NO"
+      NODE_VERSION: "v22.23.1"
+      COMPOSER_CACHE_DIR: "${{ github.workspace }}/.cache/composer"
+      NPM_CONFIG_CACHE: "${{ github.workspace }}/.cache/npm"
+      MOODLE_REPO: "https://github.com/moodle/moodle.git"
+      NVM_VERSION: "v0.40.5"
+
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: ${{ runner.os }}-cache-${{ matrix.moodle_branch }}-${{ hashFiles('**/composer.json', '**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-${{ matrix.moodle_branch }}-
+
+      - name: Install system dependencies
+        run: |
+          apt update && apt install -y postgresql-client postgresql-client-common default-jre-headless
+
+      - name: Install NVM and Node.js
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${{ env.NVM_VERSION }}/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install ${{ env.NODE_VERSION }}
+          # Export Node path to GHA environment path for subsequent steps
+          NODE_PATH=$(nvm which ${{ env.NODE_VERSION }} | sed 's/\/node$//')
+          echo "$NODE_PATH" >> $GITHUB_PATH
+
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          mv composer.phar /usr/local/bin/composer
+
+      - name: Install Moodle CI Tool
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci /opt/mci ^4
+          echo "/opt/mci/bin" >> $GITHUB_PATH
+          echo "/opt/mci/vendor/bin" >> $GITHUB_PATH
+          chmod u+x /opt/mci/bin/*
+
+      - name: Configure Network Environment
+        run: |
+          IPADDRESS=$(hostname -I | awk '{print $1}')
+          echo "IPADDRESS=$IPADDRESS" >> $GITHUB_ENV
+          echo "MOODLE_BEHAT_WWWROOT=http://$IPADDRESS:8000" >> $GITHUB_ENV
+
+      - name: Install Moodle Core and Plugin
+        run: |
+          moodle-plugin-ci install --moodle=${{ matrix.moodle_dir }} --db-type=pgsql --db-host=db --branch=${{ matrix.moodle_branch }}
+          moodle-plugin-ci add-config '$CFG->behat_profiles["chrome"]["capabilities"]["extra_capabilities"]["goog:chromeOptions"]["args"] = ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"];'
+
+      - name: Start Built-in Webserver
+        run: |
+          export PHP_CLI_SERVER_WORKERS=5
+          RUNNER_TRACKING_ID=moodle-php php -S 0.0.0.0:8000 -t ${{ matrix.moodle_dir_public }} > /dev/null 2>&1 &
+          sleep 3
+          curl -I http://127.0.0.1:8000/ || exit 1
+
+      - name: Run phplint
+        run: moodle-plugin-ci phplint
+
+      - name: Run phpunit
+        run: moodle-plugin-ci phpunit --fail-on-warning
+
+      - name: Run phpcpd
+        run: moodle-plugin-ci phpcpd
+
+      - name: Run phpmd
+        run: moodle-plugin-ci phpmd
+
+      - name: Run phpcs
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Run phpdoc
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Run validate
+        run: moodle-plugin-ci validate
+
+      - name: Run savepoints
+        run: moodle-plugin-ci savepoints
+
+      - name: Run mustache
+        run: moodle-plugin-ci mustache
+
+      - name: Run grunt
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
+      - name: Run behat tests
+        run: moodle-plugin-ci behat --profile chrome
+
+      - name: Upload Behat screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: behat-failures-${{ matrix.moodle_branch }}
+          path: moodledata/behat_dump/
+          retention-days: 7

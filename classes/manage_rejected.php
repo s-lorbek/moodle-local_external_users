@@ -34,10 +34,14 @@ use function get_string;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manage_rejected {
+    /** @var common The common helper class instance. */
     private common $common;
+    /** @var array Data for rendering the rejected users dashboard. */
     private array $dashboarddata;
 
     /**
+     * Constructor for manage_rejected class.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws required_capability_exception
@@ -53,6 +57,8 @@ class manage_rejected {
     }
 
     /**
+     * Transform database records into display-ready table data.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -94,6 +100,8 @@ class manage_rejected {
     }
 
     /**
+     * Render the rejected user administration table.
+     *
      * @throws moodle_exception
      */
     public function render() {

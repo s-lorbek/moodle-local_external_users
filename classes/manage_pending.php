@@ -33,17 +33,23 @@ use function get_string;
  * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class manage_pending {
+    /** @var common The common helper class instance. */
     private common $common;
+    /** @var html_table Table for users waiting for verification. */
     private html_table $waitingtable;
+    /** @var html_table Table for users in pending status. */
     private html_table $pendingtable;
 
+    /** @var array Data for rendering pending users. */
     private array $pendingdata;
+    /** @var array Data for rendering waiting users. */
     private array $waitingdata;
 
 
     /**
+     * Constructor for manage_pending class.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws required_capability_exception
@@ -63,6 +69,8 @@ class manage_pending {
     }
 
     /**
+     * Transform database records into display-ready table data.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -136,6 +144,8 @@ class manage_pending {
     }
 
     /**
+     * Render the pending and waiting user administration tables.
+     *
      * @throws moodle_exception
      */
     public function render(): void {

@@ -36,8 +36,7 @@ class hook_callbacks
      *
      * @param \core\hook\output\before_http_headers $hook
      */
-    public static function onload(\core\hook\output\before_http_headers $hook): void
-    {
+    public static function onload(\core\hook\output\before_http_headers $hook): void {
         global $PAGE;
 
         if (!isloggedin()) {
@@ -79,8 +78,7 @@ class hook_callbacks
      *
      * @return object { isexternal: bool, verified_status: string|null }
      */
-    protected static function is_external_user(): object
-    {
+    protected static function is_external_user(): object {
         global $USER, $DB;
 
         $data = (object)['isexternal' => false, 'verified_status' => null, 'ispending' => false];
@@ -113,8 +111,7 @@ class hook_callbacks
      *
      * @return bool
      */
-    protected static function check_policy_agreements(): bool
-    {
+    protected static function check_policy_agreements(): bool {
         global $USER, $DB;
 
         if (get_config('core', 'sitepolicyhandler') == "tool_policy" && !$USER->policyagreed) {
@@ -129,11 +126,10 @@ class hook_callbacks
     /**
      * Redirects the unverified external user to the verification page based on status or expiry date.
      *
-     * @param string|null $externalverified The verification status field value.
+     * @param object|null $externalstatus The verification status object.
      * @return bool True if a redirection occurred.
      */
-    protected static function redirect_if_unverified(?object $externalstatus): bool
-    {
+    protected static function redirect_if_unverified(?object $externalstatus): bool {
         global $USER;
 
         $url = new \moodle_url('/local/external_users/verify.php');
@@ -174,8 +170,7 @@ class hook_callbacks
      *
      * @param bool $isexternal True if the currently viewed user is an external user.
      */
-    protected static function display_user_files(bool $isexternal): void
-    {
+    protected static function display_user_files(bool $isexternal): void {
         global $PAGE, $DB, $OUTPUT;
 
         if (!str_contains($PAGE->url->out(), "/user/profile.php")) {

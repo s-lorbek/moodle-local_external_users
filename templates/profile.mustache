@@ -1,5 +1,27 @@
 {{!
     @template local_external_users/profile
+
+    User profile template.
+
+    Example context (json):
+    {
+        "back_link": "http://example.com/manage.php",
+        "back_label": "Back",
+        "firstname": "John",
+        "middlename": "",
+        "lastname": "Doe",
+        "username": "johndoe",
+        "mail": "john@example.com",
+        "birthdate": "01.01.1990",
+        "affiliation": "University",
+        "eduScope": "tariff_a",
+        "verified": "Yes",
+        "verifiedtill": "-",
+        "moodle_profile_link": "http://example.com/user/view.php?id=2",
+        "uploadedfiles_header": "Uploaded files",
+        "filetable": "<table><tr><td>file.pdf</td></tr></table>",
+        "userpiclink": "http://example.com/image.jpg"
+    }
 }}
 
 <div class="card shadow-sm mb-3 mx-auto" style="max-width: 1200px;">
@@ -23,39 +45,44 @@
         <!-- User-Infos -->
         <div class="row">
             <div class="col-12 col-lg-7">
-                <h3 class="h5 mb-3 border-bottom pb-2">{{#str}}details,local_external_users{{/str}}</h3>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}approved,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8">{{verified}}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}approveduntil,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8">{{verifiedtill}}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}mail,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8"><a href="mailto:{{mail}}">{{mail}}</a></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}birthdate,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8">{{birthdate}}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}username,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8"><code>{{username}}</code></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-4 font-weight-bold">{{#str}}affiliation,local_external_users{{/str}}:</div>
-                    <div class="col-sm-8">{{affiliation}}</div>
-                </div>
+                <table class="table table-sm table-borderless table-striped">
+                    <tbody>
+                    <tr>
+                        <th class="w-35 text-muted">{{#str}}username, local_external_users{{/str}}:</th>
+                        <td class="font-weight-bold">{{username}}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}mail, local_external_users{{/str}}:</th>
+                        <td><a href="mailto:{{mail}}">{{mail}}</a></td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}birthdate, local_external_users{{/str}}:</th>
+                        <td>{{birthdate}}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}affiliation, local_external_users{{/str}}:</th>
+                        <td>{{affiliation}}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}edupersonscopedaffiliation, local_external_users{{/str}}:</th>
+                        <td><span class="badge badge-info">{{eduScope}}</span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}verified, local_external_users{{/str}}:</th>
+                        <td><span class="badge badge-light border">{{verified}}</span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">{{#str}}verifiedtill, local_external_users{{/str}}:</th>
+                        <td><span class="badge badge-light border">{{verifiedtill}}</span></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- User-Bild (ID Card) -->
             {{#userpiclink}}
-                <div class="col-12 col-lg-5">
-                    <div class="text-center p-3 border rounded bg-light">
-                        <h3 class="h6 mb-3 text-muted text-uppercase font-weight-bold">{{#str}}idcard,local_external_users{{/str}}</h3>
-                        <a href="#" data-toggle="modal" data-target="#imageModal" class="d-inline-block">
+                <div class="col-12 col-lg-5 text-center mt-3 mt-lg-0">
+                    <div class="p-2 border rounded bg-light d-inline-block">
+                        <a href="#" data-toggle="modal" data-target="#imageModal">
                             <img
                                 src="{{{userpiclink}}}"
                                 alt="User image"

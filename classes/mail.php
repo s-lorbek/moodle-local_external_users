@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Mail helper functions for local_external_users.
  *
  * @package   local_external_users
  * @copyright 2022 Stephan Lorbek
@@ -28,6 +29,12 @@ use local_external_users\event\mail_failed;
 use stdClass;
 
 /**
+ * Send an email notification to a list of users.
+ *
+ * @param array $users List of user records.
+ * @param string $subject Email subject.
+ * @param string $content Email content.
+ * @return int Number of successfully sent emails.
  * @throws coding_exception
  */
 function send($users, $subject, $content): int {

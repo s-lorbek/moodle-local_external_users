@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Scheduled task for semester validation.
  *
  * @package    local_external_users
  * @author     Stephan Lorbek
@@ -31,9 +32,17 @@ use dml_exception;
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
+/**
+ * Scheduled task to validate semester status.
+ *
+ * @package    local_external_users
+ * @copyright  2023 Stephan Lorbek
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class semester_validation extends scheduled_task {
     /**
-     * get_name function
+     * Get task name.
+     *
      * @return string
      */
     public function get_name(): string {
@@ -41,14 +50,15 @@ class semester_validation extends scheduled_task {
     }
 
     /**
-     * execute function
+     * Execute semester validation task.
+     *
      * @return void
      * @throws dml_exception
      */
     public function execute(): void {
-        global $DB, $PAGE;
+        global $DB;
 
-        $dataset = $DB->get_records(
+        $DB->get_records(
             "user",
             ["auth" => "external", "deleted" => 0]
         );

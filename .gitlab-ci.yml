@@ -55,14 +55,16 @@ moodle_plugin_ci:
     - export IPADDRESS=`grep "$HOSTNAME$" /etc/hosts | awk '{print $1}'`
     - export MOODLE_BEHAT_WWWROOT="http://$IPADDRESS:8000"
     # Install Moodle CI plugin.
-    - composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci /opt/mci ^4
+    - composer create-project -n --no-dev --prefer-source moodlehq/moodle-plugin-ci /opt/mci ^4
     - export PATH="$(cd /opt/mci/bin; pwd):$(cd /opt/mci/vendor/bin; pwd):$PATH"
     - chmod u+x /opt/mci/bin/moodle-plugin-ci
     - chmod u+x /opt/mci/bin/*
     - umask u+x
     # Install Moodle.
     - cd $CI_PROJECT_DIR
-    - moodle-plugin-ci install --moodle=$MOODLE_DIR --db-type=pgsql --db-host=db
+    - mkdir /tmp/extra-plugins
+    - git clone --depth 1 https://gitlab-ci-token:${MOODLE_READ_ONLY}@gitlab.uni-graz.at/715-scrum1/grp_moodle/musi/moodle-auth_external.git /tmp/extra-plugins/auth_external
+    - moodle-plugin-ci install --moodle=$MOODLE_DIR --db-type=pgsql --db-host=db --extra-plugins=/tmp/extra-plugins
     - moodle-plugin-ci add-config '$CFG->behat_profiles["chrome"]["capabilities"]["extra_capabilities"]["goog:chromeOptions"]["args"] = ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"];'
     # Start webserver for behat tests.
     - export PHP_CLI_SERVER_WORKERS=5

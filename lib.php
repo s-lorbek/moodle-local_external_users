@@ -53,7 +53,6 @@ function local_external_users_pluginfile(
     $forcedownload,
     array $options = []
 ) {
-    global $DB;
     require_login();
     $itemid = (int)array_shift($args);
     $fs = get_file_storage();

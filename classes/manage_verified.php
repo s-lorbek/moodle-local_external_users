@@ -35,9 +35,13 @@ use function get_string;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manage_verified {
+    /** @var common The common helper class instance. */
     private common $common;
+    /** @var array The dashboard template data. */
     private array $dashboarddata;
     /**
+     * Constructor for manage_verified class.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws required_capability_exception
@@ -52,6 +56,8 @@ class manage_verified {
     }
 
     /**
+     * Transform database records into verified user table data.
+     *
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -93,6 +99,8 @@ class manage_verified {
     }
 
     /**
+     * Render the verified user administration tables.
+     *
      * @throws moodle_exception
      */
     public function render(): void {

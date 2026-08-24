@@ -84,7 +84,7 @@ class common {
     (SELECT id FROM {user_info_field} WHERE shortname = 'external_user_verified') and muid.data = '0'");
 
         $datasetpending = self::get_pending_users_for_verification();
-        foreach ($datasetpending as $key => $value) {
+        foreach (array_keys($datasetpending) as $key) {
             if (array_key_exists($key, $dataset)) {
                 unset($dataset[$key]);
             }
@@ -416,7 +416,7 @@ class common {
             get_config("local_external_users", "discounturl");
         profile_save_data($user);
 
-        $messageid = send_message_to_user(
+        send_message_to_user(
             $userid,
             get_config("local_external_users", "mailverificationsubject"),
             get_config("local_external_users", "mailverificationmessage"),
@@ -561,17 +561,15 @@ class common {
     }
 
     /**
-     * @throws dml_exception
-     */
-    /**
      * Stores a file to the database.
      *
      * @param object $mform The form object containing the file.
      * @param object $user The user object associated with the file.
      * @param string $fileelement The name of the file element in the form.
      * @param bool $ispdf Whether the file is a PDF.
-     * @param bool $isEnabled Whether the file upload is available.
+     * @param bool $isenabled Whether the file upload is available.
      * @return bool True on success, false on failure.
+     * @throws dml_exception
      */
     public function storefiletodb($mform, $user, $fileelement, $ispdf, $isenabled): bool {
         global $DB;

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Scheduled task for comment validation.
  *
  * @package    local_external_users
  * @author     Stephan Lorbek
@@ -31,9 +32,17 @@ use dml_exception;
 
 require_once($CFG->dirroot . '/user/profile/lib.php');
 
+/**
+ * Scheduled task to validate and reset comments based on user age threshold.
+ *
+ * @package    local_external_users
+ * @copyright  2023 Stephan Lorbek
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class comment_validation extends scheduled_task {
     /**
-     * get_name function
+     * Get task name.
+     *
      * @return string
      */
     public function get_name(): string {
@@ -41,7 +50,8 @@ class comment_validation extends scheduled_task {
     }
 
     /**
-     * execute function
+     * Execute comment validation task.
+     *
      * @return void
      * @throws dml_exception
      */

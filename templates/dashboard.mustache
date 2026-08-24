@@ -1,5 +1,16 @@
 {{!
     @template local_external_users/dashboard
+
+    Dashboard main navigation template.
+
+    Example context (json):
+    {
+        "pending": "Pending Users (3)",
+        "approved": "Approved Users (10)",
+        "rejected": "Rejected Users (1)",
+        "settings": "Plugin Settings",
+        "auth_settings": "Authentication Settings"
+    }
 }}
 <div class="wrapper">
     <div class="pending card py-2">
@@ -37,6 +48,3 @@
     </div>
     {{/auth_settings}}
 </div>
-
-
-

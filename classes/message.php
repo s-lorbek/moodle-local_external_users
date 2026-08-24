@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Message sending functions for local_external_users.
  *
  * @package   local_external_users
  * @copyright 2023 Stephan Lorbek
@@ -27,6 +28,13 @@ require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/message/lib.php');
 
 /**
+ * Send an email message to a user.
+ *
+ * @param int $recipientid ID of the recipient user.
+ * @param string $subject Message subject.
+ * @param string $content Message HTML content.
+ * @param string $comment Additional comment.
+ * @return bool True on success, false on failure.
  * @throws dml_exception
  */
 function send_message_to_user($recipientid, $subject, $content, $comment): bool {

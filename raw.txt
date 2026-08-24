@@ -1,0 +1,637 @@
+2026-08-24T09:32:21.541467Z 00O [0KRunning with gitlab-runner 19.3.0 (9cbf0074)[0;m
+2026-08-24T09:32:21.541480Z 00O [0K  on shared1 64XUxuqqT, system ID: s_6d0864acf985[0;m
+2026-08-24T09:32:21.541501Z 00O [0K[36;1mResolving secrets[0;m[0;m
+2026-08-24T09:32:21.541634Z 00O section_start:1787563941:prepare_executor[0K
+2026-08-24T09:32:21.541638Z 00O+[0K[36;1mPreparing the "docker" executor[0;m[0;m
+2026-08-24T09:32:21.554535Z 00O [0KUsing Docker executor with image moodlehq/moodle-php-apache:8.3 ...[0;m
+2026-08-24T09:32:21.881655Z 00O [0KStarting service selenium/standalone-chrome:4...[0;m
+2026-08-24T09:32:21.881672Z 00O [0KUsing effective pull policy of [always] for container selenium/standalone-chrome:4[0;m
+2026-08-24T09:32:21.885113Z 00O [0KPulling docker image selenium/standalone-chrome:4 ...[0;m
+2026-08-24T09:32:21.968940Z 00O [0KUsing docker image sha256:cae58262ca0421643200b1cfedfba9b8bc8cf4a2d380f733ed83c51bc8e20e5d for selenium/standalone-chrome:4 with digest selenium/standalone-chrome@sha256:cd778b6f38d99d1e14a05a767f576aff2face98d5202a2192d857614c265ec4d ...[0;m
+2026-08-24T09:32:22.151451Z 00O [0KStarting service postgres:16-alpine...[0;m
+2026-08-24T09:32:22.151467Z 00O [0KUsing effective pull policy of [always] for container postgres:16-alpine[0;m
+2026-08-24T09:32:22.152312Z 00O [0KPulling docker image postgres:16-alpine ...[0;m
+2026-08-24T09:32:22.246037Z 00O [0KUsing docker image sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b for postgres:16-alpine with digest postgres@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685 ...[0;m
+2026-08-24T09:32:22.866073Z 00O [0KWaiting for services to be up and running (timeout 30 seconds)...[0;m
+2026-08-24T09:32:25.695343Z 00O [0KUsing effective pull policy of [always] for container moodlehq/moodle-php-apache:8.3[0;m
+2026-08-24T09:32:25.696450Z 00O [0KPulling docker image moodlehq/moodle-php-apache:8.3 ...[0;m
+2026-08-24T09:32:25.764811Z 00O [0KUsing docker image sha256:b7213951b9155f9c1dc190d712133f240107868293207969356cdd1760c15c45 for moodlehq/moodle-php-apache:8.3 with digest moodlehq/moodle-php-apache@sha256:7fd5f3356a71889fc6eda2a7cca2b44ed1e3f90556f5c3bcd9f2091789739af2 ...[0;m
+2026-08-24T09:32:25.764825Z 00O section_end:1787563945:prepare_executor[0K
+2026-08-24T09:32:25.765054Z 00O+section_start:1787563945:prepare_script[0K
+2026-08-24T09:32:25.765059Z 00O+[0K[36;1mPreparing environment[0;m[0;m
+2026-08-24T09:32:25.768296Z 00O [0KUsing effective pull policy of [always] for container sha256:770f7c4de60b838edcba9bb2a1fb54dc5be4c961926d7d4ebed9a1d50026f898[0;m
+2026-08-24T09:32:26.108691Z 01O Running on runner-64xuxuqqt-project-1202-concurrent-1 via it129140.pers.ad.uni-graz.at...
+2026-08-24T09:32:26.262178Z 00O section_end:1787563946:prepare_script[0K
+2026-08-24T09:32:26.263074Z 00O+section_start:1787563946:get_sources[0K
+2026-08-24T09:32:26.263080Z 00O+[0K[36;1mGetting source from Git repository[0;m[0;m
+2026-08-24T09:32:26.530021Z 01O [32;1mGitaly correlation ID: 01M0SHT7DG0YHKTDCHFY85JAMD[0;m
+2026-08-24T09:32:26.537183Z 01O [32;1mFetching changes with git depth set to 20...[0;m
+2026-08-24T09:32:26.540327Z 01O Reinitialized existing Git repository in /builds/715-scrum1/grp_moodle/musi/moodle-local_external_users/.git/
+2026-08-24T09:32:26.542781Z 01O [32;1mCreated fresh repository.[0;m
+2026-08-24T09:32:26.884754Z 01O [32;1mChecking out 15b68e75 as detached HEAD (ref is MOODLE_405_STABLE)...[0;m
+2026-08-24T09:32:27.867492Z 01O Removing .cache/
+2026-08-24T09:32:27.924369Z 01O Removing moodledata/
+2026-08-24T09:32:27.924378Z 01O Removing node_modules/
+2026-08-24T09:32:27.924378Z 01O Removing package-lock.json
+2026-08-24T09:32:27.924379Z 01O Removing package.json
+2026-08-24T09:32:27.962518Z 01O 
+2026-08-24T09:32:27.962527Z 01O [32;1mSkipping Git submodules setup[0;m
+2026-08-24T09:32:28.069252Z 00O section_end:1787563948:get_sources[0K
+2026-08-24T09:32:28.070048Z 00O+section_start:1787563948:restore_cache[0K
+2026-08-24T09:32:28.070055Z 00O+[0K[36;1mRestoring cache[0;m[0;m
+2026-08-24T09:32:28.279433Z 01O [32;1mChecking cache for default-protected...[0;m
+2026-08-24T09:32:28.327514Z 01E No URL provided, cache will not be downloaded from shared cache server. Instead a local version of cache will be extracted.[0;m 
+2026-08-24T09:32:28.327524Z 01E [0;33mWARNING: Cache file does not exist                [0;m 
+2026-08-24T09:32:28.329489Z 01O [0;33mFailed to extract cache[0;m
+2026-08-24T09:32:28.425370Z 00O section_end:1787563948:restore_cache[0K
+2026-08-24T09:32:28.426140Z 00O+section_start:1787563948:step_script[0K
+2026-08-24T09:32:28.426149Z 00O+[0K[36;1mExecuting "step_script" stage of the job script[0;m[0;m
+2026-08-24T09:32:28.426173Z 00O [0KUsing effective pull policy of [always] for container moodlehq/moodle-php-apache:8.3[0;m
+2026-08-24T09:32:28.427145Z 00O [0KUsing docker image sha256:b7213951b9155f9c1dc190d712133f240107868293207969356cdd1760c15c45 for moodlehq/moodle-php-apache:8.3 with digest moodlehq/moodle-php-apache@sha256:7fd5f3356a71889fc6eda2a7cca2b44ed1e3f90556f5c3bcd9f2091789739af2 ...[0;m
+2026-08-24T09:32:28.588931Z 01O Running PHP Configuration fetcher
+2026-08-24T09:32:28.588956Z 01O Checking for php configuration in environment
+2026-08-24T09:32:28.606135Z 01O 
+2026-08-24T09:32:28.607768Z 01O Building Entrypoint files from /system-docker-entrypoint.d/* and /docker-entrypoint.d/*
+2026-08-24T09:32:28.607861Z 01O Copying /system-docker-entrypoint.d/* to /final-docker-entrypoint.d/
+2026-08-24T09:32:28.610233Z 01O Copying /docker-entrypoint.d/* to /final-docker-entrypoint.d/
+2026-08-24T09:32:28.611826Z 01E cp: cannot stat '/docker-entrypoint.d/*': No such file or directory
+2026-08-24T09:32:28.612390Z 01O Running entrypoint files from /final-docker-entrypoint.d/*
+2026-08-24T09:32:28.615585Z 01O /usr/local/bin/moodle-docker-php-entrypoint: sourcing /final-docker-entrypoint.d/10-wwwroot.sh
+2026-08-24T09:32:28.615691Z 01O 
+2026-08-24T09:32:28.615694Z 01O #######################################
+2026-08-24T09:32:28.615886Z 01O # moodle-php-apache wwwroot setup
+2026-08-24T09:32:28.615888Z 01O #######################################
+2026-08-24T09:32:28.615889Z 01O #
+2026-08-24T09:32:28.615890Z 01O # Setting up Apache DocumentRoot
+2026-08-24T09:32:28.615890Z 01O # No value set for $APACHE_DOCUMENT_ROOT. Creating default value.
+2026-08-24T09:32:28.615891Z 01O # Using default Apache DocumentRoot: /var/www/html
+2026-08-24T09:32:28.615892Z 01O # $APACHE_DOCUMENT_ROOT: /var/www/html
+2026-08-24T09:32:28.615894Z 01O #
+2026-08-24T09:32:28.615946Z 01O #######################################
+2026-08-24T09:32:28.615986Z 01O 
+2026-08-24T09:32:28.616054Z 01O 
+2026-08-24T09:32:28.616656Z 01O Starting docker-php-entrypoint with sh -c if [ -x /usr/local/bin/bash ]; then
+2026-08-24T09:32:28.616659Z 01O 	exec /usr/local/bin/bash 
+2026-08-24T09:32:28.616660Z 01O elif [ -x /usr/bin/bash ]; then
+2026-08-24T09:32:28.616660Z 01O 	exec /usr/bin/bash 
+2026-08-24T09:32:28.616660Z 01O elif [ -x /bin/bash ]; then
+2026-08-24T09:32:28.616661Z 01O 	exec /bin/bash 
+2026-08-24T09:32:28.616661Z 01O elif [ -x /usr/local/bin/sh ]; then
+2026-08-24T09:32:28.616662Z 01O 	exec /usr/local/bin/sh 
+2026-08-24T09:32:28.616662Z 01O elif [ -x /usr/bin/sh ]; then
+2026-08-24T09:32:28.616662Z 01O 	exec /usr/bin/sh 
+2026-08-24T09:32:28.616663Z 01O elif [ -x /bin/sh ]; then
+2026-08-24T09:32:28.616663Z 01O 	exec /bin/sh 
+2026-08-24T09:32:28.616663Z 01O elif [ -x /busybox/sh ]; then
+2026-08-24T09:32:28.616664Z 01O 	exec /busybox/sh 
+2026-08-24T09:32:28.616664Z 01O else
+2026-08-24T09:32:28.616664Z 01O 	echo shell not found
+2026-08-24T09:32:28.616665Z 01O 	exit 1
+2026-08-24T09:32:28.616665Z 01O fi
+2026-08-24T09:32:28.616665Z 01O 
+2026-08-24T09:32:28.616666Z 01O 
+2026-08-24T09:32:28.633279Z 01O [32;1m$ apt update && apt install -y postgresql-client postgresql-client-common default-jre-headless[0;m
+2026-08-24T09:32:28.637347Z 01E 
+2026-08-24T09:32:28.637351Z 01E WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+2026-08-24T09:32:28.637352Z 01E 
+2026-08-24T09:32:28.681711Z 01O Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-08-24T09:32:28.711876Z 01O Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-08-24T09:32:28.723748Z 01O Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-08-24T09:32:28.765164Z 01O Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+2026-08-24T09:32:28.808545Z 01O Get:5 https://packages.microsoft.com/debian/10/prod buster InRelease [6538 B]
+2026-08-24T09:32:28.974728Z 01O Get:6 https://packages.microsoft.com/debian/10/prod buster/main all Packages [2625 B]
+2026-08-24T09:32:29.001156Z 01O Get:7 https://packages.microsoft.com/debian/10/prod buster/main amd64 Packages [268 kB]
+2026-08-24T09:32:29.443651Z 01O Get:8 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+2026-08-24T09:32:29.467616Z 01O Get:9 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [335 kB]
+2026-08-24T09:32:30.243249Z 01O Fetched 9651 kB in 2s (6076 kB/s)
+2026-08-24T09:32:30.243259Z 01O Reading package lists...
+2026-08-24T09:32:30.757059Z 01O Building dependency tree...
+2026-08-24T09:32:30.873620Z 01O Reading state information...
+2026-08-24T09:32:30.887598Z 01O 7 packages can be upgraded. Run 'apt list --upgradable' to see them.
+2026-08-24T09:32:30.887614Z 01E W: https://packages.microsoft.com/debian/10/prod/dists/buster/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
+2026-08-24T09:32:30.891685Z 01E 
+2026-08-24T09:32:30.891698Z 01E WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+2026-08-24T09:32:30.891713Z 01E 
+2026-08-24T09:32:30.894150Z 01O Reading package lists...
+2026-08-24T09:32:31.389507Z 01O Building dependency tree...
+2026-08-24T09:32:31.509173Z 01O Reading state information...
+2026-08-24T09:32:31.623476Z 01O The following additional packages will be installed:
+2026-08-24T09:32:31.623551Z 01O   alsa-topology-conf alsa-ucm-conf ca-certificates-java java-common libasound2
+2026-08-24T09:32:31.623728Z 01O   libasound2-data libglib2.0-0 libglib2.0-data libgraphite2-3 libharfbuzz0b
+2026-08-24T09:32:31.624128Z 01O   libnspr4 libnss3 libpcsclite1 libpq5 netbase openjdk-17-jre-headless
+2026-08-24T09:32:31.624270Z 01O   postgresql-client-15 shared-mime-info xdg-user-dirs
+2026-08-24T09:32:31.624983Z 01O Suggested packages:
+2026-08-24T09:32:31.624985Z 01O   default-jre libasound2-plugins alsa-utils low-memory-monitor pcscd
+2026-08-24T09:32:31.624986Z 01O   libnss-mdns fonts-dejavu-extra fonts-ipafont-gothic fonts-ipafont-mincho
+2026-08-24T09:32:31.624986Z 01O   fonts-wqy-microhei | fonts-wqy-zenhei fonts-indic postgresql-15
+2026-08-24T09:32:31.624987Z 01O   postgresql-doc-15
+2026-08-24T09:32:31.715182Z 01O The following NEW packages will be installed:
+2026-08-24T09:32:31.715303Z 01O   alsa-topology-conf alsa-ucm-conf ca-certificates-java default-jre-headless
+2026-08-24T09:32:31.715451Z 01O   java-common libasound2 libasound2-data libglib2.0-0 libglib2.0-data
+2026-08-24T09:32:31.715998Z 01O   libgraphite2-3 libharfbuzz0b libnspr4 libnss3 libpcsclite1 netbase
+2026-08-24T09:32:31.716050Z 01O   openjdk-17-jre-headless postgresql-client postgresql-client-15
+2026-08-24T09:32:31.716291Z 01O   postgresql-client-common shared-mime-info xdg-user-dirs
+2026-08-24T09:32:31.717191Z 01O The following packages will be upgraded:
+2026-08-24T09:32:31.717686Z 01O   libpq5
+2026-08-24T09:32:31.752457Z 01O 1 upgraded, 21 newly installed, 0 to remove and 6 not upgraded.
+2026-08-24T09:32:31.752467Z 01O Need to get 53.3 MB of archives.
+2026-08-24T09:32:31.752468Z 01O After this operation, 231 MB of additional disk space will be used.
+2026-08-24T09:32:31.752469Z 01O Get:1 http://deb.debian.org/debian bookworm/main amd64 netbase all 6.4 [12.8 kB]
+2026-08-24T09:32:31.769998Z 01O Get:2 http://deb.debian.org/debian bookworm/main amd64 alsa-topology-conf all 1.2.5.1-2 [15.2 kB]
+2026-08-24T09:32:31.771379Z 01O Get:3 http://deb.debian.org/debian bookworm/main amd64 libasound2-data all 1.2.8-1 [20.5 kB]
+2026-08-24T09:32:31.773786Z 01O Get:4 http://deb.debian.org/debian bookworm/main amd64 libasound2 amd64 1.2.8-1+b1 [362 kB]
+2026-08-24T09:32:31.801594Z 01O Get:5 http://deb.debian.org/debian bookworm/main amd64 alsa-ucm-conf all 1.2.8-1 [51.7 kB]
+2026-08-24T09:32:31.802439Z 01O Get:6 http://deb.debian.org/debian bookworm/main amd64 ca-certificates-java all 20230710~deb12u1 [11.9 kB]
+2026-08-24T09:32:31.802443Z 01O Get:7 http://deb.debian.org/debian bookworm/main amd64 java-common all 0.74 [6388 B]
+2026-08-24T09:32:31.803082Z 01O Get:8 http://deb.debian.org/debian bookworm/main amd64 libnspr4 amd64 2:4.35-1 [113 kB]
+2026-08-24T09:32:31.804398Z 01O Get:9 http://deb.debian.org/debian-security bookworm-security/main amd64 libnss3 amd64 2:3.87.1-1+deb12u4 [1331 kB]
+2026-08-24T09:32:31.824265Z 01O Get:10 http://deb.debian.org/debian bookworm/main amd64 libglib2.0-0 amd64 2.74.6-2+deb12u9 [1403 kB]
+2026-08-24T09:32:31.834662Z 01O Get:11 http://deb.debian.org/debian bookworm/main amd64 libgraphite2-3 amd64 1.3.14-1+deb12u1 [74.6 kB]
+2026-08-24T09:32:31.835371Z 01O Get:12 http://deb.debian.org/debian bookworm/main amd64 libharfbuzz0b amd64 6.0.0+dfsg-3 [1945 kB]
+2026-08-24T09:32:31.850279Z 01O Get:13 http://deb.debian.org/debian bookworm/main amd64 libpcsclite1 amd64 1.9.9-2 [49.7 kB]
+2026-08-24T09:32:31.850481Z 01O Get:14 http://deb.debian.org/debian-security bookworm-security/main amd64 openjdk-17-jre-headless amd64 17.0.20+8-1~deb12u1 [43.9 MB]
+2026-08-24T09:32:32.159029Z 01O Get:15 http://deb.debian.org/debian bookworm/main amd64 default-jre-headless amd64 2:1.17-74 [2936 B]
+2026-08-24T09:32:32.159240Z 01O Get:16 http://deb.debian.org/debian bookworm/main amd64 libglib2.0-data all 2.74.6-2+deb12u9 [1211 kB]
+2026-08-24T09:32:32.163656Z 01O Get:17 http://deb.debian.org/debian-security bookworm-security/main amd64 libpq5 amd64 15.19-0+deb12u1 [203 kB]
+2026-08-24T09:32:32.164471Z 01O Get:18 http://deb.debian.org/debian bookworm/main amd64 postgresql-client-common all 248+deb12u1 [35.2 kB]
+2026-08-24T09:32:32.164756Z 01O Get:19 http://deb.debian.org/debian-security bookworm-security/main amd64 postgresql-client-15 amd64 15.19-0+deb12u1 [1759 kB]
+2026-08-24T09:32:32.168313Z 01O Get:20 http://deb.debian.org/debian bookworm/main amd64 postgresql-client all 15+248+deb12u1 [10.2 kB]
+2026-08-24T09:32:32.168613Z 01O Get:21 http://deb.debian.org/debian bookworm/main amd64 shared-mime-info amd64 2.2-1 [729 kB]
+2026-08-24T09:32:32.170613Z 01O Get:22 http://deb.debian.org/debian bookworm/main amd64 xdg-user-dirs amd64 0.18-1 [54.4 kB]
+2026-08-24T09:32:32.287245Z 01E debconf: delaying package configuration, since apt-utils is not installed
+2026-08-24T09:32:32.313742Z 01O Fetched 53.3 MB in 0s (119 MB/s)
+2026-08-24T09:32:32.334720Z 01O Selecting previously unselected package netbase.
+2026-08-24T09:32:32.334729Z 01O (Reading database ... 
+2026-08-24T09:32:32.337254Z 01O+(Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%
+2026-08-24T09:32:32.337318Z 01O+(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%
+2026-08-24T09:32:32.337891Z 01O+(Reading database ... 70%
+2026-08-24T09:32:32.339668Z 01O+(Reading database ... 75%
+2026-08-24T09:32:32.340707Z 01O+(Reading database ... 80%
+2026-08-24T09:32:32.341597Z 01O+(Reading database ... 85%
+2026-08-24T09:32:32.343509Z 01O+(Reading database ... 90%
+2026-08-24T09:32:32.345574Z 01O+(Reading database ... 95%
+2026-08-24T09:32:32.346242Z 01O+(Reading database ... 100%(Reading database ... 25862 files and directories currently installed.)
+2026-08-24T09:32:32.347110Z 01O Preparing to unpack .../00-netbase_6.4_all.deb ...
+2026-08-24T09:32:32.349720Z 01O Unpacking netbase (6.4) ...
+2026-08-24T09:32:32.377307Z 01O Selecting previously unselected package alsa-topology-conf.
+2026-08-24T09:32:32.379297Z 01O Preparing to unpack .../01-alsa-topology-conf_1.2.5.1-2_all.deb ...
+2026-08-24T09:32:32.381840Z 01O Unpacking alsa-topology-conf (1.2.5.1-2) ...
+2026-08-24T09:32:32.411663Z 01O Selecting previously unselected package libasound2-data.
+2026-08-24T09:32:32.411672Z 01O Preparing to unpack .../02-libasound2-data_1.2.8-1_all.deb ...
+2026-08-24T09:32:32.414051Z 01O Unpacking libasound2-data (1.2.8-1) ...
+2026-08-24T09:32:32.461206Z 01O Selecting previously unselected package libasound2:amd64.
+2026-08-24T09:32:32.461421Z 01O Preparing to unpack .../03-libasound2_1.2.8-1+b1_amd64.deb ...
+2026-08-24T09:32:32.466237Z 01O Unpacking libasound2:amd64 (1.2.8-1+b1) ...
+2026-08-24T09:32:32.512230Z 01O Selecting previously unselected package alsa-ucm-conf.
+2026-08-24T09:32:32.514761Z 01O Preparing to unpack .../04-alsa-ucm-conf_1.2.8-1_all.deb ...
+2026-08-24T09:32:32.517132Z 01O Unpacking alsa-ucm-conf (1.2.8-1) ...
+2026-08-24T09:32:32.591841Z 01O Selecting previously unselected package ca-certificates-java.
+2026-08-24T09:32:32.592195Z 01O Preparing to unpack .../05-ca-certificates-java_20230710~deb12u1_all.deb ...
+2026-08-24T09:32:32.596843Z 01O Unpacking ca-certificates-java (20230710~deb12u1) ...
+2026-08-24T09:32:32.625179Z 01O Selecting previously unselected package java-common.
+2026-08-24T09:32:32.627091Z 01O Preparing to unpack .../06-java-common_0.74_all.deb ...
+2026-08-24T09:32:32.629387Z 01O Unpacking java-common (0.74) ...
+2026-08-24T09:32:32.654319Z 01O Selecting previously unselected package libnspr4:amd64.
+2026-08-24T09:32:32.657318Z 01O Preparing to unpack .../07-libnspr4_2%3a4.35-1_amd64.deb ...
+2026-08-24T09:32:32.660122Z 01O Unpacking libnspr4:amd64 (2:4.35-1) ...
+2026-08-24T09:32:32.695045Z 01O Selecting previously unselected package libnss3:amd64.
+2026-08-24T09:32:32.697213Z 01O Preparing to unpack .../08-libnss3_2%3a3.87.1-1+deb12u4_amd64.deb ...
+2026-08-24T09:32:32.699648Z 01O Unpacking libnss3:amd64 (2:3.87.1-1+deb12u4) ...
+2026-08-24T09:32:32.814791Z 01O Selecting previously unselected package libglib2.0-0:amd64.
+2026-08-24T09:32:32.816906Z 01O Preparing to unpack .../09-libglib2.0-0_2.74.6-2+deb12u9_amd64.deb ...
+2026-08-24T09:32:32.819280Z 01O Unpacking libglib2.0-0:amd64 (2.74.6-2+deb12u9) ...
+2026-08-24T09:32:32.936312Z 01O Selecting previously unselected package libgraphite2-3:amd64.
+2026-08-24T09:32:32.938419Z 01O Preparing to unpack .../10-libgraphite2-3_1.3.14-1+deb12u1_amd64.deb ...
+2026-08-24T09:32:32.940850Z 01O Unpacking libgraphite2-3:amd64 (1.3.14-1+deb12u1) ...
+2026-08-24T09:32:32.973064Z 01O Selecting previously unselected package libharfbuzz0b:amd64.
+2026-08-24T09:32:32.974770Z 01O Preparing to unpack .../11-libharfbuzz0b_6.0.0+dfsg-3_amd64.deb ...
+2026-08-24T09:32:32.977557Z 01O Unpacking libharfbuzz0b:amd64 (6.0.0+dfsg-3) ...
+2026-08-24T09:32:33.042138Z 01O Selecting previously unselected package libpcsclite1:amd64.
+2026-08-24T09:32:33.044264Z 01O Preparing to unpack .../12-libpcsclite1_1.9.9-2_amd64.deb ...
+2026-08-24T09:32:33.046710Z 01O Unpacking libpcsclite1:amd64 (1.9.9-2) ...
+2026-08-24T09:32:33.078793Z 01O Selecting previously unselected package openjdk-17-jre-headless:amd64.
+2026-08-24T09:32:33.080908Z 01O Preparing to unpack .../13-openjdk-17-jre-headless_17.0.20+8-1~deb12u1_amd64.deb ...
+2026-08-24T09:32:33.083531Z 01O Unpacking openjdk-17-jre-headless:amd64 (17.0.20+8-1~deb12u1) ...
+2026-08-24T09:32:34.214007Z 01O Selecting previously unselected package default-jre-headless.
+2026-08-24T09:32:34.216224Z 01O Preparing to unpack .../14-default-jre-headless_2%3a1.17-74_amd64.deb ...
+2026-08-24T09:32:34.219080Z 01O Unpacking default-jre-headless (2:1.17-74) ...
+2026-08-24T09:32:34.241691Z 01O Selecting previously unselected package libglib2.0-data.
+2026-08-24T09:32:34.243660Z 01O Preparing to unpack .../15-libglib2.0-data_2.74.6-2+deb12u9_all.deb ...
+2026-08-24T09:32:34.246027Z 01O Unpacking libglib2.0-data (2.74.6-2+deb12u9) ...
+2026-08-24T09:32:34.371054Z 01O Preparing to unpack .../16-libpq5_15.19-0+deb12u1_amd64.deb ...
+2026-08-24T09:32:34.380720Z 01O Unpacking libpq5:amd64 (15.19-0+deb12u1) over (15.18-0+deb12u1) ...
+2026-08-24T09:32:34.444338Z 01O Selecting previously unselected package postgresql-client-common.
+2026-08-24T09:32:34.446450Z 01O Preparing to unpack .../17-postgresql-client-common_248+deb12u1_all.deb ...
+2026-08-24T09:32:34.452933Z 01O Unpacking postgresql-client-common (248+deb12u1) ...
+2026-08-24T09:32:34.483979Z 01O Selecting previously unselected package postgresql-client-15.
+2026-08-24T09:32:34.484719Z 01O Preparing to unpack .../18-postgresql-client-15_15.19-0+deb12u1_amd64.deb ...
+2026-08-24T09:32:34.488828Z 01O Unpacking postgresql-client-15 (15.19-0+deb12u1) ...
+2026-08-24T09:32:34.641456Z 01O Selecting previously unselected package postgresql-client.
+2026-08-24T09:32:34.643584Z 01O Preparing to unpack .../19-postgresql-client_15+248+deb12u1_all.deb ...
+2026-08-24T09:32:34.647220Z 01O Unpacking postgresql-client (15+248+deb12u1) ...
+2026-08-24T09:32:34.679430Z 01O Selecting previously unselected package shared-mime-info.
+2026-08-24T09:32:34.681588Z 01O Preparing to unpack .../20-shared-mime-info_2.2-1_amd64.deb ...
+2026-08-24T09:32:34.684761Z 01O Unpacking shared-mime-info (2.2-1) ...
+2026-08-24T09:32:34.770162Z 01O Selecting previously unselected package xdg-user-dirs.
+2026-08-24T09:32:34.772345Z 01O Preparing to unpack .../21-xdg-user-dirs_0.18-1_amd64.deb ...
+2026-08-24T09:32:34.778980Z 01O Unpacking xdg-user-dirs (0.18-1) ...
+2026-08-24T09:32:34.819377Z 01O Setting up libgraphite2-3:amd64 (1.3.14-1+deb12u1) ...
+2026-08-24T09:32:34.826771Z 01O Setting up java-common (0.74) ...
+2026-08-24T09:32:34.839240Z 01O Setting up xdg-user-dirs (0.18-1) ...
+2026-08-24T09:32:34.857361Z 01O Setting up libglib2.0-0:amd64 (2.74.6-2+deb12u9) ...
+2026-08-24T09:32:34.866250Z 01O No schema files found: doing nothing.
+2026-08-24T09:32:34.871313Z 01O Setting up libpq5:amd64 (15.19-0+deb12u1) ...
+2026-08-24T09:32:34.880362Z 01O Setting up libasound2-data (1.2.8-1) ...
+2026-08-24T09:32:34.890313Z 01O Setting up libglib2.0-data (2.74.6-2+deb12u9) ...
+2026-08-24T09:32:34.899293Z 01O Setting up libnspr4:amd64 (2:4.35-1) ...
+2026-08-24T09:32:34.909604Z 01O Setting up shared-mime-info (2.2-1) ...
+2026-08-24T09:32:36.518288Z 01O Setting up libpcsclite1:amd64 (1.9.9-2) ...
+2026-08-24T09:32:36.528426Z 01O Setting up alsa-topology-conf (1.2.5.1-2) ...
+2026-08-24T09:32:36.536282Z 01O Setting up libasound2:amd64 (1.2.8-1+b1) ...
+2026-08-24T09:32:36.545844Z 01O Setting up libharfbuzz0b:amd64 (6.0.0+dfsg-3) ...
+2026-08-24T09:32:36.554813Z 01O Setting up netbase (6.4) ...
+2026-08-24T09:32:36.579635Z 01O Setting up ca-certificates-java (20230710~deb12u1) ...
+2026-08-24T09:32:36.602182Z 01O No JRE found. Skipping Java certificates setup.
+2026-08-24T09:32:36.604968Z 01O Setting up postgresql-client-common (248+deb12u1) ...
+2026-08-24T09:32:36.622772Z 01O Setting up alsa-ucm-conf (1.2.8-1) ...
+2026-08-24T09:32:36.631178Z 01O Setting up postgresql-client-15 (15.19-0+deb12u1) ...
+2026-08-24T09:32:37.096055Z 01O update-alternatives: using /usr/share/postgresql/15/man/man1/psql.1.gz to provide /usr/share/man/man1/psql.1.gz (psql.1.gz) in auto mode
+2026-08-24T09:32:37.123794Z 01O Setting up libnss3:amd64 (2:3.87.1-1+deb12u4) ...
+2026-08-24T09:32:37.130867Z 01O Setting up openjdk-17-jre-headless:amd64 (17.0.20+8-1~deb12u1) ...
+2026-08-24T09:32:37.203296Z 01O update-alternatives: using /usr/lib/jvm/java-17-openjdk-amd64/bin/java to provide /usr/bin/java (java) in auto mode
+2026-08-24T09:32:37.206407Z 01O update-alternatives: using /usr/lib/jvm/java-17-openjdk-amd64/bin/jpackage to provide /usr/bin/jpackage (jpackage) in auto mode
+2026-08-24T09:32:37.209455Z 01O update-alternatives: using /usr/lib/jvm/java-17-openjdk-amd64/bin/keytool to provide /usr/bin/keytool (keytool) in auto mode
+2026-08-24T09:32:37.212976Z 01O update-alternatives: using /usr/lib/jvm/java-17-openjdk-amd64/bin/rmiregistry to provide /usr/bin/rmiregistry (rmiregistry) in auto mode
+2026-08-24T09:32:37.217470Z 01O update-alternatives: using /usr/lib/jvm/java-17-openjdk-amd64/lib/jexec to provide /usr/bin/jexec (jexec) in auto mode
+2026-08-24T09:32:37.234555Z 01O Setting up postgresql-client (15+248+deb12u1) ...
+2026-08-24T09:32:37.244120Z 01O Processing triggers for libc-bin (2.36-9+deb12u14) ...
+2026-08-24T09:32:37.268127Z 01O Processing triggers for ca-certificates-java (20230710~deb12u1) ...
+2026-08-24T09:32:37.474288Z 01O Adding debian:ACCVRAIZ1.pem
+2026-08-24T09:32:37.476261Z 01O Adding debian:AC_RAIZ_FNMT-RCM.pem
+2026-08-24T09:32:37.488617Z 01O Adding debian:AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.pem
+2026-08-24T09:32:37.489726Z 01O Adding debian:ANF_Secure_Server_Root_CA.pem
+2026-08-24T09:32:37.491904Z 01O Adding debian:Actalis_Authentication_Root_CA.pem
+2026-08-24T09:32:37.494622Z 01O Adding debian:AffirmTrust_Commercial.pem
+2026-08-24T09:32:37.494626Z 01O Adding debian:AffirmTrust_Networking.pem
+2026-08-24T09:32:37.495033Z 01O Adding debian:AffirmTrust_Premium.pem
+2026-08-24T09:32:37.495834Z 01O Adding debian:AffirmTrust_Premium_ECC.pem
+2026-08-24T09:32:37.497017Z 01O Adding debian:Amazon_Root_CA_1.pem
+2026-08-24T09:32:37.498909Z 01O Adding debian:Amazon_Root_CA_2.pem
+2026-08-24T09:32:37.499552Z 01O Adding debian:Amazon_Root_CA_3.pem
+2026-08-24T09:32:37.500621Z 01O Adding debian:Amazon_Root_CA_4.pem
+2026-08-24T09:32:37.501891Z 01O Adding debian:Atos_TrustedRoot_2011.pem
+2026-08-24T09:32:37.503280Z 01O Adding debian:Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
+2026-08-24T09:32:37.507060Z 01O Adding debian:Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068_2.pem
+2026-08-24T09:32:37.508409Z 01O Adding debian:Baltimore_CyberTrust_Root.pem
+2026-08-24T09:32:37.509788Z 01O Adding debian:Buypass_Class_2_Root_CA.pem
+2026-08-24T09:32:37.511321Z 01O Adding debian:Buypass_Class_3_Root_CA.pem
+2026-08-24T09:32:37.513249Z 01O Adding debian:CA_Disig_Root_R2.pem
+2026-08-24T09:32:37.514882Z 01O Adding debian:CFCA_EV_ROOT.pem
+2026-08-24T09:32:37.516220Z 01O Adding debian:COMODO_Certification_Authority.pem
+2026-08-24T09:32:37.517416Z 01O Adding debian:COMODO_ECC_Certification_Authority.pem
+2026-08-24T09:32:37.519696Z 01O Adding debian:COMODO_RSA_Certification_Authority.pem
+2026-08-24T09:32:37.519700Z 01O Adding debian:Certainly_Root_E1.pem
+2026-08-24T09:32:37.521140Z 01O Adding debian:Certainly_Root_R1.pem
+2026-08-24T09:32:37.522740Z 01O Adding debian:Certigna.pem
+2026-08-24T09:32:37.525462Z 01O Adding debian:Certigna_Root_CA.pem
+2026-08-24T09:32:37.525465Z 01O Adding debian:Certum_EC-384_CA.pem
+2026-08-24T09:32:37.526403Z 01O Adding debian:Certum_Trusted_Network_CA.pem
+2026-08-24T09:32:37.528120Z 01O Adding debian:Certum_Trusted_Network_CA_2.pem
+2026-08-24T09:32:37.529667Z 01O Adding debian:Certum_Trusted_Root_CA.pem
+2026-08-24T09:32:37.530976Z 01O Adding debian:Comodo_AAA_Services_root.pem
+2026-08-24T09:32:37.532711Z 01O Adding debian:D-TRUST_BR_Root_CA_1_2020.pem
+2026-08-24T09:32:37.533664Z 01O Adding debian:D-TRUST_EV_Root_CA_1_2020.pem
+2026-08-24T09:32:37.534979Z 01O Adding debian:D-TRUST_Root_Class_3_CA_2_2009.pem
+2026-08-24T09:32:37.536308Z 01O Adding debian:D-TRUST_Root_Class_3_CA_2_EV_2009.pem
+2026-08-24T09:32:37.537654Z 01O Adding debian:DigiCert_Assured_ID_Root_CA.pem
+2026-08-24T09:32:37.538570Z 01O Adding debian:DigiCert_Assured_ID_Root_G2.pem
+2026-08-24T09:32:37.539981Z 01O Adding debian:DigiCert_Assured_ID_Root_G3.pem
+2026-08-24T09:32:37.540555Z 01O Adding debian:DigiCert_Global_Root_CA.pem
+2026-08-24T09:32:37.542019Z 01O Adding debian:DigiCert_Global_Root_G2.pem
+2026-08-24T09:32:37.542602Z 01O Adding debian:DigiCert_Global_Root_G3.pem
+2026-08-24T09:32:37.543905Z 01O Adding debian:DigiCert_High_Assurance_EV_Root_CA.pem
+2026-08-24T09:32:37.544498Z 01O Adding debian:DigiCert_TLS_ECC_P384_Root_G5.pem
+2026-08-24T09:32:37.545990Z 01O Adding debian:DigiCert_TLS_RSA4096_Root_G5.pem
+2026-08-24T09:32:37.547557Z 01O Adding debian:DigiCert_Trusted_Root_G4.pem
+2026-08-24T09:32:37.549303Z 01O Adding debian:E-Tugra_Certification_Authority.pem
+2026-08-24T09:32:37.550955Z 01O Adding debian:E-Tugra_Global_Root_CA_ECC_v3.pem
+2026-08-24T09:32:37.551603Z 01O Adding debian:E-Tugra_Global_Root_CA_RSA_v3.pem
+2026-08-24T09:32:37.552768Z 01O Adding debian:Entrust.net_Premium_2048_Secure_Server_CA.pem
+2026-08-24T09:32:37.554309Z 01O Adding debian:Entrust_Root_Certification_Authority.pem
+2026-08-24T09:32:37.555650Z 01O Adding debian:Entrust_Root_Certification_Authority_-_EC1.pem
+2026-08-24T09:32:37.556515Z 01O Adding debian:Entrust_Root_Certification_Authority_-_G2.pem
+2026-08-24T09:32:37.557970Z 01O Adding debian:Entrust_Root_Certification_Authority_-_G4.pem
+2026-08-24T09:32:37.559305Z 01O Adding debian:GDCA_TrustAUTH_R5_ROOT.pem
+2026-08-24T09:32:37.560678Z 01O Adding debian:GLOBALTRUST_2020.pem
+2026-08-24T09:32:37.562064Z 01O Adding debian:GTS_Root_R1.pem
+2026-08-24T09:32:37.563316Z 01O Adding debian:GTS_Root_R2.pem
+2026-08-24T09:32:37.564034Z 01O Adding debian:GTS_Root_R3.pem
+2026-08-24T09:32:37.564612Z 01O Adding debian:GTS_Root_R4.pem
+2026-08-24T09:32:37.566929Z 01O Adding debian:GlobalSign_ECC_Root_CA_-_R4.pem
+2026-08-24T09:32:37.566931Z 01O Adding debian:GlobalSign_ECC_Root_CA_-_R5.pem
+2026-08-24T09:32:37.567815Z 01O Adding debian:GlobalSign_Root_CA.pem
+2026-08-24T09:32:37.567817Z 01O Adding debian:GlobalSign_Root_CA_-_R3.pem
+2026-08-24T09:32:37.569827Z 01O Adding debian:GlobalSign_Root_CA_-_R6.pem
+2026-08-24T09:32:37.570512Z 01O Adding debian:GlobalSign_Root_E46.pem
+2026-08-24T09:32:37.571519Z 01O Adding debian:GlobalSign_Root_R46.pem
+2026-08-24T09:32:37.572910Z 01O Adding debian:Go_Daddy_Class_2_CA.pem
+2026-08-24T09:32:37.573637Z 01O Adding debian:Go_Daddy_Root_Certificate_Authority_-_G2.pem
+2026-08-24T09:32:37.574393Z 01O Adding debian:HARICA_TLS_ECC_Root_CA_2021.pem
+2026-08-24T09:32:37.575755Z 01O Adding debian:HARICA_TLS_RSA_Root_CA_2021.pem
+2026-08-24T09:32:37.576639Z 01O Adding debian:Hellenic_Academic_and_Research_Institutions_ECC_RootCA_2015.pem
+2026-08-24T09:32:37.578025Z 01O Adding debian:Hellenic_Academic_and_Research_Institutions_RootCA_2015.pem
+2026-08-24T09:32:37.580915Z 01O Adding debian:HiPKI_Root_CA_-_G1.pem
+2026-08-24T09:32:37.580916Z 01O Adding debian:Hongkong_Post_Root_CA_1.pem
+2026-08-24T09:32:37.581744Z 01O Adding debian:Hongkong_Post_Root_CA_3.pem
+2026-08-24T09:32:37.583103Z 01O Adding debian:ISRG_Root_X1.pem
+2026-08-24T09:32:37.583642Z 01O Adding debian:ISRG_Root_X2.pem
+2026-08-24T09:32:37.585991Z 01O Adding debian:IdenTrust_Commercial_Root_CA_1.pem
+2026-08-24T09:32:37.587380Z 01O Adding debian:IdenTrust_Public_Sector_Root_CA_1.pem
+2026-08-24T09:32:37.588906Z 01O Adding debian:Izenpe.com.pem
+2026-08-24T09:32:37.590064Z 01O Adding debian:Microsec_e-Szigno_Root_CA_2009.pem
+2026-08-24T09:32:37.590821Z 01O Adding debian:Microsoft_ECC_Root_Certificate_Authority_2017.pem
+2026-08-24T09:32:37.592212Z 01O Adding debian:Microsoft_RSA_Root_Certificate_Authority_2017.pem
+2026-08-24T09:32:37.593843Z 01O Adding debian:NAVER_Global_Root_Certification_Authority.pem
+2026-08-24T09:32:37.595918Z 01O Adding debian:NetLock_Arany_=Class_Gold=_Főtanúsítvány.pem
+2026-08-24T09:32:37.597135Z 01O Adding debian:OISTE_WISeKey_Global_Root_GB_CA.pem
+2026-08-24T09:32:37.597985Z 01O Adding debian:OISTE_WISeKey_Global_Root_GC_CA.pem
+2026-08-24T09:32:37.599366Z 01O Adding debian:QuoVadis_Root_CA_1_G3.pem
+2026-08-24T09:32:37.600769Z 01O Adding debian:QuoVadis_Root_CA_2.pem
+2026-08-24T09:32:37.602090Z 01O Adding debian:QuoVadis_Root_CA_2_G3.pem
+2026-08-24T09:32:37.603961Z 01O Adding debian:QuoVadis_Root_CA_3.pem
+2026-08-24T09:32:37.605267Z 01O Adding debian:QuoVadis_Root_CA_3_G3.pem
+2026-08-24T09:32:37.606139Z 01O Adding debian:SSL.com_EV_Root_Certification_Authority_ECC.pem
+2026-08-24T09:32:37.609925Z 01O Adding debian:SSL.com_EV_Root_Certification_Authority_RSA_R2.pem
+2026-08-24T09:32:37.609928Z 01O Adding debian:SSL.com_Root_Certification_Authority_ECC.pem
+2026-08-24T09:32:37.609929Z 01O Adding debian:SSL.com_Root_Certification_Authority_RSA.pem
+2026-08-24T09:32:37.610737Z 01O Adding debian:SZAFIR_ROOT_CA2.pem
+2026-08-24T09:32:37.611525Z 01O Adding debian:Sectigo_Public_Server_Authentication_Root_E46.pem
+2026-08-24T09:32:37.612749Z 01O Adding debian:Sectigo_Public_Server_Authentication_Root_R46.pem
+2026-08-24T09:32:37.613597Z 01O Adding debian:SecureSign_RootCA11.pem
+2026-08-24T09:32:37.614646Z 01O Adding debian:SecureTrust_CA.pem
+2026-08-24T09:32:37.615691Z 01O Adding debian:Secure_Global_CA.pem
+2026-08-24T09:32:37.616463Z 01O Adding debian:Security_Communication_ECC_RootCA1.pem
+2026-08-24T09:32:37.617426Z 01O Adding debian:Security_Communication_RootCA2.pem
+2026-08-24T09:32:37.618843Z 01O Adding debian:Security_Communication_RootCA3.pem
+2026-08-24T09:32:37.619682Z 01O Adding debian:Security_Communication_Root_CA.pem
+2026-08-24T09:32:37.620756Z 01O Adding debian:Starfield_Class_2_CA.pem
+2026-08-24T09:32:37.621870Z 01O Adding debian:Starfield_Root_Certificate_Authority_-_G2.pem
+2026-08-24T09:32:37.623144Z 01O Adding debian:Starfield_Services_Root_Certificate_Authority_-_G2.pem
+2026-08-24T09:32:37.624687Z 01O Adding debian:SwissSign_Gold_CA_-_G2.pem
+2026-08-24T09:32:37.626202Z 01O Adding debian:SwissSign_Silver_CA_-_G2.pem
+2026-08-24T09:32:37.627197Z 01O Adding debian:T-TeleSec_GlobalRoot_Class_2.pem
+2026-08-24T09:32:37.628263Z 01O Adding debian:T-TeleSec_GlobalRoot_Class_3.pem
+2026-08-24T09:32:37.629694Z 01O Adding debian:TUBITAK_Kamu_SM_SSL_Kok_Sertifikasi_-_Surum_1.pem
+2026-08-24T09:32:37.631017Z 01O Adding debian:TWCA_Global_Root_CA.pem
+2026-08-24T09:32:37.631929Z 01O Adding debian:TWCA_Root_Certification_Authority.pem
+2026-08-24T09:32:37.633395Z 01O Adding debian:TeliaSonera_Root_CA_v1.pem
+2026-08-24T09:32:37.634896Z 01O Adding debian:Telia_Root_CA_v2.pem
+2026-08-24T09:32:37.636026Z 01O Adding debian:TrustCor_ECA-1.pem
+2026-08-24T09:32:37.636985Z 01O Adding debian:TrustCor_RootCert_CA-1.pem
+2026-08-24T09:32:37.638375Z 01O Adding debian:TrustCor_RootCert_CA-2.pem
+2026-08-24T09:32:37.639634Z 01O Adding debian:Trustwave_Global_Certification_Authority.pem
+2026-08-24T09:32:37.640427Z 01O Adding debian:Trustwave_Global_ECC_P256_Certification_Authority.pem
+2026-08-24T09:32:37.641106Z 01O Adding debian:Trustwave_Global_ECC_P384_Certification_Authority.pem
+2026-08-24T09:32:37.642416Z 01O Adding debian:TunTrust_Root_CA.pem
+2026-08-24T09:32:37.643714Z 01O Adding debian:UCA_Extended_Validation_Root.pem
+2026-08-24T09:32:37.644949Z 01O Adding debian:UCA_Global_G2_Root.pem
+2026-08-24T09:32:37.645672Z 01O Adding debian:USERTrust_ECC_Certification_Authority.pem
+2026-08-24T09:32:37.647024Z 01O Adding debian:USERTrust_RSA_Certification_Authority.pem
+2026-08-24T09:32:37.648240Z 01O Adding debian:XRamp_Global_CA_Root.pem
+2026-08-24T09:32:37.649077Z 01O Adding debian:certSIGN_ROOT_CA.pem
+2026-08-24T09:32:37.650306Z 01O Adding debian:certSIGN_Root_CA_G2.pem
+2026-08-24T09:32:37.650896Z 01O Adding debian:e-Szigno_Root_CA_2017.pem
+2026-08-24T09:32:37.652162Z 01O Adding debian:ePKI_Root_Certification_Authority.pem
+2026-08-24T09:32:37.652835Z 01O Adding debian:emSign_ECC_Root_CA_-_C3.pem
+2026-08-24T09:32:37.653471Z 01O Adding debian:emSign_ECC_Root_CA_-_G3.pem
+2026-08-24T09:32:37.654404Z 01O Adding debian:emSign_Root_CA_-_C1.pem
+2026-08-24T09:32:37.655325Z 01O Adding debian:emSign_Root_CA_-_G1.pem
+2026-08-24T09:32:37.655877Z 01O Adding debian:vTrus_ECC_Root_CA.pem
+2026-08-24T09:32:37.657086Z 01O Adding debian:vTrus_Root_CA.pem
+2026-08-24T09:32:37.687680Z 01O done.
+2026-08-24T09:32:37.694086Z 01O Setting up default-jre-headless (2:1.17-74) ...
+2026-08-24T09:32:37.731361Z 01O [32;1m$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh | bash[0;m
+2026-08-24T09:32:37.737420Z 01E   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-08-24T09:32:37.737426Z 01E                                  Dload  Upload   Total   Spent    Left  Speed
+2026-08-24T09:32:37.737428Z 01E   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-08-24T09:32:37.919033Z 01E+100 17051  100 17051    0     0  94174      0 --:--:-- --:--:-- --:--:-- 94727
+2026-08-24T09:32:37.923934Z 01O => Downloading nvm from git to '/root/.nvm'
+2026-08-24T09:32:37.923940Z 01O => 
+2026-08-24T09:32:37.928689Z 01E Cloning into '/root/.nvm'...
+2026-08-24T09:32:39.703924Z 01O+* (HEAD detached at FETCH_HEAD)
+2026-08-24T09:32:39.703932Z 01O   master
+2026-08-24T09:32:39.706013Z 01O => Compressing and cleaning up git repository
+2026-08-24T09:32:39.708667Z 01O 
+2026-08-24T09:32:39.712297Z 01O => Appending nvm source string to /root/.bashrc
+2026-08-24T09:32:39.715786Z 01O => Appending bash_completion source string to /root/.bashrc
+2026-08-24T09:32:39.738155Z 01O => Installing Node.js version v22.23.1
+2026-08-24T09:32:40.172246Z 01O Downloading and installing node v22.23.1...
+2026-08-24T09:32:40.281257Z 01E Downloading https://nodejs.org/dist/v22.23.1/node-v22.23.1-linux-x64.tar.xz...
+2026-08-24T09:32:40.405818Z 01E                                                                            0.6%
+2026-08-24T09:32:40.499072Z 01E+######################################################################## 100.0%
+2026-08-24T09:32:40.518509Z 01E Computing checksum with sha256sum
+2026-08-24T09:32:40.657261Z 01E Checksums matched!
+2026-08-24T09:32:43.027654Z 01O Now using node v22.23.1 (npm v10.9.8)
+2026-08-24T09:32:43.147165Z 01O Creating default alias: default -> v22.23.1 *
+2026-08-24T09:32:43.211975Z 01O => Node.js version v22.23.1 has been successfully installed
+2026-08-24T09:32:43.212059Z 01O => Close and reopen your terminal to start using nvm or run the following to use it now:
+2026-08-24T09:32:43.212061Z 01O 
+2026-08-24T09:32:43.212062Z 01O export NVM_DIR="$HOME/.nvm"
+2026-08-24T09:32:43.212062Z 01O [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+2026-08-24T09:32:43.212066Z 01O [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+2026-08-24T09:32:43.212472Z 01O [32;1m$ . $HOME/.nvm/nvm.sh[0;m
+2026-08-24T09:32:43.347483Z 01O [32;1m$ nvm install $NODE_VERSION[0;m
+2026-08-24T09:32:43.705415Z 01E v22.23.1 is already installed.
+2026-08-24T09:32:43.865352Z 01O Now using node v22.23.1 (npm v10.9.8)
+2026-08-24T09:32:43.870290Z 01O [32;1m$ curl -sS https://getcomposer.org/installer | php[0;m
+2026-08-24T09:32:44.118280Z 01O All settings correct for using Composer
+2026-08-24T09:32:44.119650Z 01O Downloading...
+2026-08-24T09:32:44.877673Z 01O 
+2026-08-24T09:32:44.877681Z 01O Composer (version 2.10.2) successfully installed to: /builds/715-scrum1/grp_moodle/musi/moodle-local_external_users/composer.phar
+2026-08-24T09:32:44.877683Z 01O Use it: php composer.phar
+2026-08-24T09:32:44.877684Z 01O 
+2026-08-24T09:32:44.881965Z 01O [32;1m$ mv composer.phar /usr/local/bin/composer[0;m
+2026-08-24T09:32:44.885948Z 01O [32;1m$ export IPADDRESS=`grep "$HOSTNAME$" /etc/hosts | awk '{print $1}'`[0;m
+2026-08-24T09:32:44.887933Z 01O [32;1m$ export MOODLE_BEHAT_WWWROOT="http://$IPADDRESS:8000"[0;m
+2026-08-24T09:32:44.887937Z 01O [32;1m$ composer create-project -n --no-dev --prefer-source moodlehq/moodle-plugin-ci /opt/mci ^4[0;m
+2026-08-24T09:32:44.959004Z 01E Creating a "moodlehq/moodle-plugin-ci" project at "/opt/mci"
+2026-08-24T09:32:45.125546Z 01E Installing moodlehq/moodle-plugin-ci (4.5.11)
+2026-08-24T09:32:45.127182Z 01E   - Syncing moodlehq/moodle-plugin-ci (4.5.11) into cache
+2026-08-24T09:32:46.176946Z 01E   - Installing moodlehq/moodle-plugin-ci (4.5.11): Cloning 9276f96874 from cache
+2026-08-24T09:32:46.433234Z 01E Created project in /opt/mci
+2026-08-24T09:32:46.448451Z 01E Installing dependencies from lock file
+2026-08-24T09:32:46.449928Z 01E Verifying lock file contents can be installed on current platform.
+2026-08-24T09:32:46.526111Z 01E Package operations: 43 installs, 0 updates, 0 removals
+2026-08-24T09:32:46.526788Z 01E   - Syncing squizlabs/php_codesniffer (3.13.6) into cache
+2026-08-24T09:33:05.221850Z 01E   - Syncing dealerdirect/phpcodesniffer-composer-installer (v1.2.1) into cache
+2026-08-24T09:33:06.078486Z 01E   - Syncing composer/pcre (3.4.0) into cache
+2026-08-24T09:33:06.829958Z 01E   - Syncing laravel-zero/phar-updater (v1.1.1) into cache
+2026-08-24T09:33:07.569304Z 01E   - Syncing marcj/topsort (2.0.0) into cache
+2026-08-24T09:33:08.277970Z 01E   - Syncing mustache/mustache (v2.14.2) into cache
+2026-08-24T09:33:09.120568Z 01E   - Syncing phpcsstandards/phpcsutils (1.2.3) into cache
+2026-08-24T09:33:10.349894Z 01E   - Syncing phpcsstandards/phpcsextra (1.5.1) into cache
+2026-08-24T09:33:11.291692Z 01E   - Syncing moodlehq/moodle-cs (v3.7.0) into cache
+2026-08-24T09:33:12.229483Z 01E   - Syncing moodlehq/moodle-local_ci (v1.1.4) into cache
+2026-08-24T09:33:13.575885Z 01E   - Syncing moodlehq/moodle-local_moodlecheck (1.3.2) into cache
+2026-08-24T09:33:14.412706Z 01E   - Syncing nikic/php-parser (v5.8.0) into cache
+2026-08-24T09:33:16.051283Z 01E   - Syncing php-parallel-lint/php-console-color (v1.0.1) into cache
+2026-08-24T09:33:16.817510Z 01E   - Syncing php-parallel-lint/php-console-highlighter (v1.0.0) into cache
+2026-08-24T09:33:17.684515Z 01E   - Syncing php-parallel-lint/php-parallel-lint (v1.4.0) into cache
+2026-08-24T09:33:18.516607Z 01E   - Syncing symfony/polyfill-mbstring (v1.38.2) into cache
+2026-08-24T09:33:19.285880Z 01E   - Syncing symfony/polyfill-php80 (v1.37.0) into cache
+2026-08-24T09:33:20.026671Z 01E   - Syncing symfony/polyfill-ctype (v1.37.0) into cache
+2026-08-24T09:33:20.686746Z 01E   - Syncing symfony/filesystem (v5.4.45) into cache
+2026-08-24T09:33:21.653511Z 01E   - Syncing symfony/deprecation-contracts (v2.5.4) into cache
+2026-08-24T09:33:22.428866Z 01E   - Syncing psr/container (1.1.2) into cache
+2026-08-24T09:33:23.148964Z 01E   - Syncing symfony/service-contracts (v2.5.4) into cache
+2026-08-24T09:33:23.830996Z 01E   - Syncing symfony/polyfill-php81 (v1.38.1) into cache
+2026-08-24T09:33:24.488418Z 01E   - Syncing symfony/dependency-injection (v5.4.48) into cache
+2026-08-24T09:33:26.409711Z 01E   - Syncing symfony/config (v5.4.46) into cache
+2026-08-24T09:33:27.999919Z 01E   - Syncing pdepend/pdepend (2.16.2) into cache
+2026-08-24T09:33:30.547666Z 01E   - Syncing psr/log (1.1.4) into cache
+2026-08-24T09:33:31.262093Z 01E   - Syncing composer/xdebug-handler (3.0.5) into cache
+2026-08-24T09:33:32.036198Z 01E   - Syncing phpmd/phpmd (2.15.0) into cache
+2026-08-24T09:33:33.575330Z 01E   - Syncing sebastian/version (3.0.2) into cache
+2026-08-24T09:33:36.914448Z 01E   - Syncing sebastian/cli-parser (1.0.2) into cache
+2026-08-24T09:33:44.228293Z 01E   - Syncing phpunit/php-timer (5.0.3) into cache
+2026-08-24T09:33:51.608954Z 01E   - Syncing phpunit/php-file-iterator (3.0.6) into cache
+2026-08-24T09:33:57.637204Z 01E   - Syncing sebastian/phpcpd (6.0.3) into cache
+2026-08-24T09:34:00.574029Z 01E   - Syncing symfony/polyfill-intl-normalizer (v1.38.0) into cache
+2026-08-24T09:34:01.309092Z 01E   - Syncing symfony/polyfill-intl-grapheme (v1.41.0) into cache
+2026-08-24T09:34:02.049069Z 01E   - Syncing symfony/string (v5.4.47) into cache
+2026-08-24T09:34:02.828595Z 01E   - Syncing symfony/polyfill-php73 (v1.37.0) into cache
+2026-08-24T09:34:03.504136Z 01E   - Syncing symfony/console (v5.4.47) into cache
+2026-08-24T09:34:04.808548Z 01E   - Syncing symfony/dotenv (v5.4.48) into cache
+2026-08-24T09:34:05.553165Z 01E   - Syncing symfony/finder (v5.4.45) into cache
+2026-08-24T09:34:06.408078Z 01E   - Syncing symfony/process (v5.4.51) into cache
+2026-08-24T09:34:07.350031Z 01E   - Syncing symfony/yaml (v5.4.53) into cache
+2026-08-24T09:34:08.417785Z 01E   - Installing squizlabs/php_codesniffer (3.13.6): Cloning 4c378e1a52 from cache
+2026-08-24T09:34:10.552091Z 01E   - Installing dealerdirect/phpcodesniffer-composer-installer (v1.2.1): Cloning 963f0c67bf from cache
+2026-08-24T09:34:10.616660Z 01E   - Installing composer/pcre (3.4.0): Cloning d5a341b3fb from cache
+2026-08-24T09:34:10.669199Z 01E   - Installing laravel-zero/phar-updater (v1.1.1): Cloning ac583f0983 from cache
+2026-08-24T09:34:10.716966Z 01E   - Installing marcj/topsort (2.0.0): Cloning 972f58e42b from cache
+2026-08-24T09:34:10.755128Z 01E   - Installing mustache/mustache (v2.14.2): Cloning e62b7c3849 from cache
+2026-08-24T09:34:10.844986Z 01E   - Installing phpcsstandards/phpcsutils (1.2.3): Cloning 5f35d9408c from cache
+2026-08-24T09:34:11.015682Z 01E   - Installing phpcsstandards/phpcsextra (1.5.1): Cloning 39467533fd from cache
+2026-08-24T09:34:11.135525Z 01E   - Installing moodlehq/moodle-cs (v3.7.0): Cloning c25837893e from cache
+2026-08-24T09:34:11.229304Z 01E   - Installing moodlehq/moodle-local_ci (v1.1.4): Cloning b4c849b683 from cache
+2026-08-24T09:34:11.438603Z 01E   - Installing moodlehq/moodle-local_moodlecheck (1.3.2): Cloning v1.3.2 from cache
+2026-08-24T09:34:11.494251Z 01E   - Installing nikic/php-parser (v5.8.0): Cloning 044a6a392f from cache
+2026-08-24T09:34:11.820033Z 01E   - Installing php-parallel-lint/php-console-color (v1.0.1): Cloning 7adfefd530 from cache
+2026-08-24T09:34:11.861382Z 01E   - Installing php-parallel-lint/php-console-highlighter (v1.0.0): Cloning 5b4803384d from cache
+2026-08-24T09:34:11.906855Z 01E   - Installing php-parallel-lint/php-parallel-lint (v1.4.0): Cloning 6db563514f from cache
+2026-08-24T09:34:11.971448Z 01E   - Installing symfony/polyfill-mbstring (v1.38.2): Cloning d3d318bad5 from cache
+2026-08-24T09:34:12.013399Z 01E   - Installing symfony/polyfill-php80 (v1.37.0): Cloning dfb55726c3 from cache
+2026-08-24T09:34:12.052352Z 01E   - Installing symfony/polyfill-ctype (v1.37.0): Cloning 141046a8f9 from cache
+2026-08-24T09:34:12.091536Z 01E   - Installing symfony/filesystem (v5.4.45): Cloning 57c8294ed3 from cache
+2026-08-24T09:34:12.198989Z 01E   - Installing symfony/deprecation-contracts (v2.5.4): Cloning 605389f2a7 from cache
+2026-08-24T09:34:12.242822Z 01E   - Installing psr/container (1.1.2): Cloning 513e0666f7 from cache
+2026-08-24T09:34:12.286096Z 01E   - Installing symfony/service-contracts (v2.5.4): Cloning f37b419f7a from cache
+2026-08-24T09:34:12.330111Z 01E   - Installing symfony/polyfill-php81 (v1.38.1): Cloning 6bfb9c766c from cache
+2026-08-24T09:34:12.367416Z 01E   - Installing symfony/dependency-injection (v5.4.48): Cloning e5ca16dee3 from cache
+2026-08-24T09:34:12.819302Z 01E   - Installing symfony/config (v5.4.46): Cloning 977c88a02d from cache
+2026-08-24T09:34:12.986074Z 01E   - Installing pdepend/pdepend (2.16.2): Cloning f942b208dc from cache
+2026-08-24T09:34:13.760859Z 01E   - Installing psr/log (1.1.4): Cloning d49695b909 from cache
+2026-08-24T09:34:13.809475Z 01E   - Installing composer/xdebug-handler (3.0.5): Cloning 6c19255616 from cache
+2026-08-24T09:34:13.864348Z 01E   - Installing phpmd/phpmd (2.15.0): Cloning 74a1f56e33 from cache
+2026-08-24T09:34:14.199420Z 01E   - Installing sebastian/version (3.0.2): Cloning c6c1022351 from cache
+2026-08-24T09:34:14.456567Z 01E   - Installing sebastian/cli-parser (1.0.2): Cloning 2b56bea83a from cache
+2026-08-24T09:34:15.263160Z 01E   - Installing phpunit/php-timer (5.0.3): Cloning 5a63ce20ed from cache
+2026-08-24T09:34:15.959003Z 01E   - Installing phpunit/php-file-iterator (3.0.6): Cloning cf1c2e7c20 from cache
+2026-08-24T09:34:16.669649Z 01E   - Installing sebastian/phpcpd (6.0.3): Cloning f3683aa0db from cache
+2026-08-24T09:34:17.075049Z 01E   - Installing symfony/polyfill-intl-normalizer (v1.38.0): Cloning 2d446c214b from cache
+2026-08-24T09:34:17.121062Z 01E   - Installing symfony/polyfill-intl-grapheme (v1.41.0): Cloning bb899c1db0 from cache
+2026-08-24T09:34:17.161983Z 01E   - Installing symfony/string (v5.4.47): Cloning 136ca7d72f from cache
+2026-08-24T09:34:17.226776Z 01E   - Installing symfony/polyfill-php73 (v1.37.0): Cloning 0f68c03565 from cache
+2026-08-24T09:34:17.264499Z 01E   - Installing symfony/console (v5.4.47): Cloning c4ba980ca6 from cache
+2026-08-24T09:34:17.542213Z 01E   - Installing symfony/dotenv (v5.4.48): Cloning 0801340308 from cache
+2026-08-24T09:34:17.605044Z 01E   - Installing symfony/finder (v5.4.45): Cloning 63741784cd from cache
+2026-08-24T09:34:17.705862Z 01E   - Installing symfony/process (v5.4.51): Cloning 467bfc56f1 from cache
+2026-08-24T09:34:17.825031Z 01E   - Installing symfony/yaml (v5.4.53): Cloning ae0bbb46f7 from cache
+2026-08-24T09:34:18.053115Z 01E Package sebastian/phpcpd is abandoned, you should avoid using it. No replacement was suggested.
+2026-08-24T09:34:18.053124Z 01E Generating autoload files
+2026-08-24T09:34:18.066896Z 01E 32 packages you are using are looking for funding.
+2026-08-24T09:34:18.066905Z 01E Use the `composer fund` command to find out more!
+2026-08-24T09:34:18.187405Z 01E > cd vendor/moodlehq/moodle-local_ci && npm install --no-progress
+2026-08-24T09:34:18.187420Z 01O PHP CodeSniffer Config installed_paths set to ../../moodlehq/moodle-cs,../../phpcsstandards/phpcsextra,../../phpcsstandards/phpcsutils
+2026-08-24T09:34:19.265837Z 01O 
+2026-08-24T09:34:19.265846Z 01O added 1 package, and audited 2 packages in 1s
+2026-08-24T09:34:19.267687Z 01O 
+2026-08-24T09:34:19.267690Z 01O 1 moderate severity vulnerability
+2026-08-24T09:34:19.267692Z 01O 
+2026-08-24T09:34:19.267692Z 01O To address all issues (including breaking changes), run:
+2026-08-24T09:34:19.267693Z 01O   npm audit fix --force
+2026-08-24T09:34:19.267693Z 01O 
+2026-08-24T09:34:19.267694Z 01O Run `npm audit` for details.
+2026-08-24T09:34:19.478786Z 01O No security vulnerability advisories found.
+2026-08-24T09:34:19.484153Z 01E > cd vendor/moodlehq/moodle-local_ci && npm install --no-progress
+2026-08-24T09:34:20.009334Z 01O 
+2026-08-24T09:34:20.009344Z 01O up to date, audited 2 packages in 471ms
+2026-08-24T09:34:20.011405Z 01O 
+2026-08-24T09:34:20.011406Z 01O 1 moderate severity vulnerability
+2026-08-24T09:34:20.011407Z 01O 
+2026-08-24T09:34:20.011408Z 01O To address all issues (including breaking changes), run:
+2026-08-24T09:34:20.011408Z 01O   npm audit fix --force
+2026-08-24T09:34:20.011409Z 01O 
+2026-08-24T09:34:20.011409Z 01O Run `npm audit` for details.
+2026-08-24T09:34:20.027465Z 01O [32;1m$ export PATH="$(cd /opt/mci/bin; pwd):$(cd /opt/mci/vendor/bin; pwd):$PATH"[0;m
+2026-08-24T09:34:20.029443Z 01O [32;1m$ chmod u+x /opt/mci/bin/moodle-plugin-ci[0;m
+2026-08-24T09:34:20.030528Z 01O [32;1m$ chmod u+x /opt/mci/bin/*[0;m
+2026-08-24T09:34:20.031873Z 01O [32;1m$ umask u+x[0;m
+2026-08-24T09:34:20.031876Z 01O [32;1m$ cd $CI_PROJECT_DIR[0;m
+2026-08-24T09:34:20.031877Z 01O [32;1m$ moodle-plugin-ci install --moodle=$MOODLE_DIR --db-type=pgsql --db-host=db[0;m
+2026-08-24T09:34:20.070784Z 01O 
+2026-08-24T09:34:20.070793Z 01O Deprecated: realpath(): Passing null to parameter #1 ($path) of type string is deprecated in /opt/mci/src/Validate.php on line 27
+2026-08-24T09:34:20.070794Z 01O 
+2026-08-24T09:34:20.070795Z 01O Deprecated: realpath(): Passing null to parameter #1 ($path) of type string is deprecated in /opt/mci/src/Command/InstallCommand.php on line 150
+2026-08-24T09:34:20.087007Z 01E  0/9 [>---------------------------]   0% < 1 sec [Starting install]
+2026-08-24T09:34:29.864031Z 01E  2/9 [======>---------------------]  22% 9 secs [Moodle assets]
+2026-08-24T09:34:29.977015Z 01E  3/9 [=========>------------------]  33% 9 secs [Install plugins]
+2026-08-24T09:34:31.701621Z 01O Found '/var/www/html/.nvmrc' with version <v22.23.1>
+2026-08-24T09:34:32.025611Z 01O v22.23.1 is already installed.
+2026-08-24T09:34:32.150913Z 01O Now using node v22.23.1 (npm v10.9.8)
+2026-08-24T09:34:32.158394Z 01O Found '/var/www/html/.nvmrc' with version <v22.23.1>
+2026-08-24T09:34:32.287952Z 01O Now using node v22.23.1 (npm v10.9.8)
+2026-08-24T09:34:32.287960Z 01O NVM_BIN=/root/.nvm/versions/node/v22.23.1/bin
+2026-08-24T09:34:31.620733Z 01E  4/9 [============>---------------]  44% 11 secs [Installing Node.js]
+2026-08-24T09:34:32.288145Z 01E  5/9 [===============>------------]  55% 12 secs [Install global dependencies]
+2026-08-24T09:34:36.118255Z 01E  6/9 [=================>--------]  66% 16 secs [Install Moodle npm dependencies]
+2026-08-24T09:34:50.195058Z 01E  7/9 [====================>-----]  77% 30 secs [Initialize test suite]
+2026-08-24T09:36:21.106175Z 01E  8/9 [=======================>--]  88% 2 mins [Building configs]
+2026-08-24T09:36:25.620335Z 01O 
+2026-08-24T09:36:25.626437Z 01O [32;1m$ git clone --depth 1 https://gitlab-ci-token:${MOODLE_READ_ONLY}@gitlab.uni-graz.at/715-scrum1/grp_moodle/musi/moodle-auth_external.git $MOODLE_DIR/auth/external[0;m
+2026-08-24T09:36:25.619685Z 01E  9/9 [==========================] 100% 2 mins [Install completed]Cloning into '/var/www/html/auth/external'...
+2026-08-24T09:36:26.137826Z 01O [32;1m$ moodle-plugin-ci add-config '$CFG->behat_profiles["chrome"]["capabilities"]["extra_capabilities"]["goog:chromeOptions"]["args"] = ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"];'[0;m
+2026-08-24T09:36:26.180157Z 01O Updated Moodle config.php file with the following line:
+2026-08-24T09:36:26.180174Z 01O 
+2026-08-24T09:36:26.180174Z 01O $CFG->behat_profiles["chrome"]["capabilities"]["extra_capabilities"]["goog:chromeOptions"]["args"] = ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"];
+2026-08-24T09:36:26.180176Z 01O 
+2026-08-24T09:36:26.226797Z 01O [32;1m$ export PHP_CLI_SERVER_WORKERS=5[0;m
+2026-08-24T09:36:26.226824Z 01O [32;1m$ php -S 0.0.0.0:8000 -t $MOODLE_DIR_PUBLIC > /dev/null 2>&1 &[0;m
+2026-08-24T09:36:26.227988Z 01O [32;1m$ moodle-plugin-ci phplint[0;m
+2026-08-24T09:36:26.278058Z 01O  RUN  PHP Lint on local_external_users
+2026-08-24T09:36:26.324935Z 01O PHP 8.3.33 | 10 parallel jobs
+2026-08-24T09:36:26.382987Z 01O ..........................................                   42/42 (100%)
+2026-08-24T09:36:26.536844Z 01O 
+2026-08-24T09:36:26.536845Z 01O 
+2026-08-24T09:36:26.536846Z 01O Checked 42 files in 0.2 seconds
+2026-08-24T09:36:26.536847Z 01O No syntax error found
+2026-08-24T09:36:26.545358Z 01O [32;1m$ moodle-plugin-ci phpunit --fail-on-warning[0;m
+2026-08-24T09:36:26.591946Z 01O  RUN  PHPUnit tests for local_external_users
+2026-08-24T09:36:27.602455Z 01O Moodle 4.5.13+ (Build: 20260818), c7cedd4c4a16d68b42b0db7c357e84764ea525f3
+2026-08-24T09:36:27.602483Z 01O Php: 8.3.33, pgsql: 16.15, OS: Linux 6.8.0-138-generic x86_64
+2026-08-24T09:36:27.602485Z 01O Moodle PHPUnit environment was initialised for different version, please use:
+2026-08-24T09:36:27.602486Z 01O  php admin/tool/phpunit/cli/init.php
+2026-08-24T09:36:28.019128Z 00O section_end:1787564188:step_script[0K
+2026-08-24T09:36:28.019862Z 00O+section_start:1787564188:upload_artifacts_on_failure[0K
+2026-08-24T09:36:28.019921Z 00O+[0K[36;1mUploading artifacts for failed job[0;m[0;m
+2026-08-24T09:36:28.239968Z 01O [32;1mUploading artifacts...[0;m
+2026-08-24T09:36:28.285214Z 01E [0;33mWARNING: /builds/715-scrum1/grp_moodle/musi/moodle-local_external_users/moodledata/behat_dump/*: no matching files. Ensure that the artifact path is relative to the working directory (/builds/715-scrum1/grp_moodle/musi/moodle-local_external_users)[0;m 
+2026-08-24T09:36:28.285225Z 01E [31;1mERROR: No files to upload                         [0;m 
+2026-08-24T09:36:28.435128Z 00O section_end:1787564188:upload_artifacts_on_failure[0K
+2026-08-24T09:36:28.435495Z 00O+section_start:1787564188:cleanup_file_variables[0K
+2026-08-24T09:36:28.435500Z 00O+[0K[36;1mCleaning up project directory and file based variables[0;m[0;m
+2026-08-24T09:36:28.714479Z 00O section_end:1787564188:cleanup_file_variables[0K
+2026-08-24T09:36:28.785897Z 00O+[32;1mContainer runner-64xuxuqqt-project-1202-concurrent-1-42c7b7c5876f64ca-selenium__standalone-chrome-0 disconnected from network bridge[0;m
+2026-08-24T09:36:28.802307Z 00O [32;1mContainer runner-64xuxuqqt-project-1202-concurrent-1-42c7b7c5876f64ca-postgres-1 disconnected from network bridge[0;m
+2026-08-24T09:36:30.428313Z 00O [31;1mERROR: Job failed: exit code 1[0;m

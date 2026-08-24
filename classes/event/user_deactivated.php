@@ -23,9 +23,16 @@ use moodle_url;
 use stdClass;
 use function get_string;
 
+/**
+ * Event class for user_deactivated.
+ *
+ * @package    local_external_users
+ * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class user_deactivated extends base {
     /**
-     * init function
+     * Initialize event metadata.
      * @return void
      */
     protected function init(): void {
@@ -35,7 +42,7 @@ class user_deactivated extends base {
     }
 
     /**
-     * get_description function
+     * Get event description.
      * @return string
      */
     public function get_description(): string {
@@ -43,7 +50,7 @@ class user_deactivated extends base {
     }
 
     /**
-     * get_name function
+     * Get event name.
      * @return string
      * @throws coding_exception
      */
@@ -52,7 +59,7 @@ class user_deactivated extends base {
     }
 
     /**
-     * get_url function
+     * Get event URL.
      * @return moodle_url
      * @throws moodle_exception
      */

@@ -1,5 +1,30 @@
 {{!
     @template local_external_users/profile_control
+
+    Profile control panel template.
+
+    Example context (json):
+    {
+        "sesskey": "abc123xyz",
+        "userid": 2,
+        "referrer": "manage",
+        "affiliation_label": "Affiliation",
+        "affiliation_options": [
+            {"value": "Uni Graz", "selected": true},
+            {"value": "TU Graz", "selected": false}
+        ],
+        "verify_mode": 1,
+        "is_unverified": true,
+        "price_categories": ["tariff_a", "tariff_b"],
+        "btn1_style": "primary",
+        "approve": "Approve",
+        "approve-limited": "Approve Limited (WS26)",
+        "approve-limited2": "Approve Limited (SS27)",
+        "legend": "Rejection Options",
+        "options": "<div><input type='radio' name='reject' id='opt1' value='0'><label for='opt1'>Mail only</label></div>",
+        "rejection_control_additional_comment": "Additional comment",
+        "rejection_header": "Reject User"
+    }
 }}
 <div class="card shadow-sm mx-auto mb-4" style="max-width: 1200px;">
     <div class="card-header bg-light">
@@ -18,7 +43,7 @@
                     <div class="form-group mb-0 mr-3">
                         <label for="affiliation" class="font-weight-bold mr-2 text-dark">{{affiliation_label}}:</label>
                         <select id="affiliation" name="affiliation" class="custom-select custom-select-sm">
-                            <option> </option>
+                            <option value="" label=" "> </option>
                             {{#affiliation_options}}
                                 <option {{#selected}}selected{{/selected}} value="{{value}}">{{value}}</option>
                             {{/affiliation_options}}
@@ -107,7 +132,13 @@
 </div>
 
 {{#js}}
-    document.getElementById('affiliation').addEventListener("change", function() {
-        document.getElementById('affiliationChange').submit();
-    });
+    const affiliationSelect = document.getElementById('affiliation');
+    if (affiliationSelect) {
+        affiliationSelect.addEventListener('change', function() {
+            const form = document.getElementById('affiliationChange');
+            if (form) {
+                form.submit();
+            }
+        });
+    }
 {{/js}}

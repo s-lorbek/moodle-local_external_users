@@ -30,12 +30,18 @@ use local_external_users\event\user_submit;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class verification {
+    /** @var stdClass The user object being verified. */
     private stdClass $user;
+    /** @var common Helper common class instance. */
     private common $common;
+    /** @var verification_form The verification form instance. */
     private verification_form $mform;
+    /** @var \DateTime The current date time. */
     private \DateTime $currentdate;
 
     /**
+     * Constructor for verification.
+     *
      * @throws dml_exception
      * @throws coding_exception
      * @throws moodle_exception
@@ -50,6 +56,8 @@ class verification {
         $this->transform_data();
     }
     /**
+     * Transform and validate the user registration data.
+     *
      * @throws coding_exception
      * @throws moodle_exception
      */
@@ -78,6 +86,11 @@ class verification {
         }
     }
 
+    /**
+     * Process form submission and render the verification interface.
+     *
+     * @return void
+     */
     public function process_and_render(): void {
         global $OUTPUT;
 
@@ -110,6 +123,12 @@ class verification {
         echo $OUTPUT->footer();
     }
 
+    /**
+     * Handle the submitted verification form.
+     *
+     * @param stdClass $data The form data.
+     * @return void
+     */
     private function handle_submission($data): void {
         global $DB, $USER, $PAGE, $OUTPUT;
 
@@ -164,6 +183,11 @@ class verification {
         }
     }
 
+    /**
+     * Notify the review team about a new application submission.
+     *
+     * @return void
+     */
     private function notify_review_team(): void {
         global $CFG;
 

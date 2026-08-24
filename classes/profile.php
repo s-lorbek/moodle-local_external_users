@@ -16,8 +16,6 @@
 
 namespace local_external_users;
 
-defined('MOODLE_INTERNAL') || die();
-
 use stdClass;
 use moodle_url;
 use html_table;
@@ -31,21 +29,25 @@ use html_writer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class profile {
-    /**
-     * @var stdClass $user User profile data
-     */
+    /** @var stdClass User record with profile data. */
     private stdClass $user;
+    /** @var common Common helper instance. */
     private common $common;
-    private array $userfiles;
+    /** @var int ID of the user being viewed. */
     private int $userid;
+    /** @var array Profile display data. */
     private array $profiledata;
+    /** @var array Profile control data. */
     private array $profilecontrol;
+    /** @var string Referrer page name. */
     private string $referrer;
+
     /**
-     * @throws coding_exception
-     * @throws dml_exception
-     * @throws coding_exception
-     * @throws required_capability_exception|moodle_exception
+     * Constructor for profile class.
+     *
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \required_capability_exception|\moodle_exception
      */
     public function __construct() {
         global $DB;
@@ -62,8 +64,10 @@ class profile {
     }
 
     /**
-     * @throws coding_exception
-     * @throws dml_exception|moodle_exception
+     * Transform user data into displayable template parameters.
+     *
+     * @throws \coding_exception
+     * @throws \dml_exception|\moodle_exception
      */
     private function transform_data(): void {
         global $DB;
@@ -224,7 +228,9 @@ class profile {
     }
 
     /**
-     * @throws moodle_exception
+     * Render the profile and control templates.
+     *
+     * @throws \moodle_exception
      */
     public function render(): void {
         global $OUTPUT;

@@ -35,42 +35,59 @@ use Behat\Behat\Hook\Scope\AfterScenarioScope;
  */
 class behat_local_external_users extends behat_base {
     use core_behat_file_helper;
+
     /**
+     * Check if the page is available.
+     *
      * @Given the :arg1 page is available
+     * @param string $arg1
      */
-    public function thePageIsAvailable($arg1) {
+    public function the_page_is_available($arg1) {
         throw new PendingException();
     }
 
     /**
+     * Set config values.
+     *
      * @Given the following config values are set as:
+     * @param TableNode $table
      */
-    public function theFollowingConfigValuesAreSetAs(TableNode $table) {
+    public function the_following_config_values_are_set_as($table) {
         throw new PendingException();
     }
 
     /**
-     * @Given the :arg1 custom profile field data for :arg2 is set to :arg3
+     * Set custom profile field data for user.
+     *
+     * @Given the custom profile field data :arg1 for :arg2 is set to :arg3
+     * @param string $arg1
+     * @param string $arg2
+     * @param string $arg3
      */
-    public function theCustomProfileFieldDataForIsSetTo($arg1, $arg2, $arg3) {
+    public function the_custom_profile_field_data_for_is_set_to($arg1, $arg2, $arg3) {
         throw new PendingException();
     }
 
     /**
+     * Verify user is on expected page.
+     *
      * @Then I should be on the :arg1 page
+     * @param string $arg1
      */
-    public function iShouldBeOnThePage($arg1) {
+    public function i_should_be_on_the_page($arg1) {
         throw new PendingException();
     }
 
     /**
      * Create custom profile fields from table.
+     *
      * @Given /^I create the following custom profile fields:$/
+     * @param TableNode $fieldstable
      */
-    public function iCreateTheFollowingCustomProfileFields(TableNode $fieldsTable) {
+    public function i_create_the_following_custom_profile_fields(TableNode $fieldstable) {
 
-        $rowdata = $fieldsTable->getRows();
-        $headings = array_shift($rowdata); // Get column headings (shortname, datatype)
+        $rowdata = $fieldstable->getRows();
+        $headings = array_shift($rowdata); // Get column headings (shortname, datatype).
 
         // Ensure we have the expected headings.
         if (!in_array('shortname', $headings) || !in_array('datatype', $headings)) {
@@ -104,12 +121,14 @@ class behat_local_external_users extends behat_base {
 
     /**
      * Set custom profile field values via direct DB (reliable).
+     *
      * @Given /^I set the following custom profile field values:$/
+     * @param TableNode $datatable
      */
-    public function iSetTheFollowingCustomProfileFieldValues(TableNode $dataTable) {
+    public function i_set_the_following_custom_profile_field_values(TableNode $datatable) {
         global $DB;
 
-        $rows = $dataTable->getColumnsHash();
+        $rows = $datatable->getColumnsHash();
 
         foreach ($rows as $row) {
             // 1. Get the user once per row.
@@ -149,23 +168,29 @@ class behat_local_external_users extends behat_base {
     }
 
     /**
+     * Wait for filepicker modal to load.
+     *
      * @Given /^I wait for the filepicker modal to load$/
      */
     public function i_wait_for_the_filepicker_modal_to_load() {
-        // Wait until the 'loading' div is hidden and the repository list is present
-        $this->getSession()->wait(10000, "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')");
+        // Wait until the 'loading' div is hidden and the repository list is present.
+        $js = "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')";
+        $this->getSession()->wait(10000, $js);
     }
+
     /**
      * Uploads a file to the specified filepicker when there are multiple filepickers on the same page.
      *
      * @Given /^I upload "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filepicker_field_string>(?:[^"]|\\")*)" filepicker$/
+     * @param string $filepath
+     * @param string $filepickerlabel
      */
     public function i_upload_file_to_filepicker($filepath, $filepickerlabel) {
         $filepickercontainer = $this->get_filepicker_node($filepickerlabel);
 
         $this->execute('behat_general::i_click_on_in_the', [
             'div.fp-btn-add a, input.fp-btn-choose', 'css_element',
-            $filepickercontainer, 'NodeElement'
+            $filepickercontainer, 'NodeElement',
         ]);
 
         $this->getSession()->wait(10000, "document.querySelectorAll('.moodle-dialogue').length > 0");
@@ -190,7 +215,8 @@ class behat_local_external_users extends behat_base {
         $repositorylink = null;
 
         for ($i = 0; $i < 50; $i++) {
-            $repositorylink = $activedialogue->find('xpath',
+            $repositorylink = $activedialogue->find(
+                'xpath',
                 ".//div[contains(concat(' ', normalize-space(@class), ' '), ' fp-repo-area ')]" .
                 "//descendant::span[contains(concat(' ', normalize-space(@class), ' '), ' fp-repo-name ')]" .
                 "[normalize-space(.)=$repositoryname]"
@@ -247,11 +273,8 @@ class behat_local_external_users extends behat_base {
         }
         $submit->click();
 
-        $this->getSession()->wait(10000, "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')");
+        $js = "typeof M !== 'undefined' && M.core_filepicker && !document.querySelector('.filepicker-loading')";
+        $this->getSession()->wait(10000, $js);
         $this->getSession()->wait(behat_base::get_timeout(), behat_base::PAGE_READY_JS);
     }
 }
-
-
-
-

@@ -44,6 +44,7 @@ final class external_users_test extends advanced_testcase {
     /** @var common $commonClass Class object of utility class common */
     protected common $commonclass;
 
+    /** @var stdClass $coursecontext Course context. */
     protected stdClass $coursecontext;
 
 
@@ -53,6 +54,8 @@ final class external_users_test extends advanced_testcase {
     protected function setUp(): void {
         global $CFG;
         parent::setUp();
+        // Prevents firing badge sync requests.
+        set_config('enabled_courses', '999999999', 'local_badge_sync');
         $this->resetAfterTest(false);
         require_once($CFG->dirroot . '/user/profile/lib.php');
 
@@ -208,6 +211,7 @@ final class external_users_test extends advanced_testcase {
      * Creates a user and sets the external user flag and the verified date to yesterday.
      * Then calls the hook and checks that a redirect occurred.
      *
+     * @covers \local_external_users\hook_callbacks::onload
      * @throws moodle_exception
      */
     public function test_redirect_on_expired_date(): void {
@@ -247,6 +251,8 @@ final class external_users_test extends advanced_testcase {
      *
      * The test creates a user and sets the external user flag and the verified date to a valid date in the future.
      * It then calls the hook and checks that no redirect occurred.
+     *
+     * @covers \local_external_users\hook_callbacks::onload
      */
     public function test_noredirect_on_valid_date(): void {
         global $DB, $PAGE;
@@ -283,6 +289,8 @@ final class external_users_test extends advanced_testcase {
      *
      * The test creates a user and sets the external user flag and the verified date to unverified and rejected respectively.
      * It then calls the hook and checks that a redirect occurred in both cases.
+     *
+     * @covers \local_external_users\hook_callbacks::onload
      */
     public function test_redirect_on_unverified_or_rejected_user(): void {
         global $DB, $PAGE;
@@ -331,6 +339,8 @@ final class external_users_test extends advanced_testcase {
      * Ensure the hook does **not** redirect when the user has a pending
      * verification request and allow browsing is enabled. A pending flag is set by the submission handler
      * and prevents the homepage-from-submission redirect loop.
+     *
+     * @covers \local_external_users\hook_callbacks::onload
      */
     public function test_no_redirect_for_pending_user_with_allowbrowsing(): void {
         global $DB, $PAGE;
@@ -350,7 +360,7 @@ final class external_users_test extends advanced_testcase {
         $DB->insert_record('user_info_data', [
             'userid' => $user->id,
             'fieldid' => $verified,
-            'data' => '0', // unverified
+            'data' => '0', // Unverified.
         ]);
         $DB->insert_record('user_info_data', [
             'userid' => $user->id,
@@ -363,7 +373,7 @@ final class external_users_test extends advanced_testcase {
         $hookmock = $this->getMockBuilder(\core\hook\output\before_http_headers::class)
             ->disableOriginalConstructor()
             ->getMock();
-        // no exception means redirect was skipped
+        // No exception means redirect was skipped.
         \local_external_users\hook_callbacks::onload($hookmock);
         $this->assertTrue(true, 'Pending user should not be redirected');
     }
@@ -549,34 +559,34 @@ final class external_users_test extends advanced_testcase {
         $u6->profile_field_external_user_pending = '0';
         profile_save_data($u6);
 
-        // Execute retrievers
+        // Execute retrievers.
         $forverification = $this->commonclass->get_users_for_verification();
         $pending = $this->commonclass->get_pending_users_for_verification();
         $alreadyverified = $this->commonclass->get_users_already_verified();
         $rejected = $this->commonclass->get_users_rejected();
 
-        // Assert u1 is in for_verification
+        // Assert u1 is in for_verification.
         $this->assertArrayHasKey($u1->id, $forverification);
-        $this->assertArrayNotHasKey($u2->id, $forverification); // u2 is pending
+        $this->assertArrayNotHasKey($u2->id, $forverification); // U2 is pending.
         $this->assertArrayNotHasKey($u3->id, $forverification);
         $this->assertArrayNotHasKey($u4->id, $forverification);
         $this->assertArrayNotHasKey($u5->id, $forverification);
-        $this->assertArrayNotHasKey($u6->id, $forverification); // u6 is manual
+        $this->assertArrayNotHasKey($u6->id, $forverification); // U6 is manual.
 
-        // Assert u2 is in pending
+        // Assert u2 is in pending.
         $this->assertArrayHasKey($u2->id, $pending);
         $this->assertArrayNotHasKey($u1->id, $pending);
 
-        // Assert u3 and u4 are in already_verified
+        // Assert u3 and u4 are in already_verified.
         $this->assertArrayHasKey($u3->id, $alreadyverified);
         $this->assertArrayHasKey($u4->id, $alreadyverified);
         $this->assertArrayNotHasKey($u1->id, $alreadyverified);
-        
-        // Check username suffix logic for limited user (L)
+
+        // Check username suffix logic for limited user (L).
         $this->assertEquals('verifieduser', $alreadyverified[$u3->id]->username);
         $this->assertEquals('limiteduser (L)', $alreadyverified[$u4->id]->username);
 
-        // Assert u5 is in rejected
+        // Assert u5 is in rejected.
         $this->assertArrayHasKey($u5->id, $rejected);
         $this->assertArrayNotHasKey($u1->id, $rejected);
     }
@@ -589,10 +599,10 @@ final class external_users_test extends advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
-        // 1. Invalid user
+        // 1. Invalid user.
         $this->assertEquals(-1, $this->commonclass->revoke_user(99999));
 
-        // 2. Valid external user
+        // 2. Valid external user.
         $user = $this->getDataGenerator()->create_user();
         $DB->set_field('user', 'auth', 'external', ['id' => $user->id]);
         profile_load_data($user);
@@ -602,19 +612,19 @@ final class external_users_test extends advanced_testcase {
         $user->profile_field_eduPersonScopedAffiliation = 'tariff_a';
         profile_save_data($user);
 
-        // Redirect events to assert event triggering
+        // Redirect events to assert event triggering.
         $sink = $this->redirectEvents();
 
         $result = $this->commonclass->revoke_user($user->id);
         $this->assertEquals(0, $result);
 
-        // Assert profile fields
+        // Assert profile fields.
         profile_load_data($user);
         $this->assertEquals(0, $user->profile_field_external_user_verified);
         $this->assertEquals(1, $user->profile_field_external_user_pending);
         $this->assertEquals('', $user->profile_field_eduPersonScopedAffiliation);
 
-        // Assert event
+        // Assert event.
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);
@@ -631,10 +641,10 @@ final class external_users_test extends advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
-        // 1. Invalid user
+        // 1. Invalid user.
         $this->assertEquals(-1, $this->commonclass->limited_verify_user(99999, 'tariff_a', 'limited'));
 
-        // 2. Valid external user - type 'limited' (current semester)
+        // 2. Valid external user. - type 'limited' (current semester)
         $user = $this->getDataGenerator()->create_user();
         $DB->set_field('user', 'auth', 'external', ['id' => $user->id]);
         profile_load_data($user);
@@ -701,20 +711,20 @@ final class external_users_test extends advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $contextid = \context_system::instance()->id;
 
-        // 1. Create a stored file in Moodle file storage
+        // 1. Create a stored file in Moodle file storage.
         $fs = get_file_storage();
         $filerecord = [
             'contextid' => $contextid,
             'component' => 'local_external_users',
             'filearea' => 'somearea',
-            'itemid' => $user->id, // Using user ID as itemid
+            'itemid' => $user->id, // Using user ID as itemid.
             'filepath' => '/',
             'filename' => 'testfile.txt',
             'userid' => $user->id,
         ];
         $fs->create_file_from_string($filerecord, 'Hello World');
 
-        // 2. Insert record into local_external_users_files table
+        // 2. Insert record into local_external_users_files table.
         $dbfield = [
             'contextid' => (string)$contextid,
             'component' => 'local_external_users',
@@ -743,10 +753,10 @@ final class external_users_test extends advanced_testcase {
         $removed = $this->commonclass->remove_user_files($user->id);
         $this->assertEquals(1, $removed);
 
-        // Assert database record was deleted
+        // Assert database record was deleted.
         $this->assertFalse($DB->record_exists('local_external_users_files', ['id' => $dbid]));
 
-        // Assert file storage was deleted
+        // Assert file storage was deleted.
         $this->assertFalse($fs->file_exists($contextid, 'local_external_users', 'somearea', $user->id, '/', 'testfile.txt'));
     }
 }

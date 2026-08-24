@@ -15,6 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Installation callback for local_external_users.
+ *
+ * @package    local_external_users
+ * @copyright  2022 Stephan Lorbek <stephan.lorbek@uni-graz.at>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Perform installation operations for local_external_users.
+ *
  * @throws dml_exception
  */
 function xmldb_local_external_users_install(): void {
@@ -88,19 +98,19 @@ function xmldb_local_external_users_install(): void {
     ];
 
     // Check if the field already exists.
-    if (!$field = $DB->get_record('user_info_field', ['shortname' => $externaluserfield['shortname']])) {
+    if (!$DB->record_exists('user_info_field', ['shortname' => $externaluserfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$externaluserfield);
     }
-    if (!$field = $DB->get_record('user_info_field', ['shortname' => $verifiedfield['shortname']])) {
+    if (!$DB->record_exists('user_info_field', ['shortname' => $verifiedfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$verifiedfield);
     }
-    if (!$field = $DB->get_record('user_info_field', ['shortname' => $commentfield['shortname']])) {
+    if (!$DB->record_exists('user_info_field', ['shortname' => $commentfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$commentfield);
     }
-    if (!$field = $DB->get_record('user_info_field', ['shortname' => $pendingfield['shortname']])) {
+    if (!$DB->record_exists('user_info_field', ['shortname' => $pendingfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$pendingfield);
     }
-    if (!$field = $DB->get_record('user_info_field', ['shortname' => $affiliationfield['shortname']])) {
+    if (!$DB->record_exists('user_info_field', ['shortname' => $affiliationfield['shortname']])) {
         $DB->insert_record('user_info_field', (object)$affiliationfield);
     }
 }

@@ -19,9 +19,16 @@ namespace local_external_users\event;
 use core\event\base;
 use moodle_url;
 
+/**
+ * Event class for mail_failed.
+ *
+ * @package    local_external_users
+ * @copyright  2026 Stephan Lorbek <stephan.lorbek@uni-graz.at>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mail_failed extends base {
     /**
-     * init function
+     * Initialize event metadata.
      * @return void
      */
     protected function init(): void {
@@ -30,14 +37,14 @@ class mail_failed extends base {
         $this->data['objecttable'] = 'data_records';
     }
     /**
-     * get_description function
+     * Get event description.
      * @return string
      */
     public function get_description(): string {
         return "Failed to send E-Mail to user " . $this->other['user'];
     }
     /**
-     * get_name function
+     * Get event name.
      * @return string
      */
     public static function get_name(): string {
@@ -45,7 +52,7 @@ class mail_failed extends base {
     }
 
     /**
-     * get_url function
+     * Get event URL.
      * @return moodle_url
      */
     public function get_url(): moodle_url {

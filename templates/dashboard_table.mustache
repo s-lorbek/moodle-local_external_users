@@ -1,11 +1,18 @@
 {{!
-    @template local_external_users/dashboard
-}}
+    @template local_external_users/dashboard_table
 
-<head>
-    <title>External Users Dashboard</title>
-    <script src="{{host}}/theme/musi/javascript/datatables.min.js"></script>
-</head>
+    External users dashboard table template.
+
+    Example context (json):
+    {
+        "host": "http://example.com",
+        "title": "Pending Users",
+        "count": "5",
+        "table": "<table><thead><tr><th>User</th></tr></thead><tbody><tr><td>user1</td></tr></tbody></table>",
+        "table-id": "sortabletablepending",
+        "legend": true
+    }
+}}
 
 {{^legend}}
 <a class="btn btn-primary w-10 p-2" href="manage.php">
@@ -32,19 +39,16 @@
 </div>
 
 {{#js}}
-    var linkElement = document.createElement("link");
-    linkElement.rel = "stylesheet";
-    linkElement.href = "{{host}}/theme/musi/scss/datatables.min.css";
+    /* global DataTable */
+    const linkElement = document.createElement('link');
+    linkElement.rel = 'stylesheet';
+    linkElement.href = '{{{host}}}/theme/musi/scss/datatables.min.css';
     document.head.appendChild(linkElement);
 
-    const tableCount{{table-id}} = document.getElementById("{{table-id}}").rows.length;
-    if(tableCount{{table-id}} > 2) {
+    const tableEl = document.getElementById('{{table-id}}');
+    if (tableEl && tableEl.rows.length > 2) {
         if (typeof DataTable !== 'undefined') {
-            let table = new DataTable('#{{table-id}}', {
-            // options
-            });
+            new DataTable('#{{table-id}}');
         }
     }
 {{/js}}
-
-
